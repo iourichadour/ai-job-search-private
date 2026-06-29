@@ -54,6 +54,13 @@ def extract_linkedin_job_id(url):
     match = re.search(r'/jobs/view/(\d+)', url)
     return match.group(1) if match else None
 
+def normalize_linkedin_url(url):
+    """Normalize LinkedIn URL to base form (strip tracking params)."""
+    job_id = extract_linkedin_job_id(url)
+    if job_id:
+        return f"https://www.linkedin.com/comm/jobs/view/{job_id}/"
+    return url
+
 def fetch_linkedin_with_browser(url, logger, timeout=None):
     job_id = extract_linkedin_job_id(url)
     if not job_id:
@@ -294,8 +301,9 @@ def main():
             for link in soup.find_all('a', href=True):
                 href = link['href']
                 if 'linkedin.com/comm/jobs/view' in href:
-                    raw_jobs.append({'source': 'linkedin', 'url': href})
-                    logger.info(f'  [URL] linkedin: {href[:80]}')
+                    normalized_url = normalize_linkedin_url(href)
+                    raw_jobs.append({'source': 'linkedin', 'url': normalized_url})
+                    logger.info(f'  [URL] linkedin: {normalized_url[:80]}')
                 elif 'indeed.com' in href:
                     raw_jobs.append({'source': 'indeed', 'url': href})
                     logger.info(f'  [URL] indeed: {href[:80]}')
