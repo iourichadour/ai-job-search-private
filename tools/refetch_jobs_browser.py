@@ -14,6 +14,7 @@ import re
 import sys
 import time
 import random
+import logging
 from datetime import datetime
 
 try:
@@ -36,12 +37,27 @@ PAGE_LOAD_TIMEOUT = 30000            # Page load timeout (milliseconds)
 EXTRA_PAGE_WAIT = 2000               # Extra wait after page loads (ms)
 # ============================================
 
+def setup_logging(timestamp: str) -> logging.Logger:
+    os.makedirs('logs', exist_ok=True)
+    log_path = f'logs/refetch_jobs_{timestamp}.log'
+    logger = logging.getLogger('refetch_jobs')
+    logger.setLevel(logging.DEBUG)
+    fmt = logging.Formatter('%(asctime)s %(message)s', datefmt='%H:%M:%S')
+    fh = logging.FileHandler(log_path, encoding='utf-8')
+    fh.setFormatter(fmt)
+    logger.addHandler(fh)
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(fmt)
+    logger.addHandler(sh)
+    logger.info(f'Log file: {log_path}')
+    return logger
+
 def extract_linkedin_job_id(url):
     """Extract job ID from LinkedIn tracking URL."""
     match = re.search(r'/jobs/view/(\d+)', url)
     return match.group(1) if match else None
 
-def fetch_linkedin_with_browser(url, timeout=None):
+def fetch_linkedin_with_browser(url, logger, timeout=None):
     """
     Fetch LinkedIn job using headless Chromium browser.
     Returns dict with title, company, description.
@@ -61,11 +77,11 @@ def fetch_linkedin_with_browser(url, timeout=None):
             )
             page = context.new_page()
 
-            print(f"  [→] Loading: {simplified_url}")
+            logger.info(f"  [→] Loading: {simplified_url}")
             try:
                 page.goto(simplified_url, wait_until='load', timeout=timeout)
             except PlaywrightTimeoutError:
-                print(f"  [!] Page load timeout (may need manual review)")
+                logger.info(f"  [!] Page load timeout (may need manual review)")
                 browser.close()
                 return None
 
@@ -79,7 +95,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                 if title:
                     title_text = title.text_content().strip()
                     if title_text:
-                        print(f"  [✓] Title: {title_text[:60]}")
+                        logger.info(f"  [✓] Title: {title_text[:60]}")
             except:
                 pass
 
@@ -90,7 +106,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                 if company:
                     company_text = company.text_content().strip()
                     if company_text:
-                        print(f"  [✓] Company: {company_text[:40]}")
+                        logger.info(f"  [✓] Company: {company_text[:40]}")
             except:
                 pass
 
@@ -98,13 +114,13 @@ def fetch_linkedin_with_browser(url, timeout=None):
             description = 'N/A'
 
             # Strategy 1: Look for show-more-less-html (main description container)
-            print(f"  [→] Extracting description...")
+            logger.info(f"  [→] Extracting description...")
             try:
                 desc_element = page.query_selector('div.show-more-less-html')
                 if desc_element:
                     description = desc_element.text_content().strip()
                     if description and len(description) > 100:
-                        print(f"  [✓] Found description ({len(description)} chars)")
+                        logger.info(f"  [✓] Found description ({len(description)} chars)")
                         browser.close()
                         return {
                             'title': title_text,
@@ -112,7 +128,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                             'description': description[:3000]
                         }
             except Exception as e:
-                print(f"  [~] Strategy 1 failed: {e}")
+                logger.info(f"  [~] Strategy 1 failed: {e}")
 
             # Strategy 2: Get all text content from main article
             try:
@@ -123,7 +139,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                     lines = description.split('\n')
                     cleaned = '\n'.join(line.strip() for line in lines if line.strip())
                     if len(cleaned) > 200:
-                        print(f"  [✓] Found description from article ({len(cleaned)} chars)")
+                        logger.info(f"  [✓] Found description from article ({len(cleaned)} chars)")
                         browser.close()
                         return {
                             'title': title_text,
@@ -131,7 +147,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                             'description': cleaned[:3000]
                         }
             except Exception as e:
-                print(f"  [~] Strategy 2 failed: {e}")
+                logger.info(f"  [~] Strategy 2 failed: {e}")
 
             # Strategy 3: Get full page text if other strategies failed
             try:
@@ -148,7 +164,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                     if lines:
                         description = '\n'.join(lines)
                         if len(description) > 200:
-                            print(f"  [✓] Found description from page text ({len(description)} chars)")
+                            logger.info(f"  [✓] Found description from page text ({len(description)} chars)")
                             browser.close()
                             return {
                                 'title': title_text,
@@ -156,7 +172,7 @@ def fetch_linkedin_with_browser(url, timeout=None):
                                 'description': description[:3000]
                             }
             except Exception as e:
-                print(f"  [~] Strategy 3 failed: {e}")
+                logger.info(f"  [~] Strategy 3 failed: {e}")
 
             browser.close()
 
@@ -167,16 +183,16 @@ def fetch_linkedin_with_browser(url, timeout=None):
                     'description': description[:3000]
                 }
             else:
-                print(f"  [!] Could not extract description")
+                logger.info(f"  [!] Could not extract description")
                 return None
 
     except Exception as e:
-        print(f"  [ERROR] Browser error: {e}")
+        logger.info(f"  [ERROR] Browser error: {e}")
         import traceback
         traceback.print_exc()
         return None
 
-def fetch_indeed_with_browser(url, timeout=None):
+def fetch_indeed_with_browser(url, logger, timeout=None):
     """Fetch Indeed job using headless browser."""
     timeout = timeout or PAGE_LOAD_TIMEOUT
     try:
@@ -184,7 +200,7 @@ def fetch_indeed_with_browser(url, timeout=None):
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
 
-            print(f"  [→] Loading: {url}")
+            logger.info(f"  [→] Loading: {url}")
             page.goto(url, wait_until='load', timeout=timeout)
             page.wait_for_timeout(EXTRA_PAGE_WAIT)
 
@@ -213,7 +229,7 @@ def fetch_indeed_with_browser(url, timeout=None):
                 if desc_element:
                     description = desc_element.text_content().strip()
                     if len(description) > 100:
-                        print(f"  [✓] Found description ({len(description)} chars)")
+                        logger.info(f"  [✓] Found description ({len(description)} chars)")
                         browser.close()
                         return {
                             'title': title_text,
@@ -229,7 +245,7 @@ def fetch_indeed_with_browser(url, timeout=None):
                 if content:
                     description = content.text_content().strip()
                     if len(description) > 200:
-                        print(f"  [✓] Found description from content ({len(description)} chars)")
+                        logger.info(f"  [✓] Found description from content ({len(description)} chars)")
             except:
                 pass
 
@@ -241,14 +257,17 @@ def fetch_indeed_with_browser(url, timeout=None):
             }
 
     except Exception as e:
-        print(f"  [ERROR] {e}")
+        logger.info(f"  [ERROR] {e}")
         return None
 
 def main():
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    logger = setup_logging(timestamp)
+
     inbox_file = 'data/inbox_queue.json'
 
     if not os.path.exists(inbox_file):
-        print(f"[!] {inbox_file} not found")
+        logger.info(f"[!] {inbox_file} not found")
         return
 
     with open(inbox_file, 'r', encoding='utf-8') as f:
@@ -258,21 +277,21 @@ def main():
     failed = [job for job in queue if job.get('description') == 'N/A' or 'Could not fetch' in job.get('description', '')]
 
     if not failed:
-        print("[✓] No failed jobs to refetch")
+        logger.info("[✓] No failed jobs to refetch")
         return
 
-    print(f"\n[+] Refetching {len(failed)} jobs with browser...")
-    print(f"[~] Using random delays between requests to avoid bot detection\n")
+    logger.info(f"\n[+] Refetching {len(failed)} jobs with browser...")
+    logger.info(f"[~] Using random delays between requests to avoid bot detection\n")
     refetched = 0
 
     for i, job in enumerate(failed, 1):
-        print(f"\n[{i}/{len(failed)}] Job ID: {extract_linkedin_job_id(job['url']) or 'N/A'}")
+        logger.info(f"\n[{i}/{len(failed)}] Job ID: {extract_linkedin_job_id(job['url']) or 'N/A'}")
 
         result = None
         if job['source'] == 'linkedin':
-            result = fetch_linkedin_with_browser(job['url'])
+            result = fetch_linkedin_with_browser(job['url'], logger)
         elif job['source'] == 'indeed':
-            result = fetch_indeed_with_browser(job['url'])
+            result = fetch_indeed_with_browser(job['url'], logger)
 
         if result and result['title'] != 'N/A' and result['description'] != 'N/A':
             # Update original entry
@@ -285,27 +304,27 @@ def main():
                         'refetched_at': datetime.now().isoformat()
                     })
                     refetched += 1
-                    print(f"  [✓] Success: {result['title'][:50]}")
+                    logger.info(f"  [✓] Success: {result['title'][:50]}")
                     break
 
         # Add delay between requests (randomized, human-like)
         if i < len(failed):  # Don't delay after last job
             delay = random.uniform(MIN_DELAY_BETWEEN_REQUESTS, MAX_DELAY_BETWEEN_REQUESTS)
-            print(f"  [⏳] Waiting {delay:.1f}s before next request...")
+            logger.info(f"  [⏳] Waiting {delay:.1f}s before next request...")
             time.sleep(delay)
 
             # Add longer pause every N jobs to mimic human behavior (checking email, etc.)
             if i % BATCH_SIZE == 0:
                 batch_pause = random.uniform(MIN_BATCH_PAUSE, MAX_BATCH_PAUSE)
-                print(f"\n  [⏸️] Taking a break ({batch_pause:.0f}s) after {i} jobs...\n")
+                logger.info(f"\n  [⏸️] Taking a break ({batch_pause:.0f}s) after {i} jobs...\n")
                 time.sleep(batch_pause)
 
     # Save updated queue
     with open(inbox_file, 'w', encoding='utf-8') as f:
         json.dump(queue, f, indent=4, ensure_ascii=False)
 
-    print(f"\n[✓] Refetch complete. Successfully updated {refetched}/{len(failed)} jobs")
-    print(f"[+] Updated {inbox_file}")
+    logger.info(f"\n[✓] Refetch complete. Successfully updated {refetched}/{len(failed)} jobs")
+    logger.info(f"[+] Updated {inbox_file}")
 
 if __name__ == "__main__":
     main()
