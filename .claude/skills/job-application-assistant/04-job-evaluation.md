@@ -16,9 +16,9 @@ How well do the required/preferred skills align with the candidate's capabilitie
 | 40-59 | Partial match, significant upskilling needed |
 | 0-39 | Fundamental mismatch |
 
-**Strong match areas:** [YOUR_PRIMARY_SKILLS]
-**Moderate match areas:** [YOUR_SECONDARY_SKILLS]
-**Weak match areas:** [SKILLS_YOU_LACK]
+**Strong match areas:** Data analytics, Business intelligence, PowerBI/Fabric, Snowflake, SQL, Python, Data architecture (data mesh, semantic models), Cloud platforms (Azure, AWS), Team leadership, Strategic data transformation
+**Moderate match areas:** ERP systems, Custom application development, Data governance, Vendor management, Agile/process improvement
+**Weak match areas:** Mobile development, UX/frontend design, Hardware/infrastructure, Marketing/growth functions
 
 ### 2. Experience Match (0-100)
 Does work history align with what they're looking for?
@@ -30,9 +30,9 @@ Does work history align with what they're looking for?
 | 40-59 | Adjacent experience, would need to make the case |
 | 0-39 | Unrelated experience |
 
-**Strong:** [YOUR_DIRECT_EXPERIENCE_DOMAINS]
-**Moderate:** [YOUR_ADJACENT_EXPERIENCE]
-**Entry-level:** [ROLES_WITH_LIMITED_EXPERIENCE]
+**Strong:** Data analytics and BI leadership (9+ years at Lazard), enterprise data platform design and delivery (Bayview, Lazard), ERP system architecture and optimization (Guardian Life, Lazard), cloud data warehousing (Snowflake, Azure)
+**Moderate:** Team management and mentoring (multiple companies, 15+ years), vendor management, financial systems domain, compliance and audit technology
+**Entry-level:** Generative AI and Copilot integration (Fabric IQ, data agents are emerging; hands-on experience limited but strategic understanding strong)
 
 ### 3. Behavioral/Culture Fit (0-100)
 Does the role and company culture match the behavioral profile?
@@ -63,19 +63,20 @@ Does this role advance career goals and contain tasks that energize?
 | 0-39 | Dead end or backwards step |
 
 **Career goals:**
-- [YOUR_CAREER_GOAL_1]
-- [YOUR_CAREER_GOAL_2]
-- [YOUR_CAREER_GOAL_3]
+- Lead modern data analytics transformations using AI-first approaches (Fabric, data mesh, semantic models, Copilot)
+- Build and mentor high-performing teams delivering self-service analytics at scale
+- Drive enterprise adoption of cutting-edge data platforms and democratize data access
+- Establish yourself as expert in AI-augmented analytics and next-gen data architecture
 
 **Motivation filter:** Evaluate not just whether you *can* do the tasks, but whether the tasks will *energize* you. Consider:
-- Tasks that energize: [YOUR_ENERGIZING_TASKS]
-- Tasks that drain: [YOUR_DRAINING_TASKS]
-- Non-task factors: leadership style, department culture, company values, degree of autonomy
+- Tasks that energize: Designing scalable data architectures, mentoring technical teams, driving adoption of modern tools (Fabric, Copilot), translating business problems into technical solutions, establishing best practices and frameworks
+- Tasks that drain: Purely operational "keeping the lights on" roles, legacy-only maintenance with no modernization path, siloed IT environments, micromanagement
+- Non-task factors: Want collaborative leadership with executive sponsorship for innovation; prefer hands-on technical roles (not pure management); value cross-functional business partnership
 
 **Life situation alignment:** Consider personal constraints:
-- **Security**: [YOUR_FINANCIAL_SITUATION_CONTEXT]
-- **Flexibility**: [YOUR_SCHEDULE_CONSTRAINTS]
-- **Professional development**: [YOUR_GROWTH_PRIORITIES]
+- **Security**: Stable financial situation; seeking role with strong growth trajectory
+- **Flexibility**: Open to remote, hybrid, or relocation; based in Miami-Fort Lauderdale but can work anywhere
+- **Professional development**: Focused on mastering Fabric, data mesh, and AI-augmented analytics; looking for roles that let you stay technically sharp while building strategy
 
 ### 6. Salary Benchmark (Optional)
 

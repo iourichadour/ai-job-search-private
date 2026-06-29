@@ -105,12 +105,14 @@ Write 5-7 lines that function as an "elevator pitch": a concise, compelling intr
 
 **Create 2-3 profile statement templates for your main role types:**
 
-<!-- SETUP: These are populated based on your background -->
-**For [YOUR_PRIMARY_ROLE_TYPE] roles:**
-> [YOUR_PROFILE_STATEMENT_TEMPLATE_1]
+**For Data Analytics/AI/Strategy Roles (Data Analytics Platform Leader, Chief Data Officer, VP Data Analytics):**
+> Technology leader with 15+ years delivering enterprise data solutions and driving analytics transformations at scale. Expert in modern data architectures (data mesh, semantic models, lakehouse patterns) and AI-augmented analytics platforms (Fabric, Copilot). Passionate about empowering organizations through self-service analytics, data governance frameworks, and collaborative best practices. Proven track record leading high-performance teams, establishing scalable design patterns, and translating complex business problems into elegant technical solutions using cutting-edge platforms (PowerBI, Fabric, Snowflake, Azure).
 
-**For [YOUR_SECONDARY_ROLE_TYPE] roles:**
-> [YOUR_PROFILE_STATEMENT_TEMPLATE_2]
+**For Data Engineering/Architecture Roles (Principal Data Architect, Enterprise Data Engineer, Data Solutions Architect):**
+> Data architect and practitioner specializing in modern data platforms, semantic-first design, and AI-driven analytics. 15+ years designing and implementing scalable data solutions across enterprise business areas. Deep expertise in data mesh architecture, lakehouse patterns, cloud data warehousing (Snowflake, Azure), and integration orchestration. Hands-on technical skills across Python, SQL, DAX, and modern ETL tools. Committed to building technical excellence through standardization, mentoring, and establishing frameworks that scale.
+
+**For Technology Leadership Roles (Technology Manager, SVP Engineering, VP Technology):**
+> Strategic technology leader with hands-on technical depth and proven ability to build and mentor high-performing teams. 15+ years leading enterprise technology initiatives spanning data analytics, ERP systems, compliance, and security. Experienced in vision-setting, stakeholder alignment, vendor management, and driving organizational transformation through innovation and standardization. Comfortable in both strategic advisor and solution architect/practitioner roles; combines business acumen with deep technical expertise to deliver measurable outcomes across complex, multi-stakeholder environments.
 
 ### Core Competencies / Skills Section (Best Practice)
 Reorder and emphasize based on the role. Use bold category labels.

@@ -5,7 +5,11 @@
       "Bash(python3:*)",
       "Bash(python:*)",
       "Bash(curl:*)",
-      "Bash(bun:*)"
+      "Bash(bun:*)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh pr create --title 'Enhance job-scout to leverage Gmail alerts instead of scraping' --body ' *)"
     ]
   }
 }

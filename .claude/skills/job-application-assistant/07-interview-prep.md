@@ -8,32 +8,69 @@ Structure answers as: **Situation** (context), **Task** (your responsibility), *
 
 Keep answers to 1-2 minutes. Be specific. End with what you learned or would do differently.
 
-## Ready-Made STAR Examples
+## STAR Candidates (Complete Manually)
 
-<!-- These are populated by /setup from your actual experience. Below are templates showing the format. -->
+These are achievement stubs extracted from your CV and LinkedIn. Complete each with full Situation/Task/Action/Result details before using in interviews.
 
-### 1. [PROJECT_NAME] ([SKILL_DEMONSTRATED])
-**S:** [CONTEXT - what was happening, what was the problem]
-**T:** [YOUR RESPONSIBILITY - what you specifically needed to do]
-**A:** [WHAT YOU DID - specific actions, tools, methods]
-**R:** [OUTCOME - measurable results, adoption, impact]
-**Use for:** "[QUESTION_TYPE_1]", "[QUESTION_TYPE_2]"
+### 1. BI Framework Implementation at Bayview (Data Governance & Standardization)
+**Source:** Current role, Bayview Asset Management
+**What happened:** Designed and implemented enterprise BI framework with standardized processes, guidelines, and self-service model
+**Why it matters:** Demonstrates ability to scale analytics across organizations; answers "Tell me about a time you improved processes" or "How do you drive adoption?"
+**S/T/A/R stub:**
+- Situation: [What was the state of BI practices before? How many teams? What problems did inconsistency create?]
+- Task: [What were you asked to do? What was the scope?]
+- Action: [What specific frameworks/templates did you create? How did you socialize them? What tools/processes did you establish?]
+- Result: [Measurable outcomes: time saved per project? User adoption rate? Quality improvements? Business impact?]
 
-### 2. [PROJECT_NAME] ([SKILL_DEMONSTRATED])
-**S:** [CONTEXT]
-**T:** [YOUR RESPONSIBILITY]
-**A:** [WHAT YOU DID]
-**R:** [OUTCOME]
-**Use for:** "[QUESTION_TYPE_1]", "[QUESTION_TYPE_2]"
+### 2. PowerBI Rollout & Adoption at Lazard (Change Leadership & Technical Vision)
+**Source:** Technology Manager role, Lazard
+**What happened:** Led PowerBI and Power Platform rollout and adoption across organization, establishing design patterns and templates
+**Why it matters:** Shows strategic vision, cross-functional influence, and ability to drive large-scale technology transformations
+**S/T/A/R stub:**
+- Situation: [What was Lazard using before? How many teams? What business problem did the new platform solve?]
+- Task: [Your responsibility in the rollout? Which business areas? What was the timeline?]
+- Action: [How did you build the design patterns? How did you train/influence teams? Did you have resistance? How did you overcome it?]
+- Result: [Adoption metrics, business impact, timeline to production, cost savings?]
 
-### 3. [PROJECT_NAME] ([SKILL_DEMONSTRATED])
-**S:** [CONTEXT]
-**T:** [YOUR RESPONSIBILITY]
-**A:** [WHAT YOU DID]
-**R:** [OUTCOME]
-**Use for:** "[QUESTION_TYPE_1]", "[QUESTION_TYPE_2]"
+### 3. End-to-End Analytics Solutions (Technical Delivery & Business Impact)
+**Source:** Lazard Data Solutions (Investor Database, Asset Management Dashboard)
+**What happened:** Architected integrated Investor Database and dynamic portfolio analysis dashboards serving Senior Management
+**Why it matters:** Demonstrates full-stack technical capability and ability to translate business requirements into data solutions
+**S/T/A/R stub:**
+- Situation: [What data problem was the business facing? What was the business context? How were they solving it before?]
+- Task: [What did you need to design and build?]
+- Action: [Architecture decisions (Snowflake vs. SQL Server?). Which tools did you use? How did you handle data integration? Did you build it solo or lead a team?]
+- Result: [Time to insight for end users? Adoption? Business decisions enabled? Cost or risk reduction?]
 
-<!-- Add more STAR examples as needed. Aim for 4-6 covering different competencies. -->
+### 4. ERP System Customization & Upgrade Leadership (Complex Technical Project Management)
+**Source:** Guardian Life and Lazard ERP work
+**What happened:** Led multiple ERP upgrades, customizations, and module implementations
+**Why it matters:** Shows ability to manage complex, high-stakes technical projects with business and vendor coordination
+**S/T/A/R stub:**
+- Situation: [Which ERP system? What was the trigger for the upgrade/project? What was at stake?]
+- Task: [Your specific responsibility? Team size? Were you managing internal staff, vendors, or both?]
+- Action: [How did you approach fit-gap analysis? How did you plan the implementation? Any major technical challenges? How did you handle them?]
+- Result: [On-time and on-budget delivery? User adoption? Defect rates? Did it solve the original business problem?]
+
+### 5. Team Building & Mentorship (Leadership & Culture)
+**Source:** Multiple roles across Guardian Life, Lazard, Bayview
+**What happened:** Built and mentored high-performing engineering and analytics teams
+**Why it matters:** Shows leadership capability and commitment to developing others; answers "How do you develop talent?" or "Tell me about a time you mentored someone"
+**S/T/A/R stub:**
+- Situation: [What was the team's starting point? Size? Skill levels? What challenges did you face?]
+- Task: [What did you need to build or improve?]
+- Action: [How did you recruit? What development approach did you use? What did you teach them? How did you create culture?]
+- Result: [Team outcomes: retention, promotions, project delivery, team satisfaction?]
+
+### 6. Custom AP Automation at Lazard (End-to-End Product Development)
+**Source:** Custom AP automation with document scanning, OCR, workflows, mobile interface
+**What happened:** Designed and implemented custom AP automation solution
+**Why it matters:** Demonstrates full-stack development capability, problem-solving, and business value delivery
+**S/T/A/R stub:**
+- Situation: [What was the AP process like before? What pain points? How much manual effort?]
+- Task: [What did you need to automate?]
+- Action: [Technology choices (OCR library? Workflow engine? Mobile framework?). How did you handle the technical challenges? Did you iterate with users?]
+- Result: [Efficiency gains? Time savings? Error reduction? User adoption? Cost savings?]
 
 ## Common Tough Questions
 

@@ -16,65 +16,88 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 <!-- This section is auto-populated by /setup. You can also fill it in manually. -->
 
 ### Identity
-- **Name:** [YOUR_NAME]
-- **Location:** [YOUR_CITY], [YOUR_COUNTRY] ([YOUR_COMMUTE_CONSTRAINTS])
-- **Languages:** [YOUR_LANGUAGES]
-- **Status:** [YOUR_EMPLOYMENT_STATUS]
-- **LinkedIn headline:** "[YOUR_LINKEDIN_HEADLINE]"
+- **Name:** Iouri "Yuri" Chadour
+- **Location:** Miami-Fort Lauderdale Area, FL
+- **Phone:** (718) 431-3717
+- **Email:** iouri.chadour@gmail.com
+- **Languages:** English (fluent), Russian (native)
+- **Status:** Employed at Bayview Asset Management (AVP, Data Analytics & AI); actively exploring
+- **LinkedIn headline:** "Data Analytics & AI Leader | Modern Data Platforms (Fabric, Snowflake) | Data Mesh Architecture | Team Builder"
 
 ### Education
-<!-- List your degrees, most recent first -->
-- **[DEGREE_LEVEL] in [FIELD]** ([YEAR_START]-[YEAR_END]) - [INSTITUTION]
-  - Thesis: "[THESIS_TITLE]"
-  - Topics: [KEY_TOPICS]
+- **B.S. in Computer Technology** (2005-2007) - Globe Institute of Technology, New York
 
 ### Professional Experience
-<!-- List your roles, most recent first -->
-- **[JOB_TITLE]** ([START_DATE] - [END_DATE]) - **[COMPANY]** ([LOCATION])
-  - [KEY_RESPONSIBILITY_1]
-  - [KEY_RESPONSIBILITY_2]
-  - [KEY_ACHIEVEMENT]
+- **AVP, Data Analytics & AI** (09/2024 - Present) - **Bayview Asset Management** (Ft. Lauderdale, FL)
+  - Head of Data & Analytics Strategy for enterprise-wide data and analytics vision
+  - Led BI framework implementation with standardized processes, templates, and self-service model
+  - Architected Investor Database and Asset Management Portfolio Dashboard serving Senior Management
+  
+- **Technology Manager (SVP)** (04/2020 - 09/2024) - **Lazard Frères** (Remote)
+  - Technology leader across Finance, Testing Automation, Risk Management business areas
+  - Led PowerBI and Power Platform rollout and adoption; established design patterns and templates
+  - Delivered multiple end-to-end data analytics solutions (pipelines, warehousing, dashboards)
+
+- **Senior Software Developer (VP)** (01/2015 - 04/2020) - **Lazard Frères** (New York, NY)
+  - Led ERP Financial system upgrades and enhancements across multiple modules
+  - Custom AP automation with document scanning, OCR, workflows, mobile interface
+  - Built and led team of data engineers and report developers
+
+- **Technical Manager** (04/2011 - 12/2014) - **Guardian Life** (New York, NY)
+  - Managed application development teams supporting Corporate Finance, Compliance, Audit, Information Security
+  - Led ERP customizations, platform upgrades, and new module implementations
+
+- **Senior Developer** (04/2005 - 10/2011) - **Guardian Life** (New York, NY)
+  - Designed and implemented software solutions for corporate systems
+  - Managed team of internal and consulting staff
+
+- **Lead Developer** (01/2001 - 04/2005) - **AXA Financial** (New York, NY)
+  - Led design and implementation of highly effective software solutions
+  - Managed team of 3-4 developers during design and development phases
 
 ### Technical Skills
-- **Primary:** [YOUR_PRIMARY_SKILLS]
-- **Secondary:** [YOUR_SECONDARY_SKILLS]
-- **Domain:** [YOUR_DOMAIN_EXPERTISE]
-- **Software:** [YOUR_TOOLS_AND_SOFTWARE]
+- **Primary:** Data Analytics, Business Intelligence, Modern Data Platforms (PowerBI, Microsoft Fabric, Snowflake), Data Architecture (data mesh, semantic models, lakehouse patterns), Cloud (Azure, AWS), Python, SQL, Team Leadership
+- **Secondary:** ERP Systems (Oracle Financials, PeopleSoft), Custom Application Development, Data Governance, Vendor Management, Project Management
+- **Domain:** Enterprise data analytics, financial systems, compliance and audit technology, cloud migration, analytics modernization
+- **Software:** PowerBI, Microsoft Fabric, Snowflake, Azure Data Factory, Power Automate, Informatica, Alteryx, Snaplogic, Python (Pandas, NumPy), SQL Server, Tabular Editor, DAX, Shell Scripting
 
 ### Certifications
-<!-- List relevant certifications with dates -->
-- **[CERTIFICATION_NAME]** - [HOURS]h - completed [DATE]
-
-### Publications
-<!-- List peer-reviewed publications, if any -->
-- [AUTHOR_LIST] ([YEAR]). [TITLE]. [JOURNAL].
-
-### Awards
-<!-- List relevant awards, hackathons, competitions -->
-- [AWARD_NAME] - [EVENT] ([YEAR])
+- **Microsoft Certified: Power BI Data Analyst Associate** - 2024
+- **AWS Certified Solutions Architect – Associate** - 2020
+- **SnowPro Core Certification** - 2021
+- **PeopleTools 8 Advanced Developer Certified Expert** - 2010
+- **R Programming Certification** - 2019
 
 ### Behavioral Profile
-<!-- Your behavioral assessment results (PI, DISC, Myers-Briggs, or self-assessment) -->
-- **[TRAIT_1]** - [DESCRIPTION]
-- **[TRAIT_2]** - [DESCRIPTION]
-- **Strengths:** [YOUR_STRENGTHS]
-- **Growth areas:** [YOUR_GROWTH_AREAS]
-- **Thrives in:** [YOUR_IDEAL_ENVIRONMENT]
+- **Strategic Vision + Hands-On Execution** - Balances enterprise-wide data architecture thinking with pragmatic implementation and team leadership
+- **Empowering Teams** - Passionate about enabling business stakeholders and technical teams with tools, knowledge, and autonomy to achieve their goals
+- **Innovation-Driven** - Constantly adopting and championing cutting-edge technologies (Fabric, data mesh, AI agents); establishes scalable frameworks and best practices
+- **Cross-Functional Collaborator** - Works effectively across business units, vendor partnerships, and global teams to align on vision and drive transformation
+
+**Strengths:** Deep technical expertise in modern data platforms combined with architecture and strategy; proven ability to build high-performing teams; track record of large-scale technology transformations; excellent at translating complex business problems into elegant technical solutions; comfortable balancing hands-on work with strategic leadership
+
+**Growth areas:** Generative AI and Copilot integration (theoretical knowledge strong; production experience emerging); accelerating speed to learning in rapidly evolving AI/ML landscape
+
+**Thrives in:** Collaborative environments with executive sponsorship for modernization; roles valuing both strategic vision and hands-on technical depth; teams embracing change and experimentation; business partnership models (not siloed IT); autonomy to drive architecture decisions
 
 ### What Excites You
-<!-- What motivates you professionally -->
-- [PASSION_1]
-- [PASSION_2]
+- Designing and implementing modern data architectures (data mesh, semantic models, lakehouse) that scale across enterprises
+- Leveraging AI and Copilot to democratize analytics and empower business users
+- Building and mentoring technical teams that deliver excellence
+- Driving organizational transformation through technology adoption and cultural change
+- Solving complex business problems with elegant, maintainable technical solutions
 
-### Target Sectors
-<!-- Industries and companies you're targeting -->
-- [SECTOR_1]: [EXAMPLE_COMPANIES]
-- [SECTOR_2]: [EXAMPLE_COMPANIES]
+### Target Sectors & Roles
+**Industries:** Financial Services (JP Morgan, Goldman Sachs, BlackRock), Technology & Cloud (Microsoft, Databricks, Palantir), Consulting (Accenture, Deloitte, McKinsey), Enterprise SaaS (Salesforce, monday.com), any organization with strong data culture and modern cloud stack
 
-### Deal-breakers
-<!-- Hard constraints on job search -->
-- [DEALBREAKER_1]
-- [DEALBREAKER_2]
+**Target Roles:** VP Data Analytics, Chief Data Officer, Principal Data Architect, Head of Data Engineering, Director of Analytics Engineering, SVP Technology
+
+### Deal-Breakers
+- Legacy-only environments with no path to modernization or adoption of current-generation tools
+- Siloed IT roles without business partnership or strategic influence
+- Organizations resistant to cloud migration or modern data practices
+- Purely operational/maintenance-focused roles without innovation component
+- Micromanagement or cultures that devalue technical expertise
 
 ## Repo Structure
 - `cv/` - LaTeX CV variants (moderncv template, banking style)
