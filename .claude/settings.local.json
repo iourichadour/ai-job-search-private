@@ -9,7 +9,16 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(gh pr create --title 'Enhance job-scout to leverage Gmail alerts instead of scraping' --body ' *)"
+      "Bash(gh pr create --title 'Enhance job-scout to leverage Gmail alerts instead of scraping' --body ' *)",
+      "PowerShell(uv --version)",
+      "PowerShell(uv venv .venv)",
+      "PowerShell(.venv\\\\Scripts\\\\activate)",
+      "PowerShell(uv pip install -r requirements.txt)",
+      "PowerShell(python tools/build_job_scout.py)",
+      "PowerShell(python tools/fetch_inbox.py)",
+      "PowerShell(Copy-Item private/credentials.json credentials.json)",
+      "Bash(ls \"C:\\\\Users\\\\iouri\\\\Documents\" 2>/dev/null | head -5 || echo \"listing failed\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\iouri\\\\Documents\\\\plans\")"
     ]
   }
 }

@@ -1,7 +1,9 @@
 import os
 
 def create_file(path, content):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    dir_path = os.path.dirname(path)
+    if dir_path:
+        os.makedirs(dir_path, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(content.strip() + "\n")
     print(f"[*] Generated: {path}")
@@ -30,8 +32,7 @@ You are an autonomous executive career agent. Your primary role is to monitor Gm
     """)
 
     # 2. The Fetch Inbox Skill Definition
-    create_file(".claude/skills/fetch-inbox/SKILL.md", """
----
+    create_file(".claude/skills/fetch-inbox/SKILL.md", r"""---
 name: fetch-inbox
 description: Polls Gmail for unread LinkedIn/Indeed job alerts, fetches job posting content from URLs, and evaluates fit against candidate profile.
 user-invocable: true
@@ -45,9 +46,9 @@ disable-model-invocation: true
 
 ## How to Use
 Execute the python script located at `tools/fetch_inbox.py`:
-\`\`\`bash
+```bash
 python tools/fetch_inbox.py
-\`\`\`
+```
 
 Once the script completes, read the output from `data/inbox_queue.json`. For each new job found in the queue, evaluate its fit against the candidate profile by comparing:
 - Technical skills (Microsoft Fabric, Snowflake, Power BI, Python, SQL, Cloud)
@@ -56,7 +57,7 @@ Once the script completes, read the output from `data/inbox_queue.json`. For eac
 - Role scope (strategic + hands-on, not purely operational)
 
 Summarize the match analysis in the chat with: skills fit %, experience match, and recommendation (strong/moderate/pass).
-    """)
+""")
 
     # 3. The Python Gmail Parser (Enhanced with Job Fetching & Profile Matching)
     create_file("tools/fetch_inbox.py", """
@@ -149,7 +150,7 @@ def main():
     print("Polling for unread LinkedIn/Indeed alerts...")
     results = service.users().messages().list(
         userId='me',
-        q="is:unread from:(jobalerts-noreply@linkedin.com OR alert@indeed.com)"
+        q="is:unread from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR iouri.chadour@gmail.com)"
     ).execute()
 
     messages = results.get('messages', [])
@@ -194,12 +195,29 @@ def main():
                         "status": "pending_evaluation"
                     })
 
-    # Save the queue for Claude to read
+    # Save the queue for Claude to read, deduplicating by URL
     os.makedirs('data', exist_ok=True)
-    with open('data/inbox_queue.json', 'w') as f:
-        json.dump(job_queue, f, indent=4)
+    existing_queue = []
+    if os.path.exists('data/inbox_queue.json'):
+        try:
+            with open('data/inbox_queue.json', 'r', encoding='utf-8') as f:
+                existing_queue = json.load(f)
+        except Exception as e:
+            print(f"[!] Error reading existing queue: {e}")
 
-    print(f"\\nExtraction complete. {len(job_queue)} roles fetched and queued for evaluation.")
+    # Build index of existing URLs
+    seen_urls = {job['url'] for job in existing_queue if 'url' in job}
+    
+    # Add new jobs if not already present in the queue
+    for job in job_queue:
+        if job['url'] not in seen_urls:
+            existing_queue.append(job)
+            seen_urls.add(job['url'])
+
+    with open('data/inbox_queue.json', 'w', encoding='utf-8') as f:
+        json.dump(existing_queue, f, indent=4)
+
+    print(f"\\nExtraction complete. Saved {len(existing_queue)} total deduplicated roles queued for evaluation.")
 
 if __name__ == "__main__":
     main()
@@ -231,11 +249,11 @@ requests>=2.31.0
 lxml>=4.9.0
     """)
 
-    print("\n✅ Architecture successfully built!")
+    print("\n[OK] Architecture successfully built!")
     print("Next Steps:")
     print("1. Place your Google Cloud 'credentials.json' in the root folder.")
     print("2. Update 'data/profile.md' with your executive profile and core competencies.")
-    print("3. Run 'pip install -r requirements.txt'.")
+    print("3. Run 'uv pip install -r requirements.txt'.")
     print("4. Run 'python tools/fetch_inbox.py' to test Gmail integration and fetch jobs from alerts.")
     print("5. Start the agent session with 'claude' and use '/fetch-inbox' to monitor LinkedIn/Indeed emails.")
 
