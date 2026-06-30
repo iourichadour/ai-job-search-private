@@ -1,0 +1,294 @@
+[
+    {
+        "title": "Director, Value Engineering - Financial Services",
+        "company": "Celonis",
+        "skill_match": 70,
+        "experience_level_match": 85,
+        "company_fit": 90,
+        "growth_potential": 80,
+        "red_flags": 30,
+        "overall_fit": 69,
+        "fit_category": "medium",
+        "key_strengths": [
+            "Target industry fit within Enterprise SaaS and Financial Services vertical[cite: 1, 2].",
+            "Leverages deep background in financial workflows, operating models, and asset management[cite: 1, 2].",
+            "Opportunity for high-impact strategic advisory with major institutional clients[cite: 2]."
+        ],
+        "skill_gaps": [
+            "Role is heavily focused on process mining and value engineering rather than hands-on data architecture (Fabric/Snowflake) or semantic modeling[cite: 1, 2].",
+            "Position leans more toward pre-sales/commercial value realization rather than engineering execution[cite: 2]."
+        ],
+        "red_flags_list": [
+            "Risk of moving away from core technical expertise in modern cloud data platforms and BI frameworks into purely functional process analytics[cite: 1, 2]."
+        ],
+        "recommendation": "Medium match - Consider only if looking to pivot into a commercial, pre-sales executive track within enterprise SaaS. Otherwise, skip to remain close to core data architecture[cite: 1, 2].",
+        "reason_summary": "While Celonis is an excellent target SaaS firm and the FSI focus matches your background, the role shifts focus from data engineering and BI architecture toward process mining and business value modeling[cite: 1, 2]."
+    },
+    {
+        "title": "Solutions Director - Americas Institutional & Global Multi-Asset Lead",
+        "company": "Wellington Management",
+        "skill_match": 40,
+        "experience_level_match": 80,
+        "company_fit": 90,
+        "growth_potential": 75,
+        "red_flags": 40,
+        "overall_fit": 53,
+        "fit_category": "low",
+        "key_strengths": [
+            "Top-tier asset management firm matching target financial services profile[cite: 1, 2].",
+            "Senior director level alignment with a heavy emphasis on strategic leadership[cite: 2]."
+        ],
+        "skill_gaps": [
+            "This is a commercial product strategy and distribution role, not a technology role[cite: 2].",
+            "Requires deep investment expertise in multi-asset solutions, OCIO models, and public/private capabilities rather than data management[cite: 2]."
+        ],
+        "red_flags_list": [
+            "Purely business/commercial role with zero alignment to cloud data platforms, Python, SQL, or BI framework implementations[cite: 1, 2]."
+        ],
+        "recommendation": "Skip - This is a financial product management/sales role, completely detached from your technical data leadership skillset[cite: 1, 2].",
+        "reason_summary": "Despite the great company and senior title, 'Solutions' here refers to investment portfolio solutions, not software or data engine solutions. It does not utilize your core competencies[cite: 1, 2]."
+    },
+    {
+        "title": "Solutions Engineer, Director",
+        "company": "BlackRock",
+        "skill_match": 75,
+        "experience_level_match": 85,
+        "company_fit": 100,
+        "growth_potential": 85,
+        "red_flags": 20,
+        "overall_fit": 77,
+        "fit_category": "medium",
+        "key_strengths": [
+            "BlackRock is explicitly listed as a tier-one target financial institution[cite: 1].",
+            "Director-level role dealing directly with investment technology, workflows, and portfolio management operating models[cite: 2].",
+            "Strong alignment with translating complex financial business challenges into technical platform architecture[cite: 1, 2]."
+        ],
+        "skill_gaps": [
+            "Focuses specifically on the Aladdin® proprietary ecosystem rather than open modern data stacks like Snowflake or Microsoft Fabric[cite: 1, 2].",
+            "Position leans heavily toward pre-sales technical diligence and workflow presentation rather than internal engineering execution[cite: 2]."
+        ],
+        "red_flags_list": [
+            "Proprietary stack risk: Over-indexing on Aladdin workflows could reduce hands-on exposure to standard modern cloud market tools over time[cite: 1, 2]."
+        ],
+        "recommendation": "Medium match - Worth pursuing if you want to represent a premier fintech platform (Aladdin) within a world-class asset manager, keeping in mind the pre-sales orientation[cite: 1, 2].",
+        "reason_summary": "Outstanding company and seniority fit. It leverages your asset management expertise deeply, though it routes your technical skills into client-facing architecture for a proprietary platform rather than general enterprise data infrastructure engineering[cite: 1, 2]."
+    },
+    {
+        "title": "Head of Private Data Products",
+        "company": "Clearwater Analytics",
+        "skill_match": 85,
+        "experience_level_match": 90,
+        "company_fit": 95,
+        "growth_potential": 95,
+        "red_flags": 10,
+        "overall_fit": 84,
+        "fit_category": "high",
+        "key_strengths": [
+            "Sits at the intersection of investment data expertise and product development, matching your technical depth and asset management background[cite: 1, 2].",
+            "High growth and innovative mandate to build and commercialize a brand new Private Markets Data & Analytics platform[cite: 2].",
+            "Allows for cross-functional leadership over data science, product management, and engineering teams[cite: 2]."
+        ],
+        "skill_gaps": [
+            "Requires building datasets and benchmarks for niche private markets (Hedge Funds, Private Credit, PE), which may require quick domain upskilling compared to general corporate finance[cite: 1, 2].",
+            "Bears direct commercial/go-to-market ownership, a shift from internal corporate delivery[cite: 1, 2]."
+        ],
+        "red_flags_list": []
+    ],
+    "recommendation": "Strong match - Excellent opportunity to act as an innovative product leader building out an external data asset in a target industry space[cite: 1, 2].",
+    "reason_summary": "Perfectly blends your tech management capability with asset management insights. It offers high autonomy to define architecture and analytics methodologies for a brand new platform offering[cite: 1, 2]."
+},
+{
+    "title": "AI Solutions Director - Investment Operations",
+    "company": "Apollo Global Management, Inc.",
+    "skill_match": 80,
+    "experience_level_match": 85,
+    "company_fit": 100,
+    "growth_potential": 95,
+    "red_flags": 15,
+    "overall_fit": 80,
+    "fit_category": "high",
+    "key_strengths": [
+        "Top-tier alternative asset manager providing massive scale and executive sponsorship for innovation[cite: 1, 2].",
+        "Direct opportunity to lead the adoption of AI-enabled solutions, matching your stated excitement for democratizing analytics and deploying emerging technologies[cite: 1, 2].",
+        "Avoids siloed IT by partnering directly with investment business operations to transform workflows[cite: 1, 2]."
+    ],
+    "skill_gaps": [
+        "More focused on workflow redesign, process automation, and change management than pure data pipeline or semantic lakehouse engineering[cite: 1, 2].",
+        "Pushes heavily into production AI/ML, which is an identified growth/emerging area for you rather than a historical baseline[cite: 1]."
+    ],
+    "red_flags_list": [
+        "The role could skew more toward workflow consulting/PMO if the technical architecture and development elements are siloed in a separate engineering group[cite: 1, 2]."
+    ],
+    "recommendation": "Strong match - Ideal choice if your goal is to transition fully into an AI innovation leader within the alternative asset space[cite: 1, 2].",
+    "reason_summary": "Matches your target industry perfectly and aligns directly with your stated interest in leading AI adoption. It bridges your deep asset management background with your goal to scale advanced, non-siloed technical solutions[cite: 1, 2]."
+},
+{
+    "title": "Director, AI Solutions & Integration",
+    "company": "S&P Global",
+    "skill_match": 90,
+    "experience_level_match": 90,
+    "company_fit": 95,
+    "growth_potential": 95,
+    "red_flags": 5,
+    "overall_fit": 86,
+    "fit_category": "high",
+    "key_strengths": [
+        "Perfect integration of data architecture, governance, and advanced AI application scaling (RAG patterns, agentic workflows)[cite: 2].",
+        "Strong technical alignment; explicitly mentions integration into production data pipelines and reference architectures[cite: 2].",
+        "Allows you to leverage your strengths in establishing standardized frameworks, templates, and reference architectures at an enterprise scale[cite: 1, 2]."
+    ],
+    "skill_gaps": [
+        "Requires rapid scaling from strong theoretical knowledge of GenAI/LLM frameworks to building out robust production reference architectures immediately[cite: 1, 2]."
+    ],
+    "red_flags_list": []
+],
+"recommendation": "Excellent match - Exceptional combination of data management structure, modern AI engineering, and strategic governance in a premier financial intelligence organization[cite: 1, 2].",
+"reason_summary": "Unlike pure business workflow roles, this position demands technical ownership over reference architectures, data pipelines, and governed GenAI/LLM solutions, presenting an ideal growth engine for an innovation-driven data architect[cite: 1, 2]."
+},
+{
+"title": "Director, Client Data Ecosystem",
+"company": "BNY",
+"skill_match": 85,
+"experience_level_match": 90,
+"company_fit": 95,
+"growth_potential": 90,
+"red_flags": 15,
+"overall_fit": 81,
+"fit_category": "high",
+"key_strengths": [
+    "Highly innovative mandate centering on Knowledge Graphs, structured/unstructured agents, and data architecture modernization[cite: 2].",
+    "Strong target company within global financial markets, focusing heavily on strategic co-development rather than maintenance[cite: 1, 2].",
+    "Leverages data mesh thinking and complex data mapping principles across a global scale[cite: 1, 2]."
+],
+"skill_gaps": [
+    "Contains heavy client advisory, RFP negotiation, and commercial partnership elements that compete with technical architecture duties[cite: 2].",
+    "Fabric and Snowflake are not explicitly listed, as the core focus is oriented toward graph structures and custom ingestion agents[cite: 1, 2]."
+],
+"red_flags_list": [
+    "The blended requirement of managing client onboarding agreements and RFPs could dilute time spent leading actual technology transformation and system engineering[cite: 1, 2]."
+],
+"recommendation": "Strong match - Proceed if you enjoy external client advisory and product-market co-creation alongside complex graph architecture[cite: 1, 2].",
+"reason_summary": "Highly strategic role within a major financial institution that aligns with your interest in cutting-edge data architecture patterns (Knowledge Graphs, AI agents) while placing you in a business-partnered innovation hub[cite: 1, 2]."
+},
+{
+"title": "Hedge Fund Solutions Product Strategist – Director",
+"company": "BlackRock",
+"skill_match": 35,
+"experience_level_match": 85,
+"company_fit": 100,
+"growth_potential": 70,
+"red_flags": 50,
+"overall_fit": 47,
+"fit_category": "low",
+"key_strengths": [
+    "Elite company fit within target financial services sector[cite: 1, 2].",
+    "Director level alignment within a highly visible global investment ecosystem (MASS)[cite: 2]."
+],
+"skill_gaps": [
+    "This is an investment product strategy position focused on portfolio construction and asset allocation, not an IT or data engineering leadership post[cite: 2].",
+    "Requires zero technical design, semantic modeling, cloud architecture, or data platform management[cite: 1, 2]."
+],
+"red_flags_list": [
+    "Complete divergence from your tech stack, programming skills, and core engineering career path[cite: 1, 2]."
+],
+"recommendation": "Skip - Entirely unaligned with a data, analytics, and AI career path[cite: 1, 2].",
+"reason_summary": "The role utilizes investment management strategy and client capital allocation strategies rather than technology frameworks or modern data architectures[cite: 2]."
+},
+{
+"title": "Director, Solutions Engineering, Capital Markets",
+"company": "Circle",
+"skill_match": 75,
+"experience_level_match": 90,
+"company_fit": 95,
+"growth_potential": 85,
+"red_flags": 20,
+"overall_fit": 77,
+"fit_category": "medium",
+"key_strengths": [
+    "High-growth enterprise internet finance and stablecoin network matching target SaaS/Fintech industry preference[cite: 1, 2].",
+    "Executive scope focusing on recruiting, coaching, and leading a regionally distributed team of architects and engineers[cite: 2].",
+    "High-impact engagement building customized PoCs and collaborating to influence product roadmaps[cite: 2]."
+],
+"skill_gaps": [
+    "The role leans heavily on programmable blockchain infrastructure, digital assets, and web3 payment flows rather than enterprise semantic modeling or cloud data lakehouses (Snowflake/Fabric)[cite: 1, 2].",
+    "Stronger focus on post-sales technical delivery and external validation rather than internal database architecture and strategy[cite: 1, 2]."
+],
+"red_flags_list": [
+    "Risk of moving too deep into crypto/blockchain niche infrastructure if your long-term goal is to remain focused on mainstream enterprise data analytics platforms[cite: 1, 2]."
+],
+"recommendation": "Medium match - An outstanding fit if you are actively looking to step out of traditional banking/asset management into cutting-edge blockchain/digital asset infrastructure leadership[cite: 1, 2].",
+"reason_summary": "Great scale, company fit, and people-leadership requirements. However, it pivots your technical toolkit away from enterprise data analytics and relational cloud warehouses toward web3 tokenized execution and capital market integrations[cite: 1, 2]."
+},
+{
+"title": "Director, Industry Solutions",
+"company": "Snowflake",
+"skill_match": 95,
+"experience_level_match": 90,
+"company_fit": 100,
+"growth_potential": 95,
+"red_flags": 10,
+"overall_fit": 90,
+"fit_category": "high",
+"key_strengths": [
+    "Direct technical match with Snowflake, which is explicitly featured as a core part of your primary expertise and certifications[cite: 1, 2].",
+    "Leadership of technical architects creating frameworks and prescriptive architecture for enterprise customers[cite: 2].",
+    "Strong emphasis on AI Data Cloud evolution, allowing you to drive GenAI and agentic enterprise strategies directly with clients[cite: 1, 2]."
+],
+"skill_gaps": [
+    "The vertical focus in the listing emphasizes consumer-oriented sectors (Retail, CPG, Telecom, Media) rather than your native Financial Services/Asset Management sweet spot[cite: 1, 2]."
+],
+"red_flags_list": []
+],
+"recommendation": "Exceptional match - Highly recommended to apply. Direct pathway into a core vendor within your target modern tech stack list[cite: 1, 2].",
+"reason_summary": "Despite the consumer industry focus, leading a Solution Engineering architectural practice for Snowflake directly validates your primary technical competencies, allows you to champion cloud data platforms, and places you at the vanguard of the agentic enterprise shift[cite: 1, 2]."
+},
+{
+"title": "Head of Solutions Architecture",
+"company": "Cohere",
+"skill_match": 80,
+"experience_level_match": 90,
+"company_fit": 100,
+"growth_potential": 95,
+"red_flags": 15,
+"overall_fit": 81,
+"fit_category": "high",
+"key_strengths": [
+"Cohere is a premier enterprise AI organization, mapping directly to your target company profile and focus on cutting-edge tech[cite: 1, 2].",
+"Global leadership scope managing a team of Solutions Architects driving deployment of frontier foundation models[cite: 2].",
+"Provides unmatched real-world, production-level exposure to advanced generative AI, LLMs, and enterprise orchestration[cite: 1, 2]."
+],
+"skill_gaps": [
+"Moves out of standard data mesh, Power BI, and data warehousing platforms into pure AI foundation model deployments and narrative shaping[cite: 1, 2].",
+"Requires rapid scaling from strong data engineering expertise into advanced foundational AI solution design[cite: 1, 2]."
+],
+"red_flags_list": [
+"Heavy alignment with sales and revenue metrics might detract from purely technical, internal roadmap optimization and foundational architecture execution[cite: 2]."
+],
+"recommendation": "Strong match - Excellent choice if you wish to maximize your career exposure to top-tier enterprise AI solutions engineering[cite: 1, 2].",
+"reason_summary": "While it demands an immediate leap from standard cloud warehousing to frontier foundation models, it fulfills your career objective to grow within advanced AI landscape ecosystems under a strong global leadership banner[cite: 1, 2]."
+},
+{
+"title": "Director, Delivery Practitioner",
+"company": "BNY",
+"skill_match": 75,
+"experience_level_match": 85,
+"company_fit": 95,
+"growth_potential": 80,
+"red_flags": 20,
+"overall_fit": 74,
+"fit_category": "medium",
+"key_strengths": [
+"Target company fit within top-tier financial wealth management solutions sector[cite: 1, 2].",
+"Leverages deep understanding of financial operating models, client workflows, and reporting frameworks[cite: 1, 2]."
+],
+"skill_gaps": [
+"Leans toward post-sales consultative workflow design and implementation support rather than direct cloud data architecture or data platform modernization[cite: 1, 2].",
+"Less focus on hands-on deployment of cutting-edge tools like Fabric or building advanced analytics pipelines internally[cite: 1, 2]."
+],
+"red_flags_list": [
+"Risk of a workflow-centric or application-training heavy mandate rather than a true data/BI transformation strategy engine[cite: 1, 2]."
+],
+"recommendation": "Medium match - Suitable if you want to focus strictly on wealth management platform delivery and client operating model design[cite: 1, 2].",
+"reason_summary": "The role successfully combines your financial services history with senior client-facing delivery but reduces exposure to core cloud data architecture and hands-on modern data stack tool optimization[cite: 1, 2]."
+}
+]
