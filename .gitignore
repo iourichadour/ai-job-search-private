@@ -23,6 +23,7 @@ credentials.json
 private/
 data/token.json
 data/inbox_queue.json
+data/scratch_*.json
 
 # Personal data (never commit these)
 salary_data.json
@@ -44,6 +45,7 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+.gemini/
 
 # Memory files (Claude Code user-specific)
 .claude/projects/

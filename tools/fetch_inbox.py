@@ -13,6 +13,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import datetime
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
+
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 except ImportError:
@@ -264,14 +268,17 @@ def main():
     creds = None
     if os.path.exists('data/token.json'):
         creds = Credentials.from_authorized_user_file('data/token.json', SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    if creds and creds.expired and creds.refresh_token:
+        try:
             creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open('data/token.json', 'w') as f:
-            f.write(creds.to_json())
+        except Exception as e:
+            logger.info(f'Token refresh failed ({e}), clearing old token and re-authenticating...')
+            creds = None
+    if not creds or not creds.valid:
+        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        creds = flow.run_local_server(port=0)
+    with open('data/token.json', 'w') as f:
+        f.write(creds.to_json())
     service = build('gmail', 'v1', credentials=creds)
 
     # ── Phase 1: Extract URLs from email ──
