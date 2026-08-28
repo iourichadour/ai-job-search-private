@@ -1,134 +1,85 @@
 # evaluate_jobs_gemini.py
 
-Evaluates job postings from `data/inbox_queue.json` against your candidate profile using **Google Gemini AI**. Scores each role across five dimensions and saves structured results with fit categories and recommendations.
+Evaluates and filters job postings from `data/inbox_queue.json` against your candidate profile using **Google Gemini AI** or **Agent Session Mode**. Scores each role across five dimensions and saves structured results with fit categories and recommendations.
 
 ---
 
-## Prerequisites
+## Modes of Operation
 
-- Python 3.8+
-- A Google Gemini API key → [Get one free at Google AI Studio](https://aistudio.google.com/apikey)
-
----
-
-## Installation
+### 1. Agent Evaluation Mode (Recommended — No API Key Required)
+Filter inbound job postings by date range and let the session AI agent evaluate them directly:
 
 ```bash
-pip install google-genai
+# Filter jobs for the past 2 weeks (14 days)
+python tools/evaluate_jobs_gemini.py --days 14 --filter-only
+
+# Filter jobs for a specific date range
+python tools/evaluate_jobs_gemini.py --start-date 2026-06-01 --end-date 2026-06-30 --filter-only
+```
+
+Once evaluated by the Agent, save the evaluations back into `data/inbox_queue.json` and `data/job_evaluations.json`:
+
+```bash
+python tools/evaluate_jobs_gemini.py --save-evaluations path/to/evaluations.json
 ```
 
 ---
 
-## Configuration
+### 2. External Gemini API Mode (Requires API Key)
+Evaluates pending jobs in bulk via Google Gemini API:
 
-### 1. Set your API key (required)
-
-**Windows (Command Prompt):**
-```cmd
-set GEMINI_API_KEY=your-api-key-here
-```
-
-**Windows (PowerShell):**
-```powershell
-$env:GEMINI_API_KEY = "your-api-key-here"
-```
-
-**Mac / Linux:**
 ```bash
-export GEMINI_API_KEY="your-api-key-here"
-```
+# Evaluate past 14 days of jobs using Gemini API
+python tools/evaluate_jobs_gemini.py --days 14
 
-> **Tip:** Add the export line to your `.bashrc` / `.zshrc` / PowerShell profile so you don't have to set it every session.
+# Evaluate all pending jobs regardless of date
+python tools/evaluate_jobs_gemini.py --all-dates
+```
 
 ---
 
-### 2. Choose a model (optional)
+### 3. Submission & Application Tracking
+Log job applications and mark items in the queue as `applied`:
 
-The default model is `gemini-2.5-flash` — fast and cost-effective for bulk evaluation. Override it via the `GEMINI_MODEL` environment variable:
-
-| Model | When to use |
-|---|---|
-| `gemini-2.5-flash` *(default)* | Fast, cheap — good for batches of 20+ jobs |
-| `gemini-2.5-pro` | Slower, deeper reasoning — use for borderline roles |
-
-**Windows (Command Prompt):**
-```cmd
-set GEMINI_MODEL=gemini-2.5-pro
-```
-
-**Windows (PowerShell):**
-```powershell
-$env:GEMINI_MODEL = "gemini-2.5-pro"
-```
-
-**Mac / Linux:**
 ```bash
-export GEMINI_MODEL=gemini-2.5-pro
+python tools/evaluate_jobs_gemini.py --track-applied "https://www.linkedin.com/jobs/view/123456" --company "Acme Corp" --role "Director of Data"
 ```
+
+This will:
+1. Update `"status": "applied"` in `data/inbox_queue.json`.
+2. Append a row to `job_search_tracker.csv`.
+
+---
+
+## Command Line Arguments
+
+| Flag | Description | Example |
+|---|---|---|
+| `--days N`, `-d N` | Filter jobs fetched in the past N days | `--days 14` |
+| `--start-date YYYY-MM-DD` | Filter jobs on or after start date | `--start-date 2026-06-01` |
+| `--end-date YYYY-MM-DD` | Filter jobs on or before end date | `--end-date 2026-06-30` |
+| `--all-dates` | Disable date filtering (process all pending jobs) | `--all-dates` |
+| `--filter-only` | Output filtered JSON for Agent evaluation without calling API | `--filter-only` |
+| `--save-evaluations PATH` | Ingest JSON file containing evaluation results | `--save-evaluations evals.json` |
+| `--track-applied URL` | Mark job as applied and record row in `job_search_tracker.csv` | `--track-applied "https://..."` |
+| `--all-jobs` | Include already-evaluated jobs in filtering output | `--all-jobs` |
 
 ---
 
 ## Required Files
 
-The script expects these files relative to where you run it (project root):
-
 | File | Description |
 |---|---|
 | `data/profile.md` | Your candidate profile (skills, experience, preferences) |
 | `data/inbox_queue.json` | List of job postings to evaluate (from `fetch_inbox.py`) |
-
----
-
-## Usage
-
-Run from the **project root** directory:
-
-```bash
-python tools/evaluate_jobs_gemini.py
-```
-
-The script will:
-1. Load your profile from `data/profile.md`
-2. Find all jobs in `data/inbox_queue.json` that haven't been evaluated yet
-3. Evaluate each one with Gemini and print a live progress summary
-4. Save results back into both data files
-
----
-
-## Output
-
-### Console output (live)
-```
-[+] Using model: gemini-2.5-flash
-[+] Loading candidate profile...
-[+] Loading job queue...
-[+] Found 12 jobs to evaluate
-
-[1/12] Acme Corp - VP of Data Engineering
-    [→] Evaluating with Gemini (gemini-2.5-flash)...
-    [✓] Fit: 87% (high)
-    📋 Strong match - modern cloud stack with Fabric/Snowflake. Strongly consider.
-...
-
-[📊] Summary:
-  High Fit (80+):     4 jobs
-  Medium Fit (60-79): 5 jobs
-  Low Fit (40-59):    2 jobs
-  Skip (<40):         1 jobs
-
-[🎯] Top Recommendations:
-  87% - Acme Corp - VP of Data Engineering
-  84% - FinTech Inc - Principal Data Architect
-```
-
-### Saved files
-
-| File | Contents |
-|---|---|
-| `data/inbox_queue.json` | Original jobs + `evaluation` field added to each |
 | `data/job_evaluations.json` | Flat list of all evaluations for quick review |
+| `job_search_tracker.csv` | Master application spreadsheet |
 
-Each evaluation record includes:
+---
+
+## Evaluation Output Schema
+
+Each evaluation record stored in `data/inbox_queue.json` and `data/job_evaluations.json` includes:
 
 ```json
 {
@@ -165,28 +116,10 @@ Each evaluation record includes:
 
 ---
 
-## Re-evaluating Jobs
-
-The script only evaluates jobs that **don't already have** an `evaluation` field. To re-evaluate a job, remove its `evaluation` key from `data/inbox_queue.json` and re-run the script.
-
----
-
-## Troubleshooting
-
-| Error | Fix |
-|---|---|
-| `google-genai SDK not installed` | Run `pip install google-genai` |
-| `GEMINI_API_KEY not set` | Set the env variable (see [Configuration](#configuration)) |
-| `data/profile.md not found` | Run from the project root, not from `tools/` |
-| `data/inbox_queue.json not found` | Run `fetch_inbox.py` first to populate the queue |
-| API quota / rate limit errors | Add a short `time.sleep(2)` between jobs, or switch to `gemini-2.5-pro` with higher quota |
-
----
-
 ## Related Tools
 
 | Script | Purpose |
 |---|---|
 | `tools/fetch_inbox.py` | Fetches job postings into `inbox_queue.json` |
-| `tools/evaluate_jobs.py` | Same evaluation using Claude (Anthropic) |
-| `tools/build_job_scout.py` | Broader job discovery pipeline |
+| `tools/evaluate_jobs.py` | Evaluation using Claude API |
+| `job_search_tracker.csv` | Master job submission tracking spreadsheet |
