@@ -133,8 +133,8 @@ def filter_jobs_by_date(queue, days=None, start_date=None, end_date=None, uneval
 
     filtered = []
     for job in queue:
-        # Check evaluation status
-        if unevaluated_only and (job.get('evaluation') or job.get('status') == 'evaluated'):
+        # Check evaluation status & closed status
+        if unevaluated_only and (job.get('evaluation') or job.get('status') in ('evaluated', 'closed')):
             continue
 
         # Check date range

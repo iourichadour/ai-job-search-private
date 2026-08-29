@@ -19,7 +19,15 @@
       "PowerShell(Copy-Item private/credentials.json credentials.json)",
       "Bash(ls \"C:\\\\Users\\\\iouri\\\\Documents\" 2>/dev/null | head -5 || echo \"listing failed\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\iouri\\\\Documents\\\\plans\")",
-      "Bash(git commit -m 'fix: normalize LinkedIn URLs before dedup to strip tracking params *)"
+      "Bash(git commit -m 'fix: normalize LinkedIn URLs before dedup to strip tracking params *)",
+      "Bash(bash --version)",
+      "Bash(bash -c \"jq --version\")",
+      "Skill(update-config)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash .claude/status_limits.sh 10 50",
+    "refreshInterval": 60
   }
 }

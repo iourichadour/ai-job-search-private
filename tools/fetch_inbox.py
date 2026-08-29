@@ -358,13 +358,23 @@ def main():
         elif job['source'] == 'indeed':
             result = fetch_indeed_with_browser(job['url'], logger)
 
+        desc_text = (result['description'] if result else '').lower()
+        closed_keywords = [
+            'no longer accepting applications',
+            'this job is no longer available',
+            'job posting has expired',
+            'no longer active',
+            'position closed'
+        ]
+        is_closed = any(ck in desc_text for ck in closed_keywords)
+
         entry = {
             'source': job['source'],
             'url': job['url'],
             'title': result['title'] if result else 'N/A',
             'company': result.get('company', 'N/A') if result else 'N/A',
             'description': result['description'] if result else 'Could not extract',
-            'status': 'pending_evaluation',
+            'status': 'closed' if is_closed else 'pending_evaluation',
             'fetched_at': datetime.now().isoformat(),
         }
         existing_queue.append(entry)
