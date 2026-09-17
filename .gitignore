@@ -51,6 +51,13 @@ Thumbs.db
 # Memory files (Claude Code user-specific)
 .claude/projects/
 
+# Local settings (user-specific, never commit)
+*.local.json
+.claude/settings.local.json
+
+# Crash dumps and debug artifacts
+*.stackdump
+
 # Skills lock (auto-generated)
 skills-lock.json
 
