@@ -2,146 +2,169 @@
   {
     "title": "Director, Value Engineering - Financial Services",
     "company": "Celonis",
-    "skill_match": 70,
+    "url": "https://www.linkedin.com/comm/jobs/view/4413352108/?trackingId=hNKStkLrIGgS5gLEv98YGw%3D%3D&refId=piiMkJJS6%2FotSxWkpfKg1w%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_jobs_facet_suggestions%3BILNKgD6qRmuL7nSxbLY2SA%3D%3D&midToken=AQGGiawAirKwrQ&midSig=3zZ2flUv_Lhck1&trk=eml-email_jobs_facet_suggestions-JOBS_POSTING_SECTION_1-0-job_card_0_jobid_4413352108_sectionid_274010_fmid_687c7~mqsfnvn3~1n&trkEmail=eml-email_jobs_facet_suggestions-JOBS_POSTING_SECTION_1-0-job_card_0_jobid_4413352108_sectionid_274010_fmid_687c7~mqsfnvn3~1n-null-687c7~mqsfnvn3~1n-null-null&eid=687c7-mqsfnvn3-1n&otpToken=MTMwNTFhZTYxMjJhY2NjMWJlMmYwMmUyNDQxZGU1YjM4Y2NjZDI0NDkwYWY4NTZhNzVjNTA3Njk0ZTVlNTlmNGZjOGFiMWI5NzNmMGRjZWI2OTU3ZTA3M2YzY2Q1OGRhZDhiNDdlN2MwYjM0ZGVhYzIyLDEsMQ%3D%3D",
+    "skill_match": 75,
     "experience_level_match": 85,
     "company_fit": 90,
     "growth_potential": 80,
-    "red_flags": 30,
-    "overall_fit": 69,
+    "red_flags": 15,
+    "overall_fit": 72,
     "fit_category": "medium",
     "key_strengths": [
-      "Target industry fit within Enterprise SaaS and Financial Services vertical[cite: 1, 2].",
-      "Leverages deep background in financial workflows, operating models, and asset management[cite: 1, 2].",
-      "Opportunity for high-impact strategic advisory with major institutional clients[cite: 2]."
+      "Extensive financial services domain expertise spanning asset management, banking, and insurance",
+      "Proven track record translating enterprise data insights and ERP automation into measurable business value",
+      "Executive stakeholder management and technical leadership across complex organizational transformations"
     ],
     "skill_gaps": [
-      "Role is heavily focused on process mining and value engineering rather than hands-on data architecture (Fabric/Snowflake) or semantic modeling[cite: 1, 2].",
-      "Position leans more toward pre-sales/commercial value realization rather than engineering execution[cite: 2]."
+      "Role centers on pre-sales Value Engineering rather than direct ownership of enterprise data platforms and data engineering",
+      "Specific expertise in Celonis Process Mining / Process Intelligence Graph required over traditional BI platforms"
     ],
     "red_flags_list": [
-      "Risk of moving away from core technical expertise in modern cloud data platforms and BI frameworks into purely functional process analytics[cite: 1, 2]."
+      "Position sits within Go-to-Market / Sales organization rather than internal technology architecture or engineering leadership"
     ],
-    "recommendation": "Medium match - Consider only if looking to pivot into a commercial, pre-sales executive track within enterprise SaaS. Otherwise, skip to remain close to core data architecture[cite: 1, 2].",
-    "reason_summary": "While Celonis is an excellent target SaaS firm and the FSI focus matches your background, the role shifts focus from data engineering and BI architecture toward process mining and business value modeling[cite: 1, 2]."
+    "recommendation": "Solid medium match for a commercially oriented technology leadership role. Strong industry fit at a leading enterprise AI SaaS company, though slightly tangential to core data platform architecture.",
+    "reason_summary": "Director role at market-leading enterprise SaaS firm leveraging deep financial services expertise and ERP background. Great company culture and compensation potential, though primarily focused on value engineering and GTM rather than platform architecture.",
+    "evaluated_at": "2026-09-17T09:11:56.431609",
+    "model": "gemini-agent-session"
   },
   {
     "title": "Solutions Director - Americas Institutional & Global Multi-Asset Lead",
     "company": "Wellington Management",
-    "skill_match": 40,
+    "url": "https://www.linkedin.com/comm/jobs/view/4429595633/",
+    "skill_match": 45,
     "experience_level_match": 80,
     "company_fit": 90,
-    "growth_potential": 75,
+    "growth_potential": 70,
     "red_flags": 40,
-    "overall_fit": 53,
+    "overall_fit": 58,
     "fit_category": "low",
     "key_strengths": [
-      "Top-tier asset management firm matching target financial services profile[cite: 1, 2].",
-      "Senior director level alignment with a heavy emphasis on strategic leadership[cite: 2]."
+      "Top-tier institutional asset management firm in target financial services sector",
+      "Senior director-level leadership engaging C-level institutional clients and investment committees",
+      "Deep institutional asset management context from Bayview and Lazard"
     ],
     "skill_gaps": [
-      "This is a commercial product strategy and distribution role, not a technology role[cite: 2].",
-      "Requires deep investment expertise in multi-asset solutions, OCIO models, and public/private capabilities rather than data management[cite: 2]."
+      "Role requires quantitative multi-asset portfolio management and OCIO commercial strategy rather than data/analytics technology",
+      "Lack of focus on cloud data platforms, Fabric, Snowflake, or data architecture engineering"
     ],
     "red_flags_list": [
-      "Purely business/commercial role with zero alignment to cloud data platforms, Python, SQL, or BI framework implementations[cite: 1, 2]."
+      "Primarily an investment sales/commercialization mandate rather than technology or data leadership",
+      "Minimal synergy with core technical competencies in modern data stacks"
     ],
-    "recommendation": "Skip - This is a financial product management/sales role, completely detached from your technical data leadership skillset[cite: 1, 2].",
-    "reason_summary": "Despite the great company and senior title, 'Solutions' here refers to investment portfolio solutions, not software or data engine solutions. It does not utilize your core competencies[cite: 1, 2]."
+    "recommendation": "Low fit. While Wellington is a stellar asset manager, this role is a commercial multi-asset investment distribution position rather than a technology or analytics architecture role.",
+    "reason_summary": "Role focuses heavily on investment product commercialization, OCIO models, and multi-asset distribution rather than data platforms or analytics leadership.",
+    "evaluated_at": "2026-09-17T09:11:56.431618",
+    "model": "gemini-agent-session"
   },
   {
     "title": "Solutions Engineer, Director",
     "company": "BlackRock",
-    "skill_match": 75,
-    "experience_level_match": 85,
-    "company_fit": 100,
+    "url": "https://www.linkedin.com/comm/jobs/view/4434001397/",
+    "skill_match": 85,
+    "experience_level_match": 90,
+    "company_fit": 95,
     "growth_potential": 85,
-    "red_flags": 20,
-    "overall_fit": 77,
+    "red_flags": 15,
+    "overall_fit": 78,
     "fit_category": "medium",
     "key_strengths": [
-      "BlackRock is explicitly listed as a tier-one target financial institution[cite: 1].",
-      "Director-level role dealing directly with investment technology, workflows, and portfolio management operating models[cite: 2].",
-      "Strong alignment with translating complex financial business challenges into technical platform architecture[cite: 1, 2]."
+      "BlackRock is explicitly listed as a premier target employer in the candidate profile",
+      "Deep alignment with asset management workflows, operating models, and investment technology",
+      "Director-level solution architecture driving enterprise platform evaluation for major global investors"
     ],
     "skill_gaps": [
-      "Focuses specifically on the Aladdin® proprietary ecosystem rather than open modern data stacks like Snowflake or Microsoft Fabric[cite: 1, 2].",
-      "Position leans heavily toward pre-sales technical diligence and workflow presentation rather than internal engineering execution[cite: 2]."
+      "Aladdin proprietary ecosystem specialization rather than open cloud data stack (Fabric / Snowflake)",
+      "Solutions engineering / pre-sales orientation compared to internal data platform ownership"
     ],
     "red_flags_list": [
-      "Proprietary stack risk: Over-indexing on Aladdin workflows could reduce hands-on exposure to standard modern cloud market tools over time[cite: 1, 2]."
+      "Focuses on Aladdin proprietary vendor stack rather than building custom cloud modern data platforms",
+      "New York location requirement versus Florida base / remote preference"
     ],
-    "recommendation": "Medium match - Worth pursuing if you want to represent a premier fintech platform (Aladdin) within a world-class asset manager, keeping in mind the pre-sales orientation[cite: 1, 2].",
-    "reason_summary": "Outstanding company and seniority fit. It leverages your asset management expertise deeply, though it routes your technical skills into client-facing architecture for a proprietary platform rather than general enterprise data infrastructure engineering[cite: 1, 2]."
+    "recommendation": "Strong medium fit (78%). Direct match with target firm (BlackRock) and asset management domain. Excellent leadership opportunity on the industry's premier investment technology platform.",
+    "reason_summary": "High-impact Director role at target company BlackRock on the Aladdin platform. Exceptional brand prestige and domain match, balanced against proprietary platform focus and location considerations.",
+    "evaluated_at": "2026-09-17T09:11:56.431620",
+    "model": "gemini-agent-session"
   },
   {
     "title": "Head of Private Data Products",
     "company": "Clearwater Analytics",
-    "skill_match": 85,
+    "url": "https://www.linkedin.com/comm/jobs/view/4392113436/",
+    "skill_match": 90,
     "experience_level_match": 90,
-    "company_fit": 95,
-    "growth_potential": 95,
+    "company_fit": 90,
+    "growth_potential": 90,
     "red_flags": 10,
-    "overall_fit": 84,
+    "overall_fit": 80,
     "fit_category": "high",
     "key_strengths": [
-      "Sits at the intersection of investment data expertise and product development, matching your technical depth and asset management background[cite: 1, 2].",
-      "High growth and innovative mandate to build and commercialize a brand new Private Markets Data & Analytics platform[cite: 2].",
-      "Allows for cross-functional leadership over data science, product management, and engineering teams[cite: 2]."
+      "Direct ownership of data products, benchmark analytics, and reporting architectures in private markets",
+      "Combines deep financial services / asset management domain knowledge with modern data platform leadership",
+      "High executive impact building a new private markets data & analytics platform from ground up"
     ],
     "skill_gaps": [
-      "Requires building datasets and benchmarks for niche private markets (Hedge Funds, Private Credit, PE), which may require quick domain upskilling compared to general corporate finance[cite: 1, 2].",
-      "Bears direct commercial/go-to-market ownership, a shift from internal corporate delivery[cite: 1, 2]."
+      "Commercial product management and external benchmark commercialization alongside technical data engineering"
     ],
-    "red_flags_list": [],
-    "recommendation": "Strong match - Excellent opportunity to act as an innovative product leader building out an external data asset in a target industry space[cite: 1, 2].",
-    "reason_summary": "Perfectly blends your tech management capability with asset management insights. It offers high autonomy to define architecture and analytics methodologies for a brand new platform offering[cite: 1, 2]."
+    "red_flags_list": [
+      "New initiative requiring rapid go-to-market execution and high cross-functional coordination"
+    ],
+    "recommendation": "High fit (80%). Outstanding role leading a new Private Markets Data & Analytics platform at a leading investment SaaS firm. Matches strategic vision, asset management data expertise, and platform leadership.",
+    "reason_summary": "Top-tier opportunity to head private data products at Clearwater Analytics. Combines modern data platform design, private markets asset management data, and executive leadership.",
+    "evaluated_at": "2026-09-17T09:11:56.431622",
+    "model": "gemini-agent-session"
   },
   {
     "title": "AI Solutions Director - Investment Operations",
     "company": "Apollo Global Management, Inc.",
-    "skill_match": 80,
-    "experience_level_match": 85,
-    "company_fit": 100,
-    "growth_potential": 95,
-    "red_flags": 15,
-    "overall_fit": 80,
+    "url": "https://www.linkedin.com/comm/jobs/view/4430857906/",
+    "skill_match": 85,
+    "experience_level_match": 95,
+    "company_fit": 95,
+    "growth_potential": 90,
+    "red_flags": 0,
+    "overall_fit": 82,
     "fit_category": "high",
     "key_strengths": [
-      "Top-tier alternative asset manager providing massive scale and executive sponsorship for innovation[cite: 1, 2].",
-      "Direct opportunity to lead the adoption of AI-enabled solutions, matching your stated excitement for democratizing analytics and deploying emerging technologies[cite: 1, 2].",
-      "Avoids siloed IT by partnering directly with investment business operations to transform workflows[cite: 1, 2]."
+      "Asset management background (Bayview)",
+      "Investment operations and portfolio analytics experience",
+      "Modern data solutions and process automation expertise"
     ],
     "skill_gaps": [
-      "More focused on workflow redesign, process automation, and change management than pure data pipeline or semantic lakehouse engineering[cite: 1, 2].",
-      "Pushes heavily into production AI/ML, which is an identified growth/emerging area for you rather than a historical baseline[cite: 1]."
+      "Production-level Generative AI implementation is still an emerging strength"
     ],
     "red_flags_list": [
-      "The role could skew more toward workflow consulting/PMO if the technical architecture and development elements are siloed in a separate engineering group[cite: 1, 2]."
+      "None identified"
     ],
-    "recommendation": "Strong match - Ideal choice if your goal is to transition fully into an AI innovation leader within the alternative asset space[cite: 1, 2].",
-    "reason_summary": "Matches your target industry perfectly and aligns directly with your stated interest in leading AI adoption. It bridges your deep asset management background with your goal to scale advanced, non-siloed technical solutions[cite: 1, 2]."
+    "recommendation": "Highly recommended to apply. The intersection of asset management, modern data solutions, and portfolio analytics perfectly aligns with recent experience at Bayview and Lazard.",
+    "reason_summary": "Exceptional alignment with candidate's asset management background and data analytics leadership experience.",
+    "evaluated_at": "2026-09-17T10:01:35-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Director, AI Solutions & Integration",
     "company": "S&P Global",
-    "skill_match": 90,
-    "experience_level_match": 90,
-    "company_fit": 95,
-    "growth_potential": 95,
-    "red_flags": 5,
-    "overall_fit": 86,
-    "fit_category": "high",
+    "url": "https://www.linkedin.com/comm/jobs/view/4412361071/",
+    "skill_match": 80,
+    "experience_level_match": 95,
+    "company_fit": 90,
+    "growth_potential": 85,
+    "red_flags": 0,
+    "overall_fit": 79,
+    "fit_category": "medium",
     "key_strengths": [
-      "Perfect integration of data architecture, governance, and advanced AI application scaling (RAG patterns, agentic workflows)[cite: 2].",
-      "Strong technical alignment; explicitly mentions integration into production data pipelines and reference architectures[cite: 2].",
-      "Allows you to leverage your strengths in establishing standardized frameworks, templates, and reference architectures at an enterprise scale[cite: 1, 2]."
+      "Financial services and corporate systems background",
+      "Enterprise data analytics platforms architecture",
+      "Strong leadership in driving technology adoption"
     ],
     "skill_gaps": [
-      "Requires rapid scaling from strong theoretical knowledge of GenAI/LLM frameworks to building out robust production reference architectures immediately[cite: 1, 2]."
+      "Heavy emphasis on enterprise AI integration where candidate has more theoretical/emerging experience compared to traditional data analytics"
     ],
-    "red_flags_list": [],
-    "recommendation": "Excellent match - Exceptional combination of data management structure, modern AI engineering, and strategic governance in a premier financial intelligence organization[cite: 1, 2].",
-    "reason_summary": "Unlike pure business workflow roles, this position demands technical ownership over reference architectures, data pipelines, and governed GenAI/LLM solutions, presenting an ideal growth engine for an innovation-driven data architect[cite: 1, 2]."
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Recommended to apply. Solid alignment with financial services and enterprise data platform experience, though it heavily indexes on AI integration.",
+    "reason_summary": "Strong industry fit and seniority match, leveraging data architecture strengths to transition deeper into AI integration.",
+    "evaluated_at": "2026-09-17T10:01:35-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Director, Client Data Ecosystem",
@@ -2975,26 +2998,34 @@
   {
     "title": "Director of Analytics",
     "company": "Harnham",
+    "url": "https://www.linkedin.com/comm/jobs/view/4465554920/",
     "skill_match": 85,
-    "experience_level_match": 95,
-    "company_fit": 85,
-    "growth_potential": 90,
-    "red_flags": 10,
-    "overall_fit": 89,
-    "fit_category": "high",
+    "experience_level_match": 80,
+    "company_fit": 60,
+    "growth_potential": 75,
+    "red_flags": 15,
+    "overall_fit": 67,
+    "fit_category": "medium",
     "key_strengths": [
-      "Strong tech stack match: analytics engineering",
-      "Leadership title alignment (Director of Analytics)",
-      "Target industry fit (Harnham)",
-      "High strategic impact & transformation opportunity"
+      "Modern analytics platform ownership aligns with Fabric/Snowflake expertise",
+      "Team leadership and mentoring opportunities match hands-on leadership profile",
+      "Cloud-based data solutions and architecture governance are core competencies",
+      "Remote position accommodates current location preferences"
     ],
-    "skill_gaps": [],
-    "red_flags_list": [],
-    "recommendation": "Strong Match (89%) - Director of Analytics at Harnham. Recommended for immediate application.",
-    "reason_summary": "Director of Analytics at Harnham: Overall Fit 89% (high). Skills 85%, Exp 95%, Industry 85%. Tech Hits: analytics engineering, bi, analytics, data platform, cloud, ai",
-    "evaluated_at": "2026-08-28T00:12:12.089309",
-    "model": "Antigravity-Agent-Session",
-    "url": "https://www.linkedin.com/comm/jobs/view/4455329017/"
+    "skill_gaps": [
+      "Specific technology stack not detailed in posting (unclear Fabric vs. Snowflake preference)",
+      "No mention of data mesh or lakehouse architecture patterns",
+      "AI/Copilot integration not mentioned"
+    ],
+    "red_flags_list": [
+      "Harnham (recruitment/staffing firm) is outside stated target industries (Finance, Tech, Consulting, Enterprise SaaS)",
+      "Sparse job posting raises questions about clarity of vision or stakeholder buy-in",
+      "No indication of organization's data culture or cloud modernization maturity"
+    ],
+    "recommendation": "Medium fit for someone seeking director-level analytics platform ownership, but industry mismatch and lateral career move from current SVP-equivalent role warrant careful evaluation of growth trajectory.",
+    "reason_summary": "Strong technical and leadership alignment but company is outside target industries (staffing/recruitment vs. Finance/Tech). Role mirrors current responsibilities at Bayview rather than advancing career progression toward VP/CDO level.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
   },
   {
     "title": "Director of Data Platform Engineering",
@@ -10354,5 +10385,192 @@
     "evaluated_at": "2026-08-28T00:12:12.168448",
     "model": "Antigravity-Agent-Session",
     "url": "https://www.linkedin.com/comm/jobs/view/4449511694/"
+  },
+  {
+    "title": "Sr Director, Enterprise Data and AI Platform",
+    "company": "Dayforce",
+    "url": "https://www.linkedin.com/comm/jobs/view/4456536267/",
+    "skill_match": 90,
+    "experience_level_match": 95,
+    "company_fit": 85,
+    "growth_potential": 90,
+    "red_flags": 5,
+    "overall_fit": 81,
+    "fit_category": "high",
+    "key_strengths": [
+      "Enterprise data ecosystem strategy directly mirrors candidate's Fabric/Snowflake/data mesh expertise",
+      "Sr Director level represents optimal career progression from current AVP/past SVP",
+      "Cross-functional scope (Sales, Marketing, Finance, HR, Support, Services, Legal) matches collaborative business partnership style",
+      "AI-ready data solutions and scalability focus align with innovation-driven profile and emerging AI/Copilot knowledge",
+      "Global HCM SaaS company indicates strong data culture and modern infrastructure"
+    ],
+    "skill_gaps": [
+      "HCM domain-specific analytics experience not in candidate background (though learnable)"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Excellent fit—this is a marquee opportunity combining Sr Director title, modern data strategy, and multi-functional enterprise scope. Strong alignment with career progression and technical depth.",
+    "reason_summary": "Sr Director Enterprise Data & AI role at Dayforce represents ideal convergence: right seniority level, modern cloud/AI architecture focus, cross-functional influence, and enterprise SaaS positioning. This is a growth role with executive visibility.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
+  },
+  {
+    "title": "Director, Data & AI",
+    "company": "NetApp",
+    "url": "https://www.linkedin.com/comm/jobs/view/4465945578/",
+    "skill_match": 88,
+    "experience_level_match": 85,
+    "company_fit": 80,
+    "growth_potential": 85,
+    "red_flags": 10,
+    "overall_fit": 75,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Data transformation program and modern data management practices align perfectly with Fabric/data mesh expertise",
+      "AI-native era and self-service analytics enablement match innovation-driven profile",
+      "Broad cross-functional scope (Sales, HR, Finance, Tax, Support, Services) requires business partnership skills candidate excels in",
+      "SDLC and product lifecycle fluency requirement leverages software development background",
+      "Technology infrastructure company aligns with target industries (Technology & Cloud)"
+    ],
+    "skill_gaps": [
+      "Infrastructure/storage industry context (NetApp's core business) is outside data platform focus",
+      "Data science strategy ownership expected—candidate has emerging AI knowledge but limited production data science background"
+    ],
+    "red_flags_list": [
+      "NetApp is storage/infrastructure vendor—potential for legacy infrastructure focus despite modern data messaging",
+      "Data transformation agenda at infrastructure company may encounter organizational resistance to cloud-native thinking"
+    ],
+    "recommendation": "Strong candidate with modern data messaging and technology industry alignment, but verify that role is truly cloud-forward transformation vs. managing legacy on-premises infrastructure.",
+    "reason_summary": "Director-level data transformation role at technology company with good skill alignment, but NetApp's infrastructure/storage heritage introduces uncertainty about true modernization commitment vs. incremental improvements to existing systems.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
+  },
+  {
+    "title": "Dir, Innovative Enterprise Data Product Lead",
+    "company": "Novartis",
+    "url": "https://www.linkedin.com/comm/jobs/view/4455848479/",
+    "skill_match": 70,
+    "experience_level_match": 75,
+    "company_fit": 50,
+    "growth_potential": 65,
+    "red_flags": 25,
+    "overall_fit": 57,
+    "fit_category": "low",
+    "key_strengths": [
+      "Enterprise data product strategy suggests executive-level influence",
+      "Remote flexibility anywhere in US aligns with location preferences",
+      "Director title maintains current seniority level"
+    ],
+    "skill_gaps": [
+      "Pharma/life sciences domain specificity absent from candidate background",
+      "Product leadership competency not demonstrated in candidate profile (architect/engineer vs. product manager)",
+      "No indication of cloud data platform or modern architecture skills required"
+    ],
+    "red_flags_list": [
+      "Pharmaceutical industry is outside stated target industries (Finance, Tech, Consulting, SaaS)",
+      "Job posting is extremely sparse—lacks strategic context, technology stack, team size, modernization vision",
+      "Product Lead terminology suggests product management emphasis rather than data architect/strategy role",
+      "Pharma enterprises typically maintain legacy IT structures and regulatory constraints limiting modernization velocity"
+    ],
+    "recommendation": "Skip this opportunity—sparse posting combined with pharma industry mismatch and product management angle suggest poor fit with candidate's architect/engineering background and modernization-focused career trajectory.",
+    "reason_summary": "Insufficient detail in posting combined with pharmaceutical industry being outside target industries and product management focus (vs. data architecture) make this a low-priority consideration. Risk of career sidetrack into pharma-specific regulatory/operational domain.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
+  },
+  {
+    "title": "Director, Data Strategy and Operations",
+    "company": "Jobgether (partner company, pre-commercial life sciences)",
+    "url": "https://www.linkedin.com/comm/jobs/view/4466833737/",
+    "skill_match": 75,
+    "experience_level_match": 75,
+    "company_fit": 40,
+    "growth_potential": 70,
+    "red_flags": 45,
+    "overall_fit": 55,
+    "fit_category": "low",
+    "key_strengths": [
+      "Hands-on build approach aligns with candidate's pragmatic implementation style",
+      "End-to-end data roadmap ownership (sourcing, architecture, governance, analytics, operations) matches comprehensive skill set",
+      "Position evolving into team leadership mirrors candidate's career trajectory",
+      "Pre-commercial launch environment offers greenfield architecture opportunity"
+    ],
+    "skill_gaps": [
+      "Pharma-specific data domains (HCP/HCO identity, MDM, payer data, claims/prescription) require new domain expertise",
+      "Commercial pharma analytics (specialty pharmacies, market access) outside candidate's background",
+      "Life sciences regulatory/compliance environment different from financial services experience"
+    ],
+    "red_flags_list": [
+      "Life sciences/pharma industry is outside stated target industries",
+      "Pre-commercial startup environment represents significant departure from enterprise-scale organizations (Lazard, Guardian, Bayview)",
+      "Hands-on founder/build role at startup may not advance executive trajectory toward VP/CDO positions",
+      "Early-stage compensation and equity structures typically favor equity upside over base salary—financial risk vs. established enterprise",
+      "Pharma data governance and regulatory requirements could constrain innovation and modern data practices"
+    ],
+    "recommendation": "Skip—while hands-on data architecture appeal may attract, pre-commercial life sciences startup represents strategic career sidetrack away from enterprise data leadership path and target industries.",
+    "reason_summary": "Pre-commercial life sciences startup outside target industries and career trajectory. Despite greenfield build appeal, this represents career risk for someone seeking director→VP advancement in enterprise data architecture roles.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
+  },
+  {
+    "title": "Director, Client Analytics",
+    "company": "Accuity",
+    "url": "https://www.linkedin.com/comm/jobs/view/4443626854/",
+    "skill_match": 75,
+    "experience_level_match": 80,
+    "company_fit": 50,
+    "growth_potential": 70,
+    "red_flags": 35,
+    "overall_fit": 60,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Building and leading analytics function aligns with team leadership experience",
+      "Function evolution from report production to strategic insight mirrors modernization approach",
+      "Standardizing client reporting and governance reflects data architecture and governance expertise",
+      "Director-level organizational building opportunity leverages management skills"
+    ],
+    "skill_gaps": [
+      "Client-facing analytics and Client Success partnership not in primary background (more enterprise internal analytics)",
+      "Healthcare/hospital operations domain specificity absent",
+      "No mention of modern data platforms (Fabric, Snowflake) or enterprise data strategy"
+    ],
+    "red_flags_list": [
+      "Healthcare/hospital industry is outside stated target industries (Finance, Tech, Consulting, SaaS)",
+      "Client-facing function (supports Client Success, not core business strategy) represents potential silo risk",
+      "Client Analytics is supporting/operations function rather than strategic data platform role—limits advancement to VP/CDO level",
+      "Healthcare IT traditionally operates with legacy systems and regulatory constraints limiting cloud modernization velocity"
+    ],
+    "recommendation": "Borderline medium fit—offers function building and leadership opportunity, but healthcare industry mismatch and client-support (vs. strategic platform) scope position this as lateral career move outside target growth trajectory.",
+    "reason_summary": "Director role building client analytics function represents organizational opportunity but is strategically limiting: healthcare industry outside targets, client-facing scope (vs. enterprise data strategy), and lower advancement potential toward VP/Chief Data Officer positions.",
+    "evaluated_at": "2026-09-17T14:00:00Z",
+    "model": "claude-agent-session"
+  },
+  {
+    "title": "Senior Director, Finance Technology & Data Enablement | Office of the CFO | Corporate Finance",
+    "company": "FTI Consulting",
+    "url": "https://www.linkedin.com/comm/jobs/view/4421660792/?trackingId=XhfJAxeMb1m6GJtM0H7YGA%3D%3D&refId=piiMkJJS6%2FotSxWkpfKg1w%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_jobs_facet_suggestions%3BILNKgD6qRmuL7nSxbLY2SA%3D%3D&midToken=AQGGiawAirKwrQ&midSig=3zZ2flUv_Lhck1&trk=eml-email_jobs_facet_suggestions-JOBS_POSTING_SECTION_1-0-job_card_1_jobid_4421660792_sectionid_274010_fmid_687c7~mqsfnvn3~1n&trkEmail=eml-email_jobs_facet_suggestions-JOBS_POSTING_SECTION_1-0-job_card_1_jobid_4421660792_sectionid_274010_fmid_687c7~mqsfnvn3~1n-null-687c7~mqsfnvn3~1n-null-null&eid=687c7-mqsfnvn3-1n&otpToken=MTMwNTFhZTYxMjJhY2NjMWJlMmYwMmUyNDQxZGU1YjM4Y2NjZDI0NDkwYWY4NTZhNzVjNTA3Njk0ZTVlNTlmNGZjOGFiMWI5NzNmMGRjZWI2OTU3ZTA3M2YzY2Q1OGRhZDhiNDdlN2MwYjM0ZGVhYzIyLDEsMQ%3D%3D",
+    "skill_match": 90,
+    "experience_level_match": 90,
+    "company_fit": 90,
+    "growth_potential": 85,
+    "red_flags": 15,
+    "overall_fit": 79,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Direct alignment with 20+ years leading financial systems upgrades, ERP, and BI modernizations",
+      "Executive advisory capability for Office of the CFO matching prior SVP Technology and AVP roles",
+      "Expertise in modern data architectures (Power BI, Fabric, cloud pipelines) applied to corporate finance and reporting"
+    ],
+    "skill_gaps": [
+      "Prior background is primarily in-house enterprise leadership rather than external management consulting delivery",
+      "Consulting business development and billable utilization targets"
+    ],
+    "red_flags_list": [
+      "Advisory / consulting travel demands and billable hour pressures compared to in-house corporate roles"
+    ],
+    "recommendation": "High-priority match near the upper threshold of Medium fit (79%). Strongly aligns with finance technology modernization background at a premier consulting advisory practice.",
+    "reason_summary": "Outstanding intersection of corporate finance technology, ERP, and modern data enablement. Matches target consulting industry and executive seniority level.",
+    "evaluated_at": "2026-09-17T09:11:56.431614",
+    "model": "gemini-agent-session"
   }
 ]

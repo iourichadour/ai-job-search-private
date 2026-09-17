@@ -45,7 +45,8 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
-.gemini/
+.gemini/tmp/
+.gemini/history/
 
 # Memory files (Claude Code user-specific)
 .claude/projects/
@@ -74,4 +75,4 @@ job_search_tracker.csv
 upskill/*.md
 
 # Agent usage logs
-.agents/
+.agents/logs/

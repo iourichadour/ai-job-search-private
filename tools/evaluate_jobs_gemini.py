@@ -257,59 +257,221 @@ Notes:
             return None
 
 
-def save_evaluations_to_files(evaluations_list, inbox_file='data/inbox_queue.json', evaluations_file='data/job_evaluations.json'):
+REQUIRED_EVALUATION_FIELDS = [
+    'title', 'company', 'skill_match', 'experience_level_match', 'company_fit',
+    'growth_potential', 'red_flags', 'overall_fit', 'fit_category',
+    'key_strengths', 'skill_gaps', 'red_flags_list', 'recommendation',
+    'reason_summary', 'evaluated_at', 'model',
+]
+EVALUATION_DIMENSION_FIELDS = ['skill_match', 'experience_level_match', 'company_fit', 'growth_potential', 'red_flags']
+EVALUATION_ARRAY_FIELDS = ['key_strengths', 'skill_gaps', 'red_flags_list']
+KNOWN_AGENT_MODEL_TAGS = ('claude-agent-session', 'gemini-agent-session', 'antigravity-agent-session')
+VALID_FIT_CATEGORIES = ('high', 'medium', 'low', 'skip')
+
+
+def validate_evaluation_record(record):
+    """
+    Validate an evaluation record against the schema in specs/job-evaluation/spec.md.
+    Blocking check: run before a record is persisted to inbox_queue.json / job_evaluations.json.
+    Returns (is_valid, errors) where errors is a list of human-readable messages.
+    """
+    errors = []
+    _MISSING = object()
+
+    for field in REQUIRED_EVALUATION_FIELDS:
+        if record.get(field, _MISSING) in (_MISSING, None, ''):
+            errors.append(f"missing required field: {field}")
+
+    for field in ('title', 'company', 'recommendation', 'reason_summary'):
+        value = record.get(field, _MISSING)
+        if value is not _MISSING and (not isinstance(value, str) or not value.strip()):
+            errors.append(f"{field} must be a non-empty string, got {value!r}")
+
+    for field in EVALUATION_DIMENSION_FIELDS + ['overall_fit']:
+        value = record.get(field, _MISSING)
+        if value is _MISSING:
+            continue
+        if isinstance(value, bool) or not isinstance(value, int):
+            errors.append(f"{field} must be an integer, got {type(value).__name__}: {value!r}")
+        elif not (0 <= value <= 100):
+            errors.append(f"{field} must be in range 0-100, got {value}")
+
+    fit_category = record.get('fit_category', _MISSING)
+    if fit_category is not _MISSING:
+        if not isinstance(fit_category, str):
+            errors.append(f"fit_category must be a string, got {type(fit_category).__name__}")
+        elif fit_category not in VALID_FIT_CATEGORIES:
+            errors.append(f"fit_category must be one of {VALID_FIT_CATEGORIES}, got {fit_category!r}")
+
+    for field in EVALUATION_ARRAY_FIELDS:
+        value = record.get(field, _MISSING)
+        if value is _MISSING:
+            continue
+        if not isinstance(value, list):
+            errors.append(f"{field} must be an array, got {type(value).__name__}")
+        elif len(value) == 0:
+            errors.append(f"{field} must be non-empty")
+
+    evaluated_at = record.get('evaluated_at', _MISSING)
+    if evaluated_at is not _MISSING:
+        if not isinstance(evaluated_at, str):
+            errors.append(f"evaluated_at must be an ISO 8601 timestamp string, got {type(evaluated_at).__name__}")
+        else:
+            try:
+                datetime.fromisoformat(evaluated_at.replace('Z', '+00:00'))
+            except ValueError:
+                errors.append(f"evaluated_at is not a valid ISO 8601 timestamp: {evaluated_at!r}")
+
+    model = record.get('model', _MISSING)
+    if model is not _MISSING:
+        if not isinstance(model, str) or not model.strip():
+            errors.append("model must be a non-empty string")
+        elif model not in KNOWN_AGENT_MODEL_TAGS and 'gemini' not in model.lower():
+            errors.append(f"model must be one of {KNOWN_AGENT_MODEL_TAGS} or a Gemini model name, got {model!r}")
+
+    return (len(errors) == 0, errors)
+
+
+def check_evaluation_consistency(record):
+    """
+    Non-blocking consistency checks for a record that already passed validate_evaluation_record().
+    Returns a list of warning strings (empty if all checks pass).
+    """
+    warnings = []
+
+    weighted = (
+        record['skill_match'] * 0.30
+        + record['experience_level_match'] * 0.25
+        + record['company_fit'] * 0.20
+        + record['growth_potential'] * 0.15
+        - record['red_flags'] * 0.10
+    )
+    overall_fit = record['overall_fit']
+    if abs(overall_fit - weighted) > 2:
+        warnings.append(
+            f"overall_fit mismatch: recorded {overall_fit} but weighted composite of dimensions is {weighted:.1f}"
+        )
+
+    fit_category = record['fit_category']
+    if overall_fit >= 80:
+        expected_category = 'high'
+    elif overall_fit >= 60:
+        expected_category = 'medium'
+    elif overall_fit >= 40:
+        expected_category = 'low'
+    else:
+        expected_category = 'skip'
+    if fit_category != expected_category:
+        warnings.append(
+            f"fit_category inconsistent: overall_fit {overall_fit} implies '{expected_category}', got '{fit_category}'"
+        )
+
+    evaluated_at = record.get('evaluated_at')
+    try:
+        ts = datetime.fromisoformat(evaluated_at.replace('Z', '+00:00'))
+        if ts.tzinfo is not None:
+            ts = ts.replace(tzinfo=None)
+        if ts > datetime.now():
+            warnings.append(f"evaluated_at is in the future: {evaluated_at}")
+    except (ValueError, AttributeError):
+        pass
+
+    return warnings
+
+
+def save_evaluations_to_files(evaluations_list, inbox_file='data/inbox_queue.json', evaluations_file='data/job_evaluations.json', failed_file='data/job_evaluations.failed.json'):
     """
     Merge evaluation results into data/inbox_queue.json and data/job_evaluations.json.
     Updates job status to 'evaluated' and attaches the evaluation dict to each job item.
+
+    Each record is validated first (see validate_evaluation_record()). Valid records are
+    persisted immediately via the existing upsert-by-url merge; invalid records are appended
+    to failed_file with their errors instead of blocking the rest of the batch. Returns True
+    if at least one record was persisted (or the batch was empty), False only if the batch
+    was non-empty and every record failed validation.
     """
     if not os.path.exists(inbox_file):
         print(f"[!] {inbox_file} not found")
         return False
 
-    with open(inbox_file, 'r', encoding='utf-8') as f:
-        queue = json.load(f)
+    valid_records = []
+    invalid_records = []
+    for record in evaluations_list:
+        is_valid, errors = validate_evaluation_record(record)
+        if is_valid:
+            valid_records.append(record)
+        else:
+            invalid_records.append((record, errors))
 
-    # Load existing evaluations
-    existing_evals = []
-    if os.path.exists(evaluations_file):
-        try:
-            with open(evaluations_file, 'r', encoding='utf-8') as f:
-                existing_evals = json.load(f)
-        except Exception:
-            existing_evals = []
+    if invalid_records:
+        failed_entries = []
+        if os.path.exists(failed_file):
+            try:
+                with open(failed_file, 'r', encoding='utf-8') as f:
+                    failed_entries = json.load(f)
+            except Exception:
+                failed_entries = []
 
-    eval_by_url = {e['url']: e for e in evaluations_list if e.get('url')}
-    eval_by_title_comp = {f"{e.get('title')}__{e.get('company')}": e for e in evaluations_list}
+        now_iso = datetime.now().isoformat()
+        for record, errors in invalid_records:
+            failed_entries.append({"record": record, "errors": errors, "failed_at": now_iso})
+
+        with open(failed_file, 'w', encoding='utf-8') as f:
+            json.dump(failed_entries, f, indent=2, ensure_ascii=False)
 
     updated_count = 0
-    for job in queue:
-        url = job.get('url')
-        key = f"{job.get('title')}__{job.get('company')}"
-        matched_eval = eval_by_url.get(url) or eval_by_title_comp.get(key)
+    if valid_records:
+        with open(inbox_file, 'r', encoding='utf-8') as f:
+            queue = json.load(f)
 
-        if matched_eval:
-            matched_eval['url'] = url
-            job['evaluation'] = matched_eval
-            job['status'] = 'evaluated'
-            updated_count += 1
+        # Load existing evaluations
+        existing_evals = []
+        if os.path.exists(evaluations_file):
+            try:
+                with open(evaluations_file, 'r', encoding='utf-8') as f:
+                    existing_evals = json.load(f)
+            except Exception:
+                existing_evals = []
 
-            # Update or append in existing_evals list
-            idx = next((i for i, item in enumerate(existing_evals) if item.get('url') == url or (item.get('title') == matched_eval.get('title') and item.get('company') == matched_eval.get('company'))), None)
-            if idx is not None:
-                existing_evals[idx] = matched_eval
-            else:
-                existing_evals.append(matched_eval)
+        eval_by_url = {e['url']: e for e in valid_records if e.get('url')}
+        eval_by_title_comp = {f"{e.get('title')}__{e.get('company')}": e for e in valid_records}
 
-    # Save queue
-    with open(inbox_file, 'w', encoding='utf-8') as f:
-        json.dump(queue, f, indent=2, ensure_ascii=False)
+        for job in queue:
+            url = job.get('url')
+            key = f"{job.get('title')}__{job.get('company')}"
+            matched_eval = eval_by_url.get(url) or eval_by_title_comp.get(key)
 
-    # Save evaluation summary
-    with open(evaluations_file, 'w', encoding='utf-8') as f:
-        json.dump(existing_evals, f, indent=2, ensure_ascii=False)
+            if matched_eval:
+                matched_eval['url'] = url
+                job['evaluation'] = matched_eval
+                job['status'] = 'evaluated'
+                updated_count += 1
 
-    print(f"[✓] Saved {updated_count} evaluations to {inbox_file} & {evaluations_file}")
-    return True
+                # Update or append in existing_evals list
+                idx = next((i for i, item in enumerate(existing_evals) if item.get('url') == url or (item.get('title') == matched_eval.get('title') and item.get('company') == matched_eval.get('company'))), None)
+                if idx is not None:
+                    existing_evals[idx] = matched_eval
+                else:
+                    existing_evals.append(matched_eval)
+
+        # Save queue
+        with open(inbox_file, 'w', encoding='utf-8') as f:
+            json.dump(queue, f, indent=2, ensure_ascii=False)
+
+        # Save evaluation summary
+        with open(evaluations_file, 'w', encoding='utf-8') as f:
+            json.dump(existing_evals, f, indent=2, ensure_ascii=False)
+
+        for record in valid_records:
+            for warning in check_evaluation_consistency(record):
+                print(f"[warn] {record.get('title', 'Unknown')} @ {record.get('company', 'Unknown')}: {warning}", file=sys.stderr)
+
+    summary = f"[✓] Persisted {updated_count} jobs | ✗ Failed {len(invalid_records)} jobs"
+    if invalid_records:
+        summary += f" (see {failed_file})"
+    print(summary, file=sys.stderr)
+
+    return len(valid_records) > 0 or len(evaluations_list) == 0
 
 
 def track_submission(url_or_title, company=None, role=None, status='applied', notes='', tracker_csv='job_search_tracker.csv', inbox_file='data/inbox_queue.json'):

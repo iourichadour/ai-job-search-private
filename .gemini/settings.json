@@ -1,0 +1,12 @@
+{
+  "model": {
+    "name": "gemini-2.5-pro"
+  },
+  "temperature": 0.2,
+  "skills_directory": ".gemini/skills",
+  "prompts_directory": ".gemini/prompts",
+  "commands_directory": ".gemini/commands",
+  "candidate_profile": "data/profile.md",
+  "inbox_queue": "data/inbox_queue.json",
+  "job_evaluations": "data/job_evaluations.json"
+}
