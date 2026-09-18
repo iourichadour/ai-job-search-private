@@ -17,6 +17,16 @@ Five dimensions, each 0-100: `skill_match`, `experience_level_match`, `company_f
 `fit_category` from `overall_fit`: `high` (80+), `medium` (60-79), `low` (40-59), `skip` (<40).
 Downstream consumers depend on this exact shape: `job_search_tracker.csv`'s `fit_rating` column and the `upskill` skill's gap-weighting math both read `overall_fit` as a 0-100 int.
 
+## URL canonicalization for LinkedIn and Indeed
+
+**Design decision** (2026-09-18, `eval-dashboard` planning): all job URLs are normalized at ingestion time so downstream consumers (dashboard, matching logic) see clean URLs without tracking parameters.
+
+- **LinkedIn**: `normalize_linkedin_url(url)` extracts job ID via `/jobs/view/(\d+)` regex and returns `https://www.linkedin.com/comm/jobs/view/{id}/` (implemented in `tools/fetch_inbox.py` since original fork, also used by `fetch_linkedin_with_browser()`).
+- **Indeed**: `normalize_indeed_url(url)` extracts job ID via `jk=([0-9a-f]+)` regex and returns `https://www.indeed.com/viewjob?jk={id}` (added 2026-09-18; applied at ingestion time in `tools/fetch_inbox.py`).
+- **Composite-key matching** (for `eval-dashboard`): applied-job-to-evaluation matching uses a vendor-prefixed canonical ID (`LKD` for LinkedIn, `IND` for Indeed) derived from the extracted job ID, not raw-URL string matching. This survives tracking-parameter drift between the alert email that produced an evaluation and the URL later entered in the tracker.
+
+Two historical records in `data/job_evaluations.json` (Celonis 4413352108, FTI Consulting 4421660792) initially had full tracking URLs instead of canonicalized form; both were normalized to short form as of 2026-09-18. All future ingested URLs will be canonical at source.
+
 ## Evaluation persistence & partial-save validation
 
 **Data files** (always write through `tools/evaluate_jobs_gemini.py`'s merge logic):

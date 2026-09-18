@@ -2,6 +2,22 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
+## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
+
+Location: `openspec/changes/eval-dashboard/`
+Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, design, both specs, and task list are done and validated.
+
+**Scope**: Multi-page HTML dashboard (evaluations browser + applied-jobs tracker) reading from `data/job_evaluations.json` and `job_search_tracker.csv`. Single-file vanilla JS/CSS, no backend, works offline in a browser.
+
+**Key design decision**: Applied-jobs matching uses a vendor-aware composite key (vendor prefix `LKD`/`IND` + canonical job ID extracted from URL) instead of raw-URL string matching, because tracking parameters in LinkedIn/Indeed alert URLs can differ from what's later pasted in the tracker, even for the same job.
+
+**Completed pre-work (loose ends fixed, 2026-09-18)**:
+- `job_search_tracker.csv`: added required `url` column header and populated the Trace3 row with its LinkedIn URL
+- `data/job_evaluations.json`: normalized Celonis (4413352108) and FTI Consulting (4421660792) URLs from full tracking-param form to canonical short form
+- `tools/fetch_inbox.py`: added `extract_indeed_job_id()` and `normalize_indeed_url()` functions; applied them at Indeed URL ingestion time (same pattern as LinkedIn)
+
+**Next step**: User reconsidered workflow — wants to re-fetch/re-evaluate jobs and pick a few high-fit roles to apply to *before* building the dashboard, so the dashboard has real application data to work with. Dashboard implementation (tasks 1.1+) deferred pending fresh job evaluations and application decisions.
+
 ## Recently Archived: `interactive-agent-job-evaluation` OpenSpec change
 
 Archived as: `openspec/archive/2026-09-17-interactive-agent-job-evaluation/`
