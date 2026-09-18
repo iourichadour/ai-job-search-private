@@ -65,6 +65,18 @@ def normalize_linkedin_url(url):
         return f"https://www.linkedin.com/comm/jobs/view/{job_id}/"
     return url
 
+def extract_indeed_job_id(url):
+    """Extract job ID from Indeed URL (jk parameter)."""
+    match = re.search(r'[?&]jk=([0-9a-f]+)', url)
+    return match.group(1) if match else None
+
+def normalize_indeed_url(url):
+    """Normalize Indeed URL to base form (strip tracking params)."""
+    job_id = extract_indeed_job_id(url)
+    if job_id:
+        return f"https://www.indeed.com/viewjob?jk={job_id}"
+    return url
+
 def fetch_linkedin_with_browser(url, logger, timeout=None):
     job_id = extract_linkedin_job_id(url)
     if not job_id:
@@ -312,8 +324,9 @@ def main():
                     raw_jobs.append({'source': 'linkedin', 'url': normalized_url})
                     logger.info(f'  [URL] linkedin: {normalized_url[:80]}')
                 elif 'indeed.com' in href:
-                    raw_jobs.append({'source': 'indeed', 'url': href})
-                    logger.info(f'  [URL] indeed: {href[:80]}')
+                    normalized_url = normalize_indeed_url(href)
+                    raw_jobs.append({'source': 'indeed', 'url': normalized_url})
+                    logger.info(f'  [URL] indeed: {normalized_url[:80]}')
 
     # ── Phase 1: Write scratch file ──
     os.makedirs('data', exist_ok=True)
