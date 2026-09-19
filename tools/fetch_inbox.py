@@ -39,6 +39,38 @@ PAGE_LOAD_TIMEOUT = 30000
 EXTRA_PAGE_WAIT = 2000
 # ============================================
 
+FETCH_STATE_PATH = 'data/fetch_state.json'
+OVERLAP_BUFFER_SECONDS = 86400  # re-query the last day each run as a safety margin; dedup handles overlap
+
+def load_fetch_state():
+    if os.path.exists(FETCH_STATE_PATH):
+        with open(FETCH_STATE_PATH, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+def find_last_run_epoch():
+    """Bootstrap: extract timestamp from last log file if fetch_state.json missing."""
+    logs_dir = 'logs'
+    if not os.path.exists(logs_dir):
+        return None
+    logs = sorted(os.listdir(logs_dir), reverse=True)
+    for log_name in logs:
+        if log_name.startswith('fetch_inbox_') and log_name.endswith('.log'):
+            # Extract YYYYMMDD_HHMMSS from fetch_inbox_20260917_081327.log
+            try:
+                timestamp_str = log_name.replace('fetch_inbox_', '').replace('.log', '')
+                dt = datetime.strptime(timestamp_str, '%Y%m%d_%H%M%S')
+                return int(dt.timestamp())
+            except ValueError:
+                continue
+    return None
+
+def save_fetch_state(last_fetch_epoch: int):
+    os.makedirs('data', exist_ok=True)
+    with open(FETCH_STATE_PATH, 'w', encoding='utf-8') as f:
+        json.dump({'last_fetch_at': last_fetch_epoch,
+                    'last_fetch_at_iso': datetime.fromtimestamp(last_fetch_epoch).isoformat()}, f, indent=2)
+
 def setup_logging(timestamp: str) -> logging.Logger:
     os.makedirs('logs', exist_ok=True)
     log_path = f'logs/fetch_inbox_{timestamp}.log'
@@ -294,11 +326,26 @@ def main():
     service = build('gmail', 'v1', credentials=creds)
 
     # ── Phase 1: Extract URLs from email ──
-    gmail_query = "is:unread from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR iouri.chadour@gmail.com)"
+    run_start_epoch = int(time.time())
+    state = load_fetch_state()
+    if 'last_fetch_at' in state:
+        after_epoch = int(state['last_fetch_at'])
+        logger.info(f"Using fetch_state.json: last_fetch_at = {state.get('last_fetch_at_iso', after_epoch)}")
+    else:
+        # Bootstrap: try to find timestamp from last log file
+        bootstrap_epoch = find_last_run_epoch()
+        if bootstrap_epoch:
+            after_epoch = bootstrap_epoch - OVERLAP_BUFFER_SECONDS
+            logger.info(f"No fetch_state.json; bootstrapping from last log: {datetime.fromtimestamp(bootstrap_epoch).isoformat()}")
+        else:
+            logger.warning("No fetch_state.json or logs found; using last 7 days as fallback")
+            after_epoch = run_start_epoch - (7 * 86400)
+
+    gmail_query = f"from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR iouri.chadour@gmail.com) after:{after_epoch}"
     logger.info(f'Gmail query: {gmail_query}')
     results = service.users().messages().list(userId='me', q=gmail_query).execute()
     messages = results.get('messages', [])
-    logger.info(f'Found {len(messages)} unread alert emails')
+    logger.info(f'Found {len(messages)} alert emails since last fetch')
 
     raw_jobs = []  # [{source, url}]
     for msg in messages:
@@ -358,6 +405,7 @@ def main():
 
     if not new_jobs:
         logger.info('Nothing to fetch. Exiting.')
+        save_fetch_state(run_start_epoch - OVERLAP_BUFFER_SECONDS)
         return
 
     # ── Phase 2: Browser-fetch descriptions ──
@@ -410,6 +458,9 @@ def main():
                 pause = random.uniform(MIN_BATCH_PAUSE, MAX_BATCH_PAUSE)
                 logger.info(f'  [⏸] Batch pause {pause:.0f}s...')
                 time.sleep(pause)
+
+    # ── Persist fetch state (overlap buffer covers indexing lag; dedup handles re-seen URLs) ──
+    save_fetch_state(run_start_epoch - OVERLAP_BUFFER_SECONDS)
 
     # ── Summary ──
     logger.info(f'\n{"="*50}')

@@ -2,6 +2,14 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
+## Active: fetch_inbox.py query fix — needs live verification (2026-09-18)
+
+**Problem**: user reported already-scanned emails "jump the context" on every `/fetch-inbox` run. Root cause: `tools/fetch_inbox.py` queried Gmail with `is:unread`, but the script only has `gmail.readonly` scope and never marks messages read — so every alert email ever received matched, forever, and got re-fetched/re-parsed each run (URL dedup against `inbox_queue.json` discarded the repeats, but only after the wasted list+get API calls).
+
+**Fix applied** (not yet run live): query changed to `from:(...) after:{epoch}`, epoch sourced from new `data/fetch_state.json` (`last_fetch_at`), defaulting to a 30-day lookback on first run, updated after each run with a 1-day overlap buffer. See `MEMORY.md` "Gmail query is timestamp-based" for full detail.
+
+**Next step**: run `python tools/fetch_inbox.py` for real and confirm (a) the log's `Gmail query:` line shows the expected `after:<epoch>`, (b) Gmail actually filters by that epoch (not yet confirmed `after:` accepts a raw Unix timestamp rather than `YYYY/MM/DD`), (c) `data/fetch_state.json` gets written after the run, (d) a second immediate run queries a much smaller/near-empty window instead of re-scanning everything.
+
 ## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 
 Location: `openspec/changes/eval-dashboard/`

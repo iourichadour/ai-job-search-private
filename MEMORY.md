@@ -55,6 +55,14 @@ This repo mirrors its commands/skills for three interactive agents:
 
 Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless a change is deliberately scoped to just one. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
 
+## Gmail query is timestamp-based, not `is:unread`-based
+
+`tools/fetch_inbox.py` used to query `is:unread from:(...)`. Since the OAuth scope is `gmail.readonly` (no `gmail.modify`), the script can never mark alert emails as read, so `is:unread` matched every alert email ever received, forever — every run re-fetched and re-parsed the full message list even though URL-level dedup against `data/inbox_queue.json` discarded the reprocessed ones. This is what made "already scanned" emails balloon each run.
+
+**Fix (2026-09-18)**: query is now `from:(...) after:{epoch}`, where `{epoch}` comes from `data/fetch_state.json` (`last_fetch_at`, a Unix timestamp). First-ever run (no state file) defaults to a 30-day lookback. After each run, state is saved as `run_start_epoch - 86400` (1-day overlap buffer) — safe because URL dedup already handles any re-seen messages in the overlap window. `data/fetch_state.json` is gitignored (local/session state, same category as `token.json`).
+
+**Not yet live-verified**: Gmail's `after:` operator accepting a raw Unix epoch integer (vs. `YYYY/MM/DD`) is assumed based on known Gmail search behavior, not confirmed against a real API call in this repo. Confirm on the next real `python tools/fetch_inbox.py` run — if `after:{epoch}` doesn't filter as expected, fall back to formatting `after:` as `YYYY/MM/DD` (loses same-day precision, dedup still protects against reprocessing).
+
 ## User context
 
 - On a Claude Pro plan — no marginal cost for evaluating jobs live in a Claude Code session.
