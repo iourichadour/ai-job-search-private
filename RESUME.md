@@ -2,13 +2,24 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-## Active: fetch_inbox.py query fix — needs live verification (2026-09-18)
+## Active: SCRUM-11 — Verify timestamp-based Gmail query fix (in progress, 2026-09-20)
 
-**Problem**: user reported already-scanned emails "jump the context" on every `/fetch-inbox` run. Root cause: `tools/fetch_inbox.py` queried Gmail with `is:unread`, but the script only has `gmail.readonly` scope and never marks messages read — so every alert email ever received matched, forever, and got re-fetched/re-parsed each run (URL dedup against `inbox_queue.json` discarded the repeats, but only after the wasted list+get API calls).
+**Work branch**: `feature/SCRUM-11-verify-gmail-timestamp-fix`
 
-**Fix applied** (not yet run live): query changed to `from:(...) after:{epoch}`, epoch sourced from new `data/fetch_state.json` (`last_fetch_at`), defaulting to a 30-day lookback on first run, updated after each run with a 1-day overlap buffer. See `MEMORY.md` "Gmail query is timestamp-based" for full detail.
+**Live verification started 2026-09-20 12:20:37 UTC**
 
-**Next step**: run `python tools/fetch_inbox.py` for real and confirm (a) the log's `Gmail query:` line shows the expected `after:<epoch>`, (b) Gmail actually filters by that epoch (not yet confirmed `after:` accepts a raw Unix timestamp rather than `YYYY/MM/DD`), (c) `data/fetch_state.json` gets written after the run, (d) a second immediate run queries a much smaller/near-empty window instead of re-scanning everything.
+**Completed criteria** (3/4):
+1. ✅ **fetch_state.json initialized** from last log (2026-09-19 00:05:54) with epoch 1787827800
+2. ✅ **Gmail query correct format**: `Gmail query: from:(...) after:1787827800` (confirmed in log line 4)
+3. ✅ **Found 100 alert emails** using timestamp-based query (not full 30-day backlog)
+
+**In progress**:
+- Browser automation scraping 67 unique job URLs (Playwright fetching descriptions, takes ~3 min for full batch)
+- Script will update `data/fetch_state.json` with new `last_fetch_at` timestamp on completion
+
+**Next step**: On completion, run script a second time immediately and verify:
+- Second run queries only `after:(first_fetch_at - 86400)` (1-day overlap buffer)
+- Result is empty or minimal (only truly new emails since first run, <1 min apart)
 
 ## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 
