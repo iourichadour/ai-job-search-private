@@ -17,6 +17,7 @@
 ### AVP, Data Analytics & AI (09/2024 - Present)
 **Bayview Asset Management** | Ft. Lauderdale, FL
 - Head of Data & Analytics Strategy for enterprise-wide data and analytics vision
+- Onboarded and built the Data Analytics team from the ground up — hired and ramped initial team members, defined roles, and established team processes and delivery standards
 - Led BI framework implementation with standardized processes, templates, and self-service model, boosting report consistency and user independence
 - Established data governance guidelines: data labeling, encryption, and secure configuration of the Power BI tenant
 - Instituted standardization and best practices for BI projects — common report templates, consistent color themes, uniform data modeling — improving project turnaround and quality
@@ -74,7 +75,7 @@
 - **AI-Augmented BI/Data Engineering** - Building and leading team adoption of AI-agent development workflows (Claude Code, MCP-based tooling) for semantic modeling, automated DAX testing, and report authoring; proven delivery-time and quality gains, not just pilot use
 - **Cloud Platforms** - Azure (primary), AWS, data integration services
 - **Programming** - Python (Pandas, NumPy), SQL, Shell scripting
-- **Team Leadership** - Building high-performing teams, mentoring, vendor management
+- **Team Leadership** - Building high-performing teams from the ground up (hiring, onboarding, ramping), mentoring, vendor management
 
 ### Secondary Expertise
 - ERP Systems (Oracle Financials, PeopleSoft)
