@@ -17,8 +17,14 @@
 ### AVP, Data Analytics & AI (09/2024 - Present)
 **Bayview Asset Management** | Ft. Lauderdale, FL
 - Head of Data & Analytics Strategy for enterprise-wide data and analytics vision
-- Led BI framework implementation with standardized processes, templates, and self-service model
-- Architected Investor Database and Asset Management Portfolio Dashboard serving Senior Management
+- Led BI framework implementation with standardized processes, templates, and self-service model, boosting report consistency and user independence
+- Established data governance guidelines: data labeling, encryption, and secure configuration of the Power BI tenant
+- Instituted standardization and best practices for BI projects — common report templates, consistent color themes, uniform data modeling — improving project turnaround and quality
+- Architected Investor Database: integrated solution ingesting third-party fund activity data to analyze individual investor performance across funds, serving Senior Management and Investor Relations
+- Developed Asset Management Investment Dashboard analyzing loan portfolios using financial metrics (LTV, DTI, FICO, DSCR) and generating risk scenarios (interest rate changes, credit risk) supporting traders, risk management, and senior leaders
+- Built operational dashboards to monitor loan exceptions, track monthly trends, review seller-specific loan concentrations, and oversee exception flows for Residential and Non-Residential teams
+- Solutions built on Power BI, Informatica, Azure Data Factory, Power Automate, Snowflake, SQL Server, Azure SQL
+- Designed and rolled out an AI-agent-driven Power BI/Fabric development workflow for the data analytics team: AI coding agents (Claude Code) orchestrating Fabric and Power BI MCP-based tooling for semantic model authoring, automated DAX unit-test generation, Best Practice Analyzer rule enforcement, and report/theme design automation — cut reporting delivery time by ~50-70%, standardized UI design and business validation steps, and materially improved reporting quality via automated test coverage
 
 ### Technology Manager (SVP) (04/2020 - 09/2024)
 **Lazard Frères** | Remote
@@ -47,6 +53,17 @@
 - Led design and implementation of highly effective software solutions
 - Managed team of 3-4 developers during design and development phases
 
+## Key AI-Driven Projects
+
+### AI-Agent Power BI/Fabric Development Workflow (Bayview Asset Management, 2025-Present)
+- Introduced AI coding agents (Claude Code) into the team's Power BI/Fabric development lifecycle, orchestrating MCP-based tooling for semantic model authoring, DAX unit-test generation, Best Practice Analyzer rule checks, and report/theme design
+- Redesigned the delivery workflow around this tooling: AI-assisted UI/report design, structured business validation checkpoints, and automated test generation in place of manual QA
+- **Impact**: reduced end-to-end reporting delivery time by ~50-70%; automated test generation measurably increased reporting quality and consistency across the team
+
+### Multi-Agent Career Intelligence System (Personal Project)
+- Designed and built a multi-agent orchestration system spanning Claude Code, Gemini CLI, and a third agent runtime, with a shared skill/command layer and OpenSpec-driven change management (proposal → design → spec delta → tasks) for coordinating non-trivial changes across agents
+- Demonstrates hands-on depth in agentic system design: subagent delegation, schema-validated data pipelines with partial-save/failure isolation, and cross-agent provenance tracking
+
 ## Core Technical Competencies
 
 ### Primary Expertise
@@ -54,6 +71,7 @@
 - **Cloud Data Architecture** - Microsoft Fabric, Snowflake, Azure Data Factory, OneLake
 - **Enterprise Data Strategy** - Data mesh patterns, lakehouse architecture, data governance
 - **Modern BI Tools** - Power BI, Microsoft Fabric, DAX, Tabular Editor
+- **AI-Augmented BI/Data Engineering** - Building and leading team adoption of AI-agent development workflows (Claude Code, MCP-based tooling) for semantic modeling, automated DAX testing, and report authoring; proven delivery-time and quality gains, not just pilot use
 - **Cloud Platforms** - Azure (primary), AWS, data integration services
 - **Programming** - Python (Pandas, NumPy), SQL, Shell scripting
 - **Team Leadership** - Building high-performing teams, mentoring, vendor management
@@ -70,6 +88,7 @@
 - Power Automate, Informatica, Alteryx, Snaplogic
 - Python, SQL Server, Tabular Editor, DAX
 - Shell Scripting, Git, Agile methodologies
+- AI coding agents (Claude Code), Model Context Protocol (MCP) server integration, agentic workflow design, AI-generated DAX/BI test automation
 
 ## Certifications
 - Microsoft Certified: Power BI Data Analyst Associate (2024)
@@ -89,7 +108,7 @@
 - **Organizational Transformation** - Track record of large-scale technology transformations; excellent at translating complex business problems into elegant technical solutions
 
 ### Growth Areas
-- Generative AI and Copilot integration (theoretical knowledge strong; production experience emerging)
+- Extending AI-agent workflow patterns proven in BI/Fabric (test automation, agentic dev tooling) to broader enterprise data engineering and platform layers
 - Accelerating speed to learning in rapidly evolving AI/ML landscape
 
 ### Thrives In
@@ -109,6 +128,7 @@
 ## Target Roles & Industries
 - **Target Roles:** VP Data Analytics, Chief Data Officer, Principal Data Architect, Head of Data Engineering, Director of Analytics Engineering, SVP Technology
 - **Target Industries:** Financial Services (JP Morgan, Goldman Sachs, BlackRock), Technology & Cloud (Microsoft, Databricks, Palantir), Consulting (Accenture, Deloitte, McKinsey), Enterprise SaaS (Salesforce, monday.com), organizations with strong data culture and modern cloud stack
+- **Target Compensation Band:** $200K-$300K (total comp)
 
 ## Deal-Breakers
 - Legacy-only environments with no path to modernization or adoption of current-generation tools
