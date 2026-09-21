@@ -1,13 +1,13 @@
 # evaluate_jobs_gemini.py
 
-Evaluates and filters job postings from `data/inbox_queue.json` against your candidate profile using **Google Gemini AI** or **Agent Session Mode**. Scores each role across five dimensions and saves structured results with fit categories and recommendations.
+Evaluates and filters job postings from `data/inbox_queue.json` against your candidate profile using **Interactive Agent Evaluation Mode (Primary)** or **Google Gemini API (Headless Fallback)**. Scores each role across five dimensions and saves structured results with fit categories and recommendations.
 
 ---
 
 ## Modes of Operation
 
-### 1. Agent Evaluation Mode (Recommended — No API Key Required)
-Filter inbound job postings by date range and let the session AI agent evaluate them directly:
+### 1. Agent Evaluation Mode (Primary — Standard Workflow, No API Key Required)
+Filter inbound job postings by date range and let the interactive session agent evaluate them directly without calling external APIs:
 
 ```bash
 # Filter jobs for the past 2 weeks (14 days)
@@ -17,18 +17,21 @@ python tools/evaluate_jobs_gemini.py --days 14 --filter-only
 python tools/evaluate_jobs_gemini.py --start-date 2026-06-01 --end-date 2026-06-30 --filter-only
 ```
 
-Once evaluated by the Agent, save the evaluations back into `data/inbox_queue.json` and `data/job_evaluations.json`:
+Once evaluated by the session agent / subagent, save the evaluations back into `data/inbox_queue.json` and `data/job_evaluations.json`:
 
 ```bash
 python tools/evaluate_jobs_gemini.py --save-evaluations path/to/evaluations.json
 ```
 
-This is the primary evaluation path for both Claude Code and Gemini CLI interactive sessions — an agent scores each exported job against `data/profile.md` itself (no external API call), tagging its own records `"model": "claude-agent-session"` or `"model": "gemini-agent-session"` respectively.
+This is the primary evaluation path across all interactive environments:
+- **Antigravity (`agy`)**: Delegates scoring to the dedicated `job-evaluator` subagent (`Model: "pro"`), tagged `"model": "antigravity-agent-session"`.
+- **Claude Code**: Delegates scoring to the `job-evaluator` subagent (`model: haiku`), tagged `"model": "claude-agent-session"`.
+- **Gemini CLI**: Scores jobs inline against `data/profile.md`, tagged `"model": "gemini-agent-session"`.
 
 ---
 
-### 2. External Gemini API Mode (Fallback — Requires API Key)
-Evaluates pending jobs in bulk via Google Gemini API:
+### 2. External Gemini API Mode (Headless Fallback — Requires API Key)
+Reserved strictly for unattended background/cron pipelines or headless batch sweeps where no interactive agent session is running:
 
 ```bash
 # Evaluate past 14 days of jobs using Gemini API

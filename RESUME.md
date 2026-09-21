@@ -19,7 +19,30 @@ Snapshot of in-progress work, for picking this back up in a new session (any age
 - Run 2 (12:41:41): 7 emails → 0 new jobs (all URLs already in queue), confirming deduplication working
 - Overlap buffer: 1-day re-query enabled, dedup handles overlap via URL hash checking
 
-**Next**: Merge feature branch to dev, proceed with SCRUM-12 (re-evaluate pending jobs)
+**Merged to dev**: ✓
+
+## In-Progress: SCRUM-12 — Re-evaluate pending jobs & select high-fit roles for application (2026-09-21)
+
+**Work branch**: `feature/SCRUM-12-re-evaluate-pending-jobs`
+
+**Current progress**:
+1. ✅ Pruned feature/SCRUM-11 branch from dev (3 commits behind, safely deleted)
+2. ✅ Ran `/fetch-inbox` — fetched 24 jobs from Gmail alerts (1004 → 1019 total queue)
+3. ✅ Ran `/scan-inbox` evaluation pass via `job-evaluator` subagent (Gemini 2.5 Pro) on 22 fresh postings:
+   - 21 unique evaluations passed schema validation and merged into `data/job_evaluations.json` (423 → 444 total)
+   - 4 new high-fit roles (80%+ fit) identified: Huron (84%), Citi (83%), Visa (80%), Baringa (80%)
+   - 6 new medium-fit roles (60-79% fit), including Dun & Bradstreet (79%)
+
+**Current evaluation snapshot** (444 total evals):
+- Total high-fit roles (80+): **224**
+- Available to apply (not yet applied): **223**
+- Already applied to: 1 (Senior Director, AI Platforms @ Trace3, 83% fit)
+
+**Next steps**:
+1. Present top fresh high-fit candidates for application decisions
+2. Select target roles and prepare customized application packages (tailored CV & cover letter)
+
+**Expected outcome**: Identify 3-5 high-fit roles to prioritize for applications, then pause dashboard work to focus on targeted applications
 
 ## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 

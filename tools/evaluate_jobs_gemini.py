@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
 Job Evaluation & Filtering Tool.
-Evaluates job postings against candidate profile using Gemini AI API or Agent-driven mode.
+Evaluates job postings against candidate profile using Agent-driven mode (Primary) or Gemini AI API (Headless Fallback).
 
 Usage:
-  1. API Evaluation Mode (requires GEMINI_API_KEY):
+  1. Agent Evaluation Mode (Primary — no API key required):
+     Export unevaluated jobs for agent session:
+       python tools/evaluate_jobs_gemini.py --days 14 --filter-only
+     Save agent evaluations back to Queue & Evaluations file:
+       python tools/evaluate_jobs_gemini.py --save-evaluations data/agent_evals.json
+
+  2. Headless API Evaluation Mode (Fallback — requires GEMINI_API_KEY):
      python tools/evaluate_jobs_gemini.py --days 14
 
-  2. Agent Filtering / Export Mode (no API key required):
-     python tools/evaluate_jobs_gemini.py --days 14 --filter-only
-
-  3. Save Agent Evaluations back to Queue:
-     python tools/evaluate_jobs_gemini.py --save-evaluations data/agent_evals.json
-
-  4. Track Application Submission:
+  3. Track Application Submission:
      python tools/evaluate_jobs_gemini.py --track-applied "https://job-url..." --company "Acme" --role "Director"
 """
 

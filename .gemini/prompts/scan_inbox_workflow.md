@@ -7,15 +7,17 @@ Execute the deterministic Job Scout workflow to process Gmail job alerts and eva
    python tools/fetch_inbox.py
    ```
 
-2. **Evaluate Fit via Interactive Agent Session** (default, no API key required):
+2. **Evaluate Fit via Interactive Agent Session (Primary — No API Key Required)**:
    ```bash
    python tools/evaluate_jobs_gemini.py --days 14 --filter-only
    ```
-   Score every exported job yourself, in this session, against `data/profile.md` using the fixed 5-dimension rubric (skill_match, experience_level_match, company_fit, growth_potential, red_flags → weighted `overall_fit` → thresholded `fit_category`). Tag every record `"model": "gemini-agent-session"`. Write the evaluations as a JSON array to a scratch file, then merge them back:
+   - In **Antigravity (`agy`)**: delegate scoring to the dedicated `job-evaluator` subagent via `invoke_subagent` (pinned `Model: "pro"`). Tag records `"model": "antigravity-agent-session"`.
+   - In **Standalone Gemini CLI**: score jobs inline against `data/profile.md` using the fixed 5-dimension rubric. Tag records `"model": "gemini-agent-session"`.
+   - Write evaluations as a JSON array to scratch file `data/.tmp_agent_evals.json`, then merge back:
    ```bash
    python tools/evaluate_jobs_gemini.py --save-evaluations data/.tmp_agent_evals.json
    ```
-   **Fallback** (requires `GEMINI_API_KEY`): run `python tools/evaluate_jobs_gemini.py` with no flags to evaluate via the Gemini API directly.
+   *(Note: Calling `python tools/evaluate_jobs_gemini.py` with external Gemini API is strictly a headless fallback for unattended pipelines, not for interactive agent sessions.)*
 
 3. **Present Summary Table**:
    Read `data/job_evaluations.json` and output a markdown table sorted by fit score descending. Highlight top matches (80%+ fit).
