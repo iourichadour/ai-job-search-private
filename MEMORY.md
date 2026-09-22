@@ -75,6 +75,14 @@ Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless
 - Low job volume (not processing thousands of applications) — no need for batch/unattended evaluation infrastructure.
 - Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md`** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
 
+## PII / personal-data hygiene — never hardcode into source
+
+The maintainer's real email address (`iouri.chadour@gmail.com`) was found hardcoded directly into the Gmail query string in `tools/fetch_inbox.py` and `tools/build_job_scout.py` (2026-09-22 audit) — not just in expected places like resume/profile files (`data/profile.md`, `cv/*.md` legitimately need contact info), but baked into actual query logic in tracked `.py` source. This is wrong independent of whether the repo is ever made public: config values don't belong in source, and it breaks portability for anyone else forking the repo.
+
+**Convention going forward**: any personal identifier a script needs at runtime (email address, account name, API key, phone number) goes in a gitignored local config file — this repo's existing pattern is `*.local.json` (already in `.gitignore`; see `credentials.json`, `data/token.json`, `.claude/settings.local.json` for the established local-file convention). Ship a tracked `*.example.json` template alongside it. Never a literal string in a `.py`, tracked `.json`, or committed `.md` file (outside the profile/resume files whose whole job is to carry that data).
+
+Fix tracked in `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/` (tasks 2.8, 5.7, 5.8, 7.6): introduces `config.local.json` + `config.local.example.json`, and adds a README "if you plan to publish/open-source your fork" callout listing every tracked file that carries real personal data (`CLAUDE.md`, `data/profile.md`, `01-candidate-profile.md`, `cv/*.md`, `applications/`, `job_search_tracker.csv`, `documents/`). Not yet implemented as of 2026-09-22 — see `RESUME.md`.
+
 ## Known repo debt (fork remnants, not yet cleaned up)
 
 Tracked for a **separate, not-yet-created** OpenSpec change — see RESUME.md for current status. Do not fold cleanup work into unrelated changes.

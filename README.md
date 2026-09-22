@@ -4,44 +4,43 @@
 
 # AI Job Search
 
-An AI-powered job application framework built on [Claude Code](https://claude.com/claude-code). Set up your profile, monitor Gmail for curated job alerts, evaluate roles with AI agents, and apply to high-fit positions with tailored CVs and cover letters.
+An AI-powered job application framework built on [Claude Code](https://claude.com/claude-code). Set up your profile, monitor Gmail for curated job alerts, evaluate roles with AI agents, and apply to high-fit positions with tailored markdown CVs and cover letters.
 
 ## What this is
 
-A structured workflow that turns Claude Code into a full-stack job application assistant. The system monitors Gmail for job alerts from LinkedIn and Indeed, evaluates each posting against your profile, and orchestrates a drafter-reviewer pipeline for applications.
+A structured workflow that turns Claude Code into a full-stack job application assistant. The system monitors Gmail for job alerts from LinkedIn and Indeed (no job-board scraping — Gmail's own alert filtering does that job), evaluates each posting against your profile, and orchestrates a drafter-reviewer pipeline for applications.
 
-```
-/fetch-inbox        evaluate            /apply <url>
-  |                     |                   |
-  v                     v                   v
-Poll Gmail for       Assess fit          Score & recommend
-LinkedIn/Indeed      against profile     |
-alerts               |                   v
-  |                  v               Draft CV + Cover Letter
-  v             Present matches       (LaTeX, tailored)
-Queue jobs       with fit ratings      |
-for review           |                 v
-                     v             Reviewer agent critiques
-                 Pick a match       -> Revise -> Final output
-                 -> /apply
+```mermaid
+flowchart LR
+    A["/fetch-inbox"] --> B["Evaluate fit\nagainst profile"]
+    B --> C{"Present matches\nwith fit ratings"}
+    C --> D["Pick a match"]
+    D --> E["/apply &lt;url&gt;"]
+
+    subgraph apply["/apply workflow"]
+        E --> F["Score & recommend\n(fit gate)"]
+        F --> G["Draft CV + cover letter\n(markdown, tailored)"]
+        G --> H["Reviewer agent\nresearches company,\ncritiques drafts"]
+        H --> I["Revise based\non feedback"]
+        I --> J["Present final output\napplications/YYYY-MM_Company/"]
+    end
 ```
 
-The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
+`/fetch-inbox` polls Gmail for LinkedIn/Indeed alert emails, fetches the full job description for each posting URL, and queues everything in `data/inbox_queue.json`. Fit evaluation happens twice: a quick pass during `/fetch-inbox` so you can see what's worth looking at, and a full pass at the top of `/apply` before any drafting starts. The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
 
 ## Prerequisites
 
 - [Claude Code](https://claude.com/claude-code) (CLI)
 - Python 3.10+
 - Gmail account with job alert subscriptions (LinkedIn, Indeed)
-- **Optional:** LaTeX distribution with `lualatex` and `xelatex` for CV/cover letter compilation. If you use the `/apply` workflow, you'll need [TeX Live](https://tug.org/texlive/) or [MiKTeX](https://miktex.org/). The CV compiles with `lualatex`; the cover letter compiles with `xelatex` (required by `cover.cls`). If you prefer markdown-only resumes, this is optional.
 
 ## Quick start
 
-### 1. Fork and clone
+### 1. Clone
 
 ```bash
-gh repo fork MadsLorentzen/ai-job-search --clone
-cd ai-job-search
+git clone https://github.com/iourichadour/ai-job-search-private.git
+cd ai-job-search-private
 ```
 
 ### 2. Set up your profile
@@ -74,7 +73,7 @@ If the URL can't be fetched, you can paste the job description directly instead:
 /apply <paste the full job description here>
 ```
 
-This runs the full workflow: evaluate fit, draft CV + cover letter, review with a second agent, revise, and present the final output.
+This runs the full workflow: evaluate fit, draft a markdown CV + cover letter, review with a second agent, revise, and present the final output in `applications/YYYY-MM_Company/`.
 
 ## Other commands
 
@@ -85,14 +84,27 @@ This runs the full workflow: evaluate fit, draft CV + cover letter, review with 
 
 `/reset` is also available, see [Starting over](#starting-over) below.
 
+## Dashboard: review tracking
+
+```bash
+python tools/generate_mockup.py
+```
+
+Generates `_brief/mockup.html` — a single-file dashboard computed live from `data/job_evaluations.json` and `job_search_tracker.csv`. Three tabs: Executive Landing (KPIs, top high-fit roles, fit-category donut, tech-stack alignment), 5-Dimension Fit Analytics (per-dimension averages, skill-gap explorer), and Application Funnel (your actual tracked applications, in-progress count, response rate). Open the generated file directly in a browser, or serve it locally (`python -m http.server` from `_brief/`) if your browser blocks `file://` script execution. Re-run the script any time to refresh — it doesn't watch the underlying files.
+
+This is an interim tool; a fuller live-reloading, two-page dashboard with applied-jobs-to-evaluation matching is planned in `openspec/changes/eval-dashboard/` (not yet implemented).
+
 ## File structure
 
+> **Cleanup in progress.** The tree below is the target structure for the current workflow. A few things still on disk today aren't shown here because they're pending removal or a decision — see [Repo cleanup: pending review](#repo-cleanup-pending-review) below. This section reflects where things are headed, not every file that exists right now.
+
 ```
-ai-job-search/
+ai-job-search-private/
 ├── CLAUDE.md                          # Main candidate profile + workflow rules
 ├── .claude/
 │   ├── commands/
-│   │   ├── apply.md                   # /apply workflow (drafter-reviewer)
+│   │   ├── apply.md                   # /apply workflow (drafter-reviewer, markdown output)
+│   │   ├── fetch-inbox.md             # /fetch-inbox: poll Gmail, fetch postings, evaluate
 │   │   ├── setup.md                   # /setup onboarding (documents folder, CV import, or interview)
 │   │   ├── expand.md                  # /expand competency enrichment from documents and online presence
 │   │   └── reset.md                   # /reset wipe profile data or documents folder
@@ -103,56 +115,59 @@ ai-job-search/
 │   │   │   ├── 02-behavioral-profile.md# PI/DISC/personality assessment
 │   │   │   ├── 03-writing-style.md    # Tone, structure, do's and don'ts
 │   │   │   ├── 04-job-evaluation.md   # Scoring framework for job fit
-│   │   │   ├── 05-cv-templates.md     # LaTeX CV structure + tailoring rules
-│   │   │   ├── 06-cover-letter-templates.md # LaTeX cover letter templates
+│   │   │   ├── 05-cv-templates.md     # Markdown CV structure + tailoring rules
+│   │   │   ├── 06-cover-letter-templates.md # Markdown cover letter templates
 │   │   │   └── 07-interview-prep.md   # STAR examples + interview framework
-│   │   ├── job-scraper/               # Job search orchestration
+│   │   ├── fetch-inbox/               # /fetch-inbox implementation detail
 │   │   └── upskill/                   # /upskill skill gap analysis and learning plan
 │   └── settings.local.json            # Claude Code permissions
-├── cv/
-│   └── main_example.tex               # moderncv LaTeX template
-├── cover_letters/
-│   ├── cover.cls                      # Custom cover letter LaTeX class
-│   └── OpenFonts/                     # Lato + Raleway fonts
-├── documents/                         # Career source materials for /setup Path A and /expand
+├── cv/                                 # Tailored markdown resumes, one per target/company
+├── documents/                          # Career source materials for /setup Path A and /expand
 │   ├── README.md                      # Folder layout instructions
-│   ├── cv/                            # Master CV (PDF or .tex)
+│   ├── cv/                            # Master CV (PDF or markdown)
 │   ├── linkedin/                      # LinkedIn profile export (PDF)
 │   ├── diplomas/                      # Degree certificates and transcripts
 │   ├── references/                    # Reference letters
 │   └── applications/                  # Past application records (<company>_<role>/)
 ├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
 ├── tools/
+│   ├── fetch_inbox.py                 # Gmail polling + job description fetch (used by /fetch-inbox)
+│   ├── evaluate_jobs_gemini.py        # Fit evaluation batching/merge/persistence
+│   ├── generate_mockup.py             # Builds _brief/mockup.html dashboard (see Dashboard section)
 │   ├── convert_salary_excel.py        # Convert salary Excel to JSON
 │   └── README_SALARY_TOOL.md          # Salary tool setup instructions
+├── _brief/
+│   ├── mockup.html                    # Generated dashboard (run tools/generate_mockup.py to refresh)
+│   └── report-spec.md                 # Dashboard design brief
 ├── data/
-│   └── inbox_queue.json               # Job alerts fetched from Gmail
-├── applications/                      # Submitted application records
-├── upskill/                           # /upskill report output (markdown reports per run)
-├── job_search_tracker.csv             # Application tracking spreadsheet
-└── SETUP.md                           # Detailed setup guide
+│   ├── inbox_queue.json               # Job alerts fetched from Gmail
+│   ├── job_evaluations.json           # Persisted fit-evaluation records
+│   └── profile.md                     # Candidate profile (source of truth)
+├── applications/                       # /apply output, one folder per application: YYYY-MM_Company/
+├── upskill/                            # /upskill report output (markdown reports per run)
+├── openspec/                           # OpenSpec change proposals and capability specs
+├── job_search_tracker.csv              # Application tracking spreadsheet
+└── SETUP.md                            # Detailed setup guide
 ```
 
 ## How `/apply` works
 
-The `/apply` command runs a **drafter-reviewer workflow** with mandatory PDF compilation:
+The `/apply` command runs a **drafter-reviewer workflow** that produces markdown output:
 
 1. **Parse** the job posting (URL or text)
-2. **Evaluate fit** against your profile (skills, experience, culture, location, career alignment)
-3. **Draft** a tailored CV and cover letter in LaTeX
+2. **Evaluate fit** against your profile (skills, experience, culture, location, career alignment) and present the evaluation — you confirm before anything is drafted
+3. **Draft** a tailored markdown CV and cover letter
 4. **Spawn a reviewer agent** that researches the company and critiques the drafts
 5. **Revise** based on the reviewer's feedback
-6. **Compile and inspect** both PDFs: lualatex for the CV, xelatex for the cover letter. Claude reads the rendered pages and iterates on the LaTeX until the CV is exactly 2 pages with no orphaned entry titles, and the cover letter is exactly 1 page with the signature visible and fonts consistent.
-7. **Present** the final output with a verification checklist
+6. **Present** the final output in `applications/YYYY-MM_Company/` with a verification checklist
 
 All claims in the CV and cover letter are verified against your actual profile. The system never fabricates skills or experience.
 
 ### What makes this workflow different
 
-- **PDF verification loop.** Most LaTeX-resume templates produce "looks fine in the .tex" output that breaks in the PDF: job titles orphan to the next page, cover letters spill onto page 2, bullet fonts silently fall back to the body font. The `/apply` command compiles and visually inspects every PDF and applies targeted fixes (`\needspace`, `\enlargethispage`, font-matching wrappers for list items) until the layout is clean. This runs automatically on every application.
-- **Relevance-weighted CV cutting.** When a CV overflows 2 pages, the workflow does not cut mechanically from the "oldest" section. It scores each candidate line by (a) relevance to the target posting, (b) uniqueness in the document, and (c) whether the cover letter depends on it, and cuts the lowest-total-score line first. An older-role bullet that hits posting keywords survives ahead of a recent-role bullet that does not.
+- **Relevance-weighted CV cutting.** When a CV runs long, the workflow does not cut mechanically from the "oldest" section. It scores each candidate line by (a) relevance to the target posting, (b) uniqueness in the document, and (c) whether the cover letter depends on it, and cuts the lowest-total-score line first. An older-role bullet that hits posting keywords survives ahead of a recent-role bullet that does not.
 - **Drafter-reviewer separation.** The drafter writes; a second Claude agent, spawned with a fresh context, researches the company and critiques the drafts. The drafter then revises. This catches missed keywords, weak framing, and generic language that a single pass often leaves in.
-- **Token-efficient reviewer dispatch.** The reviewer agent receives drafts inline rather than re-reading them, and the verification checklist runs once at the end of the workflow rather than being duplicated by both agents. Note: the compile-and-inspect step in Step 6 spends some of those savings on PDF rendering and layout iteration — the workflow trades some end-to-end token cost for a real reduction in broken PDFs reaching the user.
+- **Token-efficient reviewer dispatch.** The reviewer agent receives drafts inline rather than re-reading them, and the verification checklist runs once at the end of the workflow rather than being duplicated by both agents.
 
 ## Customization
 
@@ -169,9 +184,9 @@ If you prefer editing files directly instead of using `/setup`:
 | `05-cv-templates.md` | Profile statement templates for different role types |
 | `07-interview-prep.md` | Your STAR examples from actual experience |
 
-### LaTeX templates
+### CV and cover letter format
 
-The CV uses [moderncv](https://ctan.org/pkg/moderncv) (banking style). The cover letter uses a custom `cover.cls` with Lato/Raleway fonts. You can replace these with your own templates; just update the guidance in `05-cv-templates.md` and `06-cover-letter-templates.md`.
+Both are plain markdown, tailored per application. Structure and tone guidance lives in `05-cv-templates.md` and `06-cover-letter-templates.md` — edit those files to change section order, formatting conventions, or emphasis for different role types.
 
 ### Salary benchmarking
 
@@ -207,6 +222,27 @@ The framework supports two distinct modes of job searching:
 - **Latent opportunity discovery:** By analyzing your full history (not just job titles, but the actual work you did), the system can surface career paths you haven't considered. Transferable skills that map to unexpected industries, patterns in what you enjoyed or excelled at, or emerging roles that combine your domain expertise with new technology.
 
 To get the most from this, invest time during `/setup` in describing not just your experience, but what energized you, what drained you, and what you'd want more of. This context directly shapes how the system evaluates fit and which roles it surfaces.
+
+## Repo cleanup: pending review
+
+A repo-wide audit (2026-09-22) found leftover artifacts from this project's original Danish job-portal fork that aren't part of the workflow described above. Full detail and rationale: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md`. Nothing listed here has been deleted yet — this is the review checkpoint.
+
+**Confirmed dead (no live references anywhere):**
+- `job_scraper/` — empty shell left over from the pre-Gmail-alert scraper era
+- `tools/evaluate_jobs.py`, `evaluate_past_week.py`, `print_data_ai_roles.py`, `refetch_jobs_browser.py`, `summarize_evals.py`
+- Duplicate `credentials.json` (identical copies at repo root and `private/credentials.json`)
+- Accumulated `data/` scratch/backup files (`inbox_queue.json.bkp.json`, `scratch_*.json`, `evaluated_jobs_summary.md`)
+- Top-level `prompts/scan_inbox_workflow.md` (superseded by `.gemini/prompts/scan_inbox_workflow.md`)
+
+**Kept, not deleted:** `_brief/mockup.html`, `_brief/report-spec.md`, and `tools/generate_mockup.py` were initially flagged here too, but they're a real, working dashboard, not dead code — see [Dashboard: review tracking](#dashboard-review-tracking) below.
+
+**Needs a decision (real, but undocumented/duplicated/contradicts `CLAUDE.md`):**
+- Three overlapping "fetch + evaluate inbox" paths exist: `/fetch-inbox` (the one `CLAUDE.md` actually names), `/scan-inbox` (near-identical, never documented), and the `job-scraper` skill (natural-language-triggered, also fetches + evaluates)
+- `.claude/skills/job-scraper/search-queries.md` still says *"The framework's built-in CLI tools (jobindex, jobbank, etc.) are Denmark-specific"* — referencing CLI tools already deleted in SCRUM-17
+
+**Deferred to a follow-up change, not decided here:** `tools/build_job_scout.py` ("job scout setup") and `data/master_resume.md` (its only consumer) are intentionally left untouched by this cleanup — kept intact, not deleted, not modified. Their keep/delete decision, hardcoded-email fix, and path/config handling all move to the staged `openspec/changes/centralize-config-and-private-store/` change instead.
+
+The LaTeX CV/cover-letter pipeline (`cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`) is **already decided** — confirmed for deletion, not listed above as pending.
 
 ## Acknowledgements
 

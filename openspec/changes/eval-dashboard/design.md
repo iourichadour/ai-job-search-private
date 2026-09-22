@@ -8,6 +8,12 @@ The dashboard must match applied jobs to evaluations by URL and display both sid
 
 See proposal.md for motivation.
 
+## Interim Artifact
+
+`tools/generate_mockup.py` -> `_brief/mockup.html` is a real, working, kept tool (fixed and verified 2026-09-22 — previously had several hardcoded placeholder KPI values that have since been corrected to compute from live data). It was originally produced as a `powerbi-report-design`-skill mockup/approval step (see `_brief/report-spec.md`) that predates this proposal and was never wired into it. It is **not** this change's target implementation — it's a Python script that bakes current data into a static file at generation time (rerun to refresh), covers only the evaluations side plus the tracker CSV as a flat table, and has no URL-based join between the two (Decision 8 below). This proposal's target is a `fetch()`-based, live-reloading, two-page dashboard with vendor-aware applied-jobs matching, filtering, and export — a materially larger scope.
+
+Relationship going forward: keep `generate_mockup.py` as the cheap interim tool for quick tracking checks (`python tools/generate_mockup.py` then open `_brief/mockup.html`) until this change's fuller design (below) is actually implemented. When implementation of this change starts, decide then whether the Python-generated approach is retired in favor of the `fetch()`-based one, or whether both are kept for different use cases (offline snapshot vs. live view) — not decided here, since implementation hasn't started (0/68 tasks).
+
 ## Goals / Non-Goals
 
 **Goals:**
