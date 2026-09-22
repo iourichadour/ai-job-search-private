@@ -15,11 +15,13 @@ python tools/fetch_inbox.py
 - Saves pending jobs to `data/inbox_queue.json`.
 
 ### 2. Evaluate Pending Jobs against Profile
-**Default: interactive-agent evaluation (no external API key required).**
+**Primary: Interactive-Agent Evaluation (Standard — no external API calls).**
 
-Export unevaluated jobs first:
+*If skipping or bypassing the fetch step, do not restrict evaluation to today; inspect `data/inbox_queue.json` and evaluate all pending jobs (`status: 'pending_evaluation'`) across all dates or the desired window.*
+
+Prepare batches:
 ```bash
-python tools/evaluate_jobs_gemini.py --days 14 --filter-only
+python tools/evaluate_jobs_gemini.py --prepare-batches
 ```
 - Reads candidate profile from `data/profile.md`.
 - The interactive agent scores each pending job across 5 criteria:
@@ -28,14 +30,18 @@ python tools/evaluate_jobs_gemini.py --days 14 --filter-only
   3. Company & Industry Fit (Financial Services, Tech, Consulting, SaaS)
   4. Growth Potential (Leadership, strategic impact, innovation)
   5. Red Flags (Legacy stack, siloed IT, pure operational maintenance)
-- On the Claude Code side, scoring is delegated to the `job-evaluator` subagent (pinned `model: haiku`), invoked once with the full batch of exported jobs. On the Gemini CLI side, scoring happens inline in the session.
-- Write the resulting evaluations as a JSON array to a scratch file (e.g. `data/.tmp_agent_evals.json`), then merge them back:
+- **Subagent delegation**:
+  - In **Antigravity (`agy`)**: delegate scoring to the dedicated `job-evaluator` subagent via `invoke_subagent` (pinned `Model: "pro"`). Tag records `"model": "antigravity-agent-session"`. The subagent writes directly to `data/eval_batches/batch_XX.evaluated.json`.
+  - In **Claude Code**: delegate scoring to the `job-evaluator` subagent (pinned `model: haiku`). Tag records `"model": "claude-agent-session"`. The subagent writes directly to `data/eval_batches/batch_XX.evaluated.json`.
+  - In **Standalone Gemini CLI**: score jobs inline against `data/profile.md` using the configured model. Tag records `"model": "gemini-agent-session"`. Write directly to `data/eval_batches/batch_XX.evaluated.json`.
+- Merge back all evaluated batches:
 ```bash
-python tools/evaluate_jobs_gemini.py --save-evaluations data/.tmp_agent_evals.json
+python tools/evaluate_jobs_gemini.py --save-evaluations "data/eval_batches/*.evaluated.json"
 ```
-- Saves evaluations with fit scores, strengths, gaps, and recommendations to `data/job_evaluations.json`, tagged `"model": "claude-agent-session"` or `"model": "gemini-agent-session"` depending on which agent produced them.
+- Validates and saves evaluations with fit scores, strengths, gaps, and recommendations to `data/job_evaluations.json`.
 
-**Fallback: external Gemini API (requires `GEMINI_API_KEY`).** Run `python tools/evaluate_jobs_gemini.py` with no flags to evaluate pending jobs via the Gemini API directly.
+> [!NOTE]
+> **Headless Fallback Only**: `python tools/evaluate_jobs_gemini.py` with no flags requires `GEMINI_API_KEY` and is reserved strictly as a secondary fallback for unattended/headless cron jobs, never as the default in agent sessions.
 
 ### 3. Present Results Table
 Read `data/job_evaluations.json` and render a formatted summary table sorted by `overall_fit` descending. Detail top matches (80%+ fit) with key strengths, gaps, and recommended actions.

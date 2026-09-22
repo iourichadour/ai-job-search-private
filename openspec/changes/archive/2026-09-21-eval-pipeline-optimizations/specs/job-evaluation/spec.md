@@ -1,27 +1,4 @@
-# job-evaluation Specification
-
-## Purpose
-Defines how pending jobs in `data/inbox_queue.json` get scored for fit against the candidate profile and persisted as structured evaluation records, across all supported evaluators (interactive agent sessions and the Gemini API fallback).
-
-## Requirements
-
-### Requirement: Interactive-agent evaluation is the primary path
-The system SHALL support evaluating pending jobs from within an interactive coding-agent session (Claude Code or Gemini CLI) without requiring an external LLM API key, and this SHALL be the default evaluation path invoked by the inbox-scanning commands and skills in both `.claude/` and `.gemini/`.
-
-#### Scenario: Evaluating pending jobs in an interactive session
-- **WHEN** a user runs an inbox-scanning workflow (fetch-inbox or scan-inbox) inside an interactive Claude Code or Gemini CLI session
-- **THEN** the workflow exports unevaluated jobs from `data/inbox_queue.json`, the interactive agent scores each job itself against `data/profile.md`, and the resulting evaluations are persisted back into `data/inbox_queue.json` and `data/job_evaluations.json` without any call to the Gemini API
-
-### Requirement: Evaluation scoring rubric and record schema
-The system SHALL score each job across five dimensions — `skill_match`, `experience_level_match`, `company_fit`, `growth_potential`, `red_flags` (each 0-100) — and compute `overall_fit` as a weighted composite (skills 30%, experience 25%, company 20%, growth 15%, red_flags −10%), assigning `fit_category` from `overall_fit` using thresholds: `high` (80+), `medium` (60-79), `low` (40-59), `skip` (<40). Every evaluation record SHALL include `title`, `company`, the five dimension scores, `overall_fit`, `fit_category`, `key_strengths`, `skill_gaps`, `red_flags_list`, `recommendation`, `reason_summary`, `url`, `evaluated_at`, and `model`, regardless of which evaluator produced it.
-
-#### Scenario: Overall fit computed from weighted dimensions
-- **WHEN** an evaluator scores a job's five dimensions
-- **THEN** `overall_fit` is computed using the fixed weighting (skills 30%, experience 25%, company 20%, growth 15%, red_flags −10%) and is stored as an integer between 0 and 100
-
-#### Scenario: Fit category assigned from thresholds
-- **WHEN** `overall_fit` for a job is computed
-- **THEN** `fit_category` is set to `high` for 80+, `medium` for 60-79, `low` for 40-59, or `skip` for below 40
+## MODIFIED Requirements
 
 ### Requirement: Evaluations are tagged by evaluator provenance
 Each persisted evaluation record SHALL identify which evaluator produced it via the `model` field: `claude-agent-session` when scored by an interactive Claude Code session, `gemini-agent-session` when scored by an interactive Gemini CLI session, `antigravity-agent-session` when scored by an interactive Antigravity agent session, or the underlying Gemini model name (e.g. `gemini-2.5-flash`) when scored via the Gemini API fallback.
@@ -37,20 +14,6 @@ Each persisted evaluation record SHALL identify which evaluator produced it via 
 #### Scenario: Antigravity agent session evaluation is tagged
 - **WHEN** a job is evaluated inside an Antigravity agent session or by its spawned `job-evaluator` subagents
 - **THEN** the saved evaluation record's `model` field is `antigravity-agent-session`
-
-### Requirement: Gemini API evaluation remains available as a fallback
-The system SHALL retain the existing Gemini API evaluation mode (requiring `GEMINI_API_KEY`) as a fallback evaluation path, unchanged in behavior, for use when interactive-agent evaluation is not available or not desired.
-
-#### Scenario: Falling back to the Gemini API path
-- **WHEN** a user or script invokes job evaluation without going through the interactive-agent filter/save round trip (i.e. the existing no-flag invocation)
-- **THEN** jobs are evaluated via the Gemini API exactly as before, with evaluation records tagged with the Gemini model name
-
-### Requirement: Evaluation results are persisted only via merge
-The system SHALL persist evaluation results into `data/inbox_queue.json` and `data/job_evaluations.json` only through the existing merge mechanism, which upserts by `url` (falling back to `title`+`company`) and marks matched jobs as `status: "evaluated"`. Evaluation results SHALL NOT be written by directly overwriting either file.
-
-#### Scenario: Merging new evaluations preserves existing records
-- **WHEN** a new batch of evaluation records is saved
-- **THEN** jobs already present in `data/job_evaluations.json` are updated in place if re-evaluated, new jobs are appended, and no duplicate entries are created for the same `url`
 
 ### Requirement: Evaluation records are validated before persistence
 The system SHALL validate every evaluation record against a schema before persisting it to `data/inbox_queue.json` or `data/job_evaluations.json`. Validation is performed per record, not per batch: records that pass validation SHALL be persisted immediately via the merge mechanism, even when other records in the same batch fail. Records that fail validation SHALL NOT be persisted to `data/inbox_queue.json` or `data/job_evaluations.json`; instead they SHALL be appended, together with clear error messages identifying which field(s) failed and why, to `data/job_evaluations.failed.json` for later review or retry.
@@ -105,20 +68,7 @@ Each evaluation record MUST have ALL of the following fields with the specified 
 - **WHEN** a batch of evaluation records contains a mix of valid and invalid records
 - **THEN** all valid records are persisted to `data/inbox_queue.json` (status: `evaluated`) and `data/job_evaluations.json`, all invalid records are appended to `data/job_evaluations.failed.json`, and a summary reporting counts of persisted and failed records is printed to stderr
 
-### Requirement: Additional validation checks (recommended beyond schema validation)
-
-The following validation checks are RECOMMENDED to catch subtle evaluation errors. These are distinct from the array-non-empty check on `key_strengths`/`skill_gaps`/`red_flags_list`, which is part of the blocking schema validation above, not a warning-level check.
-
-1. **Overall fit consistency check**: Verify that `overall_fit` is approximately equal to the weighted composite of the five dimension scores. Tolerating ±2 points for rounding, flag if the computed value differs materially (e.g., `overall_fit: 85` but weighted dimensions compute to 62).
-2. **Fit category consistency check**: Verify that `fit_category` matches the thresholds for the given `overall_fit`. Flag mismatches (e.g., `overall_fit: 75` but `fit_category: "high"`).
-3. **Timestamp validity check**: Verify that `evaluated_at` parses as a valid ISO 8601 timestamp and is not a future date.
-4. **Model tag validity check**: Verify that the `model` field is one of the expected values for the current evaluation run (e.g., during Claude Code runs, all records should be tagged `claude-agent-session`).
-
-These checks are defensive and help catch evaluator hallucinations or instruction misunderstandings. Failure on any of these RECOMMENDED checks SHOULD warn but MAY allow persistence with a log message (not blocking), unlike schema validation (which MUST block).
-
-#### Scenario: Consistency warnings are logged without blocking persistence
-- **WHEN** an evaluation record passes schema validation but has a consistency mismatch (e.g. `overall_fit` deviates from weighted dimensions, `fit_category` threshold mismatch, or future `evaluated_at`)
-- **THEN** a warning message is logged to stderr, the record is NOT added to `data/job_evaluations.failed.json`, and it is successfully persisted to `data/inbox_queue.json` and `data/job_evaluations.json`
+## ADDED Requirements
 
 ### Requirement: Automated batch preparation orchestration
 The system SHALL support partitioning pending unevaluated jobs from `data/inbox_queue.json` into configured batch files on disk via a CLI command, enabling efficient subagent evaluation without ad-hoc chunking scripts.

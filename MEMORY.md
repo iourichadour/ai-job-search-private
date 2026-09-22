@@ -36,11 +36,16 @@ Two historical records in `data/job_evaluations.json` (Celonis 4413352108, FTI C
 
 **Validation approach** (when saving evaluations):
 - Each record validated against JSON schema (required fields, types, ranges, enum values)
+- **Score clamping (0-100)**: when `red_flags` penalty (-10%) exceeds positive match dimensions (common on completely irrelevant or junk postings), raw arithmetic can yield negative scores (e.g. -10). The schema strictly requires `overall_fit` to be an integer between 0 and 100 (`fit_category: 'skip'`). Evaluators and save scripts must clamp `overall_fit` to `[0, 100]` before validation.
 - **Valid records**: persisted immediately to inbox_queue and job_evaluations
 - **Invalid records**: appended to job_evaluations.failed.json with error details (not lost, not corrupting main files)
 - **Consistency checks** (non-blocking): warnings to stderr if overall_fit doesn't match weighted dimensions, fit_category doesn't match thresholds, or arrays are empty — records still persist
 - End-of-session summary printed to stderr: "✓ Persisted N | ✗ Failed M"
 - This partial-save design prevents agent hallucinations from breaking a batch (97 good jobs still persist even if 3 are malformed)
+
+**Date filtering & queue scope**:
+- Sourcing tools default to or accept `--days N` (e.g. `--days 30` filters the queue to the past month).
+- In September 2026, all 487 pending jobs in the 30-day window were evaluated and marked `status: "evaluated"`. A small residual of legacy records from months prior (e.g., 6 items from June 2026) remains in `data/inbox_queue.json` in `pending_evaluation` status unless `--all-dates` is explicitly passed.
 
 ## Custom Claude Code subagents require a session restart
 
@@ -68,7 +73,7 @@ Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless
 - On a Claude Pro plan — no marginal cost for evaluating jobs live in a Claude Code session.
 - Had reliability problems running Gemini 2.5 (API mode) — this is a real motivation for preferring interactive-agent evaluation, not just cost.
 - Low job volume (not processing thousands of applications) — no need for batch/unattended evaluation infrastructure.
-- Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow.
+- Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md`** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
 
 ## Known repo debt (fork remnants, not yet cleaned up)
 

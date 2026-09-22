@@ -24,7 +24,9 @@ private/
 data/token.json
 data/inbox_queue.json
 data/scratch_*.json
+data/.tmp*
 data/fetch_state.json
+data/eval_batches/
 
 # Personal data (never commit these)
 salary_data.json

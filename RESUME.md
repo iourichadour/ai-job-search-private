@@ -2,7 +2,7 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-20 12:41:41 UTC (session complete)
+**Last updated**: 2026-09-21 17:55:00 UTC (past 30-day evaluation complete)
 
 ## Completed: SCRUM-11 — Verify timestamp-based Gmail query fix (2026-09-20 12:41:05 UTC)
 
@@ -19,7 +19,45 @@ Snapshot of in-progress work, for picking this back up in a new session (any age
 - Run 2 (12:41:41): 7 emails → 0 new jobs (all URLs already in queue), confirming deduplication working
 - Overlap buffer: 1-day re-query enabled, dedup handles overlap via URL hash checking
 
-**Next**: Merge feature branch to dev, proceed with SCRUM-12 (re-evaluate pending jobs)
+**Merged to dev**: ✓
+
+## In-Progress: SCRUM-12 — Re-evaluate pending jobs & select high-fit roles for application (2026-09-21)
+
+**Work branch**: `feature/SCRUM-12-re-evaluate-pending-jobs`
+
+**Current progress**:
+1. ✅ Pruned `feature/SCRUM-11` branch from dev (3 commits behind, safely deleted).
+2. ✅ Ran `/fetch-inbox` — fetched 24 jobs from Gmail alerts (1004 → 1019 total queue).
+3. ✅ Completed full **past 30-day evaluation pass** (bypassing redundant fetch):
+   - Scope expanded from initial slice to all 487 pending jobs in the 30-day window (August 22 – September 21, 2026).
+   - 64 search alert digests pre-screened to `fit_category: "skip"` (`overall_fit: 0`).
+   - 423 distinct postings evaluated across 22 batches by parallel `job-evaluator` subagents tagged `"model": "antigravity-agent-session"`.
+   - All 487 records passed schema validation (0-100 clamped) and upserted into `data/job_evaluations.json` with strict canonical URL & `(title + company)` deduplication.
+   - Updated `data/inbox_queue.json` (status set to `evaluated`, 0 pending remaining in the 30-day window).
+   - Documented in `documents/plans/session_summary_2026-09-21.md` and refreshed `data/evaluated_jobs_summary.md`.
+
+**Current evaluation snapshot** (849 total evals in `data/job_evaluations.json`, 843 unique URLs):
+- Total high-fit roles (80%+): **235** (including 24 fresh high-fit roles from this 30-day run)
+- Total medium-fit roles (60-79%): **280**
+- Queue status: 942 evaluated, 71 closed, 6 pending (legacy June 2026 entries outside 30-day window).
+
+**Top fresh high-fit targets from this run**:
+1. **MetLife** — Principal Data & Analytics Lead (94% fit)
+2. **Enzo Tech Group** — Head of Data Management (90% fit)
+3. **Novartis** — Director, Analytics Engineering (89% fit) & Director Analytics Infrastructure, Pipeline Ops (87% fit)
+4. **HealthEdge** — Senior Director, Business Intelligence (88% fit)
+5. **Cetera Financial Group** — Director, Data Trust (88% fit)
+6. **Achieve Life Sciences** — Director, Data Strategy and Operations (86% fit)
+7. **JPMorganChase** — Executive Director - Senior Solutions Director - Data and AI Fusion Platform (86% fit)
+8. **Huron** — Digital Senior Director – Data & Analytics (84% fit)
+9. **Citi** — Data Architecture Sr Grp Mgr, Director (83% fit)
+10. **ION** — Head of Data & AI Practice, New York (82% fit)
+11. **Apollo Global Management** — AI Solutions Director - Investment Operations (82% fit)
+
+**Next steps**:
+1. Select 3–5 target roles from the top fresh high-fit list for immediate application.
+2. Prepare customized application packages (tailored CV & cover letter per role).
+3. Log submitted applications via `python tools/evaluate_jobs_gemini.py --track-applied "<url>" --company "<Company>" --role "<Role>"`.
 
 ## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 

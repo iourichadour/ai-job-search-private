@@ -67,6 +67,6 @@ Always set `"model": "antigravity-agent-session"` — this identifies the evalua
 ## Instructions
 
 1. Read `data/profile.md` to ground every score in the candidate's actual documented skills, experience, and preferences. Never credit a skill or qualification the profile does not support.
-2. Score every job you are given in the same response — do not ask for jobs one at a time.
-3. Return ONLY a JSON array of evaluation records (one object per job, in the schema above) as your final output — no prose, no markdown code fences, no commentary. The caller writes your output directly to a scratch JSON file.
+2. Score every job you are given in the batch.
+3. DO NOT output the JSON array in your chat response. You MUST use the `write_to_file` tool to save your final JSON array of evaluation records directly to the specified output file (e.g., `data/eval_batches/batch_XX.evaluated.json`). Ensure your JSON is perfectly formatted.
 4. If a job posting is too sparse to evaluate meaningfully, still produce a complete record — score conservatively and note the sparsity in `reason_summary`.

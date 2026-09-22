@@ -348,9 +348,19 @@ def main():
     logger.info(f'Found {len(messages)} alert emails since last fetch')
 
     raw_jobs = []  # [{source, url}]
+    dropped_digests = 0
     for msg in messages:
         msg_data = service.users().messages().get(userId='me', id=msg['id'], format='full').execute()
         payload = msg_data.get('payload', {})
+        
+        headers = payload.get('headers', [])
+        subject = next((h['value'] for h in headers if h['name'].lower() == 'subject'), '')
+        
+        if re.search(r'^\d+[\d,]*\+\s+.*Jobs', subject, re.IGNORECASE):
+            dropped_digests += 1
+            logger.info(f'  [Drop] Digest skipped by subject: {subject}')
+            continue
+
         parts = payload.get('parts', [])
         html_body = ''
         if parts:
@@ -366,6 +376,10 @@ def main():
             soup = BeautifulSoup(html_body, 'html.parser')
             for link in soup.find_all('a', href=True):
                 href = link['href']
+                if '/jobs/search' in href or 'keywords=' in href or 'origin=JOB_ALERT_IN_SEARCH' in href:
+                    dropped_digests += 1
+                    logger.info(f'  [Drop] Invalid search URL skipped: {href[:80]}')
+                    continue
                 if 'linkedin.com/comm/jobs/view' in href:
                     normalized_url = normalize_linkedin_url(href)
                     raw_jobs.append({'source': 'linkedin', 'url': normalized_url})
@@ -466,6 +480,7 @@ def main():
     logger.info(f'\n{"="*50}')
     logger.info(f'Run complete.')
     logger.info(f'  Emails processed : {len(messages)}')
+    logger.info(f'  Dropped digests  : {dropped_digests}')
     logger.info(f'  Raw URLs found   : {len(raw_jobs)}')
     logger.info(f'  Skipped (in queue): {skipped}')
     logger.info(f'  New jobs fetched : {len(new_jobs)}')
