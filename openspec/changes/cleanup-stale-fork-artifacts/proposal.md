@@ -1,0 +1,26 @@
+## Why
+
+The project has evolved from a Danish job-portal scraping workflow to a Gmail-alert-based job sourcing system. However, significant dead code and fork remnants from the original MadsLorentzen/ai-job-search fork remain: Danish job-portal scrapers, outdated `/apply` pipeline components, and legacy onboarding commands. Removing these reduces maintenance burden, clarifies the actual active workflow, and resolves contradictions between code and documentation (CLAUDE.md).
+
+## What Changes
+
+- **Remove Danish job-portal scrapers**: Delete `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` directories and any related CLI tools. These portals are no longer referenced in the Gmail-alert workflow.
+- **Archive legacy `/apply` components** (PHASE 1): The `/apply` command currently implements a full LaTeX CV + cover letter drafter pipeline (`cv/`, `cover_letters/`, `.claude/skills/job-application-assistant/01-07`), which contradicts `CLAUDE.md`'s one-line description of producing "a tailored markdown resume." Clarify and simplify the `/apply` command or deprecate it pending user decision.
+- **Future cleanup scope** (out of SCRUM-13): Remove `/setup`, `/expand`, `/reset` commands if they are unused; migrate or archive `documents/` folder layout. These require user confirmation before removal.
+
+## Capabilities
+
+### New Capabilities
+- None (this is a refactor/cleanup change with no new externally observable behavior).
+
+### Modified Capabilities
+- None (removing dead code does not change spec-level behavior).
+
+## Impact
+
+- **Affected code**:
+  - Removed: `.agents/skills/{jobbank-search,jobdanmark-search,jobindex-search,jobnet-search}/` (7 directories, ~200 LOC)
+  - Clarified: `CLAUDE.md` and `.claude/commands/apply.md` alignment
+- **No API or external behavior changes**: The workflow (fetch from Gmail, evaluate jobs, track applications) is unaffected.
+- **Reduced repo size and maintenance**: ~200 lines of dead code and associated documentation removed.
+- **Git history preserved**: Deleted code remains recoverable via commit history.
