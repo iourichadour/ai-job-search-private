@@ -35,6 +35,6 @@
 
 ## 6. Commit and Close
 
-- [ ] 6.1 Stage all changes (deletions, doc updates) via `git add -A`
-- [ ] 6.2 Create a single commit with message: `chore(SCRUM-17): remove dead Danish job-portal scrapers, clarify /apply, rewrite docs` and verify the commit appears in `git log`
-- [ ] 6.3 Run `git status` and verify working tree is clean
+- [x] 6.1 Stage all changes (deletions, doc updates) via `git add -A`
+- [x] 6.2 Create a single commit with message: `chore(SCRUM-17): remove dead Danish job-portal scrapers, clarify /apply, rewrite docs` and verify the commit appears in `git log`
+- [x] 6.3 Run `git status` and verify working tree is clean
