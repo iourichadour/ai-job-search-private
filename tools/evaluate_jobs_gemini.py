@@ -293,8 +293,11 @@ def validate_evaluation_record(record):
             continue
         if isinstance(value, bool) or not isinstance(value, int):
             errors.append(f"{field} must be an integer, got {type(value).__name__}: {value!r}")
-        elif not (0 <= value <= 100):
-            errors.append(f"{field} must be in range 0-100, got {value}")
+        else:
+            clamped_value = max(0, min(100, value))
+            record[field] = clamped_value
+            if field == 'overall_fit' and clamped_value == 0:
+                record['fit_category'] = 'skip'
 
     fit_category = record.get('fit_category', _MISSING)
     if fit_category is not _MISSING:
@@ -542,6 +545,8 @@ def main():
     parser.add_argument('--end-date', type=str, default=None, help="End date filter (YYYY-MM-DD)")
     parser.add_argument('--all-dates', action='store_true', help="Include all jobs regardless of date")
     parser.add_argument('--filter-only', action='store_true', help="Output filtered jobs for Agent review without using API key")
+    parser.add_argument('--prepare-batches', action='store_true', help="Prepare batches of jobs for agent evaluation")
+    parser.add_argument('--batch-size', type=int, default=60, help="Number of jobs per batch (default: 60)")
     parser.add_argument('--save-evaluations', type=str, default=None, help="Path to JSON file containing evaluation objects to save/merge")
     parser.add_argument('--track-applied', type=str, default=None, help="Job URL or Title keyword to mark as applied in tracker")
     parser.add_argument('--company', type=str, default=None, help="Company name for submission tracking")
@@ -562,10 +567,33 @@ def main():
 
     # Handle save evaluations mode
     if args.save_evaluations:
-        if os.path.exists(args.save_evaluations):
-            with open(args.save_evaluations, 'r', encoding='utf-8') as f:
-                evals = json.load(f)
-            save_evaluations_to_files(evals)
+        evals = []
+        import glob
+        if os.path.isdir(args.save_evaluations):
+            pattern = os.path.join(args.save_evaluations, '*.json')
+            files = glob.glob(pattern)
+        elif '*' in args.save_evaluations or '?' in args.save_evaluations:
+            files = glob.glob(args.save_evaluations)
+        elif os.path.exists(args.save_evaluations):
+            files = [args.save_evaluations]
+        else:
+            files = []
+            
+        if files:
+            for f_path in files:
+                try:
+                    with open(f_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        if isinstance(data, list):
+                            evals.extend(data)
+                        elif isinstance(data, dict):
+                            evals.append(data)
+                except Exception as e:
+                    print(f"[!] Failed to parse {f_path}: {e}")
+            if evals:
+                save_evaluations_to_files(evals)
+            else:
+                print(f"[!] No valid evaluations found in {args.save_evaluations}")
         else:
             try:
                 evals = json.loads(args.save_evaluations)
@@ -584,10 +612,7 @@ def main():
     with open(inbox_file, 'r', encoding='utf-8') as f:
         queue = json.load(f)
 
-    # Determine default date filter: if no date specified and --all-dates not passed, default --days 14 when --filter-only used
     days_val = args.days
-    if not args.all_dates and days_val is None and not args.start_date and not args.end_date and args.filter_only:
-        days_val = 14  # Default past 2 weeks
 
     unevaluated_only = not args.all_jobs
     candidate_jobs = filter_jobs_by_date(
@@ -599,6 +624,43 @@ def main():
     )
 
     date_desc = f"past {days_val} days" if days_val else (f"{args.start_date} to {args.end_date}" if args.start_date else "all dates")
+
+    if args.prepare_batches:
+        print(f"[+] Preparing evaluation batches ({date_desc}, unevaluated_only={unevaluated_only}):")
+        print(f"[+] Found {len(candidate_jobs)} jobs\n")
+        if not candidate_jobs:
+            return
+        
+        batch_dir = 'data/eval_batches'
+        os.makedirs(batch_dir, exist_ok=True)
+        
+        for f in os.listdir(batch_dir):
+            if f.startswith('batch_') and f.endswith('.json'):
+                os.remove(os.path.join(batch_dir, f))
+        
+        batches = []
+        for i in range(0, len(candidate_jobs), args.batch_size):
+            batches.append(candidate_jobs[i:i + args.batch_size])
+        
+        for i, batch in enumerate(batches):
+            batch_file = os.path.join(batch_dir, f'batch_{i:02d}.json')
+            export_payload = []
+            for j in batch:
+                export_payload.append({
+                    "url": j.get('url'),
+                    "title": j.get('title'),
+                    "company": j.get('company'),
+                    "description": j.get('description', '')[:2500],
+                    "fetched_at": j.get('fetched_at') or j.get('refetched_at')
+                })
+            with open(batch_file, 'w', encoding='utf-8') as f:
+                json.dump(export_payload, f, indent=2, ensure_ascii=False)
+            
+            print(f"[✓] Wrote {len(batch)} jobs to {batch_file}")
+            print("    Run: invoke_subagent job-evaluator 'Please evaluate the jobs in data/eval_batches/batch_{:02d}.json and write the results to data/eval_batches/batch_{:02d}.evaluated.json'".format(i, i))
+            print()
+            
+        return
 
     # Handle --filter-only mode for Agent session evaluation
     if args.filter_only:

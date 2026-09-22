@@ -17,18 +17,19 @@ Use this skill when asked to check inbox for new jobs, scan job alerts, filter j
 2. **Filter & Evaluate Jobs (Interactive Agent Session — Primary)**:
    Always evaluate jobs interactively in-session using the dedicated subagent without external API calls:
 
-   1. Export unevaluated jobs without calling external API:
+   1. Prepare batches of unevaluated jobs without calling external API:
+      *(If skipping the fetch step, do not restrict evaluation to today; evaluate all pending jobs in `data/inbox_queue.json` across all dates or the desired window.)*
       ```bash
-      python tools/evaluate_jobs_gemini.py --days 14 --filter-only
+      python tools/evaluate_jobs_gemini.py --prepare-batches
       ```
    2. Delegate evaluation to the dedicated `job-evaluator` subagent via `invoke_subagent`:
       - `TypeName: "job-evaluator"`
       - `Model: "pro"` (pinned to Gemini 2.5 Pro for deep executive discernment; `flash` can be used for bulk sweeps)
-      - Pass the exported jobs and `data/profile.md`
-      - The subagent returns structured evaluation records tagged `"model": "antigravity-agent-session"`.
-   3. Write the evaluation records JSON array to scratch file `data/.tmp_agent_evals.json`, then merge into queue:
+      - Pass the batch files and `data/profile.md`
+      - The subagent writes structured evaluation records tagged `"model": "antigravity-agent-session"` directly to `data/eval_batches/batch_XX.evaluated.json`.
+   3. Merge evaluated batches into queue:
       ```bash
-      python tools/evaluate_jobs_gemini.py --save-evaluations data/.tmp_agent_evals.json
+      python tools/evaluate_jobs_gemini.py --save-evaluations "data/eval_batches/*.evaluated.json"
       ```
 
    > [!NOTE]

@@ -169,147 +169,167 @@
   {
     "title": "Director, Client Data Ecosystem",
     "company": "BNY",
-    "skill_match": 85,
-    "experience_level_match": 90,
-    "company_fit": 95,
-    "growth_potential": 90,
-    "red_flags": 15,
-    "overall_fit": 81,
-    "fit_category": "high",
+    "url": "https://www.linkedin.com/comm/jobs/view/4411673896/",
+    "skill_match": 65,
+    "experience_level_match": 80,
+    "company_fit": 85,
+    "growth_potential": 80,
+    "red_flags": 10,
+    "overall_fit": 68,
+    "fit_category": "medium",
     "key_strengths": [
-      "Highly innovative mandate centering on Knowledge Graphs, structured/unstructured agents, and data architecture modernization[cite: 2].",
-      "Strong target company within global financial markets, focusing heavily on strategic co-development rather than maintenance[cite: 1, 2].",
-      "Leverages data mesh thinking and complex data mapping principles across a global scale[cite: 1, 2]."
+      "Experience with financial data",
+      "Senior leadership experience",
+      "Knowledge graph and ecosystem understanding"
     ],
     "skill_gaps": [
-      "Contains heavy client advisory, RFP negotiation, and commercial partnership elements that compete with technical architecture duties[cite: 2].",
-      "Fabric and Snowflake are not explicitly listed, as the core focus is oriented toward graph structures and custom ingestion agents[cite: 1, 2]."
+      "More focused on client advisory than hands-on data platform architecture"
     ],
     "red_flags_list": [
-      "The blended requirement of managing client onboarding agreements and RFPs could dilute time spent leading actual technology transformation and system engineering[cite: 1, 2]."
+      "Slightly disconnected from core BI/Data Engineering focus"
     ],
-    "recommendation": "Strong match - Proceed if you enjoy external client advisory and product-market co-creation alongside complex graph architecture[cite: 1, 2].",
-    "reason_summary": "Highly strategic role within a major financial institution that aligns with your interest in cutting-edge data architecture patterns (Knowledge Graphs, AI agents) while placing you in a business-partnered innovation hub[cite: 1, 2]."
+    "recommendation": "Worth considering for its leadership scope at a target financial services company, though less technical than ideal.",
+    "reason_summary": "Good company fit and seniority, but leans heavily towards client advisory and RFP management rather than core data platform architecture.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Hedge Fund Solutions Product Strategist – Director",
     "company": "BlackRock",
-    "skill_match": 35,
-    "experience_level_match": 85,
-    "company_fit": 100,
+    "url": "https://www.linkedin.com/comm/jobs/view/4421373017/",
+    "skill_match": 40,
+    "experience_level_match": 60,
+    "company_fit": 80,
     "growth_potential": 70,
-    "red_flags": 50,
-    "overall_fit": 47,
+    "red_flags": 30,
+    "overall_fit": 50,
     "fit_category": "low",
     "key_strengths": [
-      "Elite company fit within target financial services sector[cite: 1, 2].",
-      "Director level alignment within a highly visible global investment ecosystem (MASS)[cite: 2]."
+      "Target company (BlackRock)",
+      "Financial services domain knowledge"
     ],
     "skill_gaps": [
-      "This is an investment product strategy position focused on portfolio construction and asset allocation, not an IT or data engineering leadership post[cite: 2].",
-      "Requires zero technical design, semantic modeling, cloud architecture, or data platform management[cite: 1, 2]."
+      "Investment strategy",
+      "Asset allocation",
+      "Not an IT/Data focused role"
     ],
     "red_flags_list": [
-      "Complete divergence from your tech stack, programming skills, and core engineering career path[cite: 1, 2]."
+      "Misalignment with core IT/Data Analytics career track"
     ],
-    "recommendation": "Skip - Entirely unaligned with a data, analytics, and AI career path[cite: 1, 2].",
-    "reason_summary": "The role utilizes investment management strategy and client capital allocation strategies rather than technology frameworks or modern data architectures[cite: 2]."
+    "recommendation": "Pass on this role. It is an investment product strategy role, not a data leadership position.",
+    "reason_summary": "While at a target company, the role is outside the candidate's core competency of data architecture and BI.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Director, Solutions Engineering, Capital Markets",
     "company": "Circle",
-    "skill_match": 75,
-    "experience_level_match": 90,
-    "company_fit": 95,
-    "growth_potential": 85,
+    "url": "https://www.linkedin.com/comm/jobs/view/4383159766/",
+    "skill_match": 55,
+    "experience_level_match": 70,
+    "company_fit": 75,
+    "growth_potential": 75,
     "red_flags": 20,
-    "overall_fit": 77,
-    "fit_category": "medium",
+    "overall_fit": 58,
+    "fit_category": "low",
     "key_strengths": [
-      "High-growth enterprise internet finance and stablecoin network matching target SaaS/Fintech industry preference[cite: 1, 2].",
-      "Executive scope focusing on recruiting, coaching, and leading a regionally distributed team of architects and engineers[cite: 2].",
-      "High-impact engagement building customized PoCs and collaborating to influence product roadmaps[cite: 2]."
+      "Capital markets domain knowledge",
+      "Leadership experience"
     ],
     "skill_gaps": [
-      "The role leans heavily on programmable blockchain infrastructure, digital assets, and web3 payment flows rather than enterprise semantic modeling or cloud data lakehouses (Snowflake/Fabric)[cite: 1, 2].",
-      "Stronger focus on post-sales technical delivery and external validation rather than internal database architecture and strategy[cite: 1, 2]."
+      "Pre-sales/Solutions Engineering is not core background",
+      "Blockchain/Crypto infrastructure"
     ],
     "red_flags_list": [
-      "Risk of moving too deep into crypto/blockchain niche infrastructure if your long-term goal is to remain focused on mainstream enterprise data analytics platforms[cite: 1, 2]."
+      "Role leans towards pre-sales engineering rather than internal data platform ownership"
     ],
-    "recommendation": "Medium match - An outstanding fit if you are actively looking to step out of traditional banking/asset management into cutting-edge blockchain/digital asset infrastructure leadership[cite: 1, 2].",
-    "reason_summary": "Great scale, company fit, and people-leadership requirements. However, it pivots your technical toolkit away from enterprise data analytics and relational cloud warehouses toward web3 tokenized execution and capital market integrations[cite: 1, 2]."
+    "recommendation": "Skip unless interested in pivoting to a pre-sales/solutions engineering role in crypto/fintech.",
+    "reason_summary": "The role is focused on customer-facing pre-sales engineering rather than enterprise data analytics and BI leadership.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Director, Industry Solutions",
     "company": "Snowflake",
-    "skill_match": 95,
-    "experience_level_match": 90,
-    "company_fit": 100,
-    "growth_potential": 95,
-    "red_flags": 10,
-    "overall_fit": 90,
+    "url": "https://www.linkedin.com/comm/jobs/view/4432031925/",
+    "skill_match": 90,
+    "experience_level_match": 80,
+    "company_fit": 95,
+    "growth_potential": 90,
+    "red_flags": 0,
+    "overall_fit": 80,
     "fit_category": "high",
     "key_strengths": [
-      "Direct technical match with Snowflake, which is explicitly featured as a core part of your primary expertise and certifications[cite: 1, 2].",
-      "Leadership of technical architects creating frameworks and prescriptive architecture for enterprise customers[cite: 2].",
-      "Strong emphasis on AI Data Cloud evolution, allowing you to drive GenAI and agentic enterprise strategies directly with clients[cite: 1, 2]."
+      "Deep Snowflake expertise",
+      "AI/GenAI integration experience",
+      "Cloud data architecture",
+      "Data platform modernization"
     ],
     "skill_gaps": [
-      "The vertical focus in the listing emphasizes consumer-oriented sectors (Retail, CPG, Telecom, Media) rather than your native Financial Services/Asset Management sweet spot[cite: 1, 2]."
+      "None identified"
     ],
-    "red_flags_list": [],
-    "recommendation": "Exceptional match - Highly recommended to apply. Direct pathway into a core vendor within your target modern tech stack list[cite: 1, 2].",
-    "reason_summary": "Despite the consumer industry focus, leading a Solution Engineering architectural practice for Snowflake directly validates your primary technical competencies, allows you to champion cloud data platforms, and places you at the vanguard of the agentic enterprise shift[cite: 1, 2]."
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Strongly pursue. Excellent alignment with technical background at a top target company.",
+    "reason_summary": "Perfect alignment with candidate's Snowflake, AI, and modern data platform expertise, positioned at a highly desired company.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Head of Solutions Architecture",
     "company": "Cohere",
-    "skill_match": 80,
-    "experience_level_match": 90,
-    "company_fit": 100,
-    "growth_potential": 95,
-    "red_flags": 15,
-    "overall_fit": 81,
-    "fit_category": "high",
+    "url": "https://www.linkedin.com/comm/jobs/view/4416199434/",
+    "skill_match": 60,
+    "experience_level_match": 80,
+    "company_fit": 85,
+    "growth_potential": 90,
+    "red_flags": 10,
+    "overall_fit": 68,
+    "fit_category": "medium",
     "key_strengths": [
-      "Cohere is a premier enterprise AI organization, mapping directly to your target company profile and focus on cutting-edge tech[cite: 1, 2].",
-      "Global leadership scope managing a team of Solutions Architects driving deployment of frontier foundation models[cite: 2].",
-      "Provides unmatched real-world, production-level exposure to advanced generative AI, LLMs, and enterprise orchestration[cite: 1, 2]."
+      "AI adoption",
+      "Leadership",
+      "Technology modernization"
     ],
     "skill_gaps": [
-      "Moves out of standard data mesh, Power BI, and data warehousing platforms into pure AI foundation model deployments and narrative shaping[cite: 1, 2].",
-      "Requires rapid scaling from strong data engineering expertise into advanced foundational AI solution design[cite: 1, 2]."
+      "Core focus is on foundational AI models rather than BI/Data architectures",
+      "Pre-sales architecture"
     ],
     "red_flags_list": [
-      "Heavy alignment with sales and revenue metrics might detract from purely technical, internal roadmap optimization and foundational architecture execution[cite: 2]."
+      "Pre-sales focus rather than internal platform ownership"
     ],
-    "recommendation": "Strong match - Excellent choice if you wish to maximize your career exposure to top-tier enterprise AI solutions engineering[cite: 1, 2].",
-    "reason_summary": "While it demands an immediate leap from standard cloud warehousing to frontier foundation models, it fulfills your career objective to grow within advanced AI landscape ecosystems under a strong global leadership banner[cite: 1, 2]."
+    "recommendation": "Consider if interested in an AI-focused solutions role, though it strays from core BI.",
+    "reason_summary": "Great AI exposure and seniority, but it is a customer-facing solutions architecture role rather than enterprise data leadership.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Director, Delivery Practitioner",
     "company": "BNY",
-    "skill_match": 75,
-    "experience_level_match": 85,
-    "company_fit": 95,
-    "growth_potential": 80,
-    "red_flags": 20,
-    "overall_fit": 74,
+    "url": "https://www.linkedin.com/comm/jobs/view/4414976869/",
+    "skill_match": 65,
+    "experience_level_match": 75,
+    "company_fit": 85,
+    "growth_potential": 75,
+    "red_flags": 10,
+    "overall_fit": 66,
     "fit_category": "medium",
     "key_strengths": [
-      "Target company fit within top-tier financial wealth management solutions sector[cite: 1, 2].",
-      "Leverages deep understanding of financial operating models, client workflows, and reporting frameworks[cite: 1, 2]."
+      "Financial services background",
+      "Technology delivery leadership",
+      "AI/Tech modernization experience"
     ],
     "skill_gaps": [
-      "Leans toward post-sales consultative workflow design and implementation support rather than direct cloud data architecture or data platform modernization[cite: 1, 2].",
-      "Less focus on hands-on deployment of cutting-edge tools like Fabric or building advanced analytics pipelines internally[cite: 1, 2]."
+      "Role is broadly defined; may not fully leverage specific BI/Fabric expertise"
     ],
     "red_flags_list": [
-      "Risk of a workflow-centric or application-training heavy mandate rather than a true data/BI transformation strategy engine[cite: 1, 2]."
+      "Generic role description lacks specific data architecture focus"
     ],
-    "recommendation": "Medium match - Suitable if you want to focus strictly on wealth management platform delivery and client operating model design[cite: 1, 2].",
-    "reason_summary": "The role successfully combines your financial services history with senior client-facing delivery but reduces exposure to core cloud data architecture and hands-on modern data stack tool optimization[cite: 1, 2]."
+    "recommendation": "A potential fit due to target company and delivery focus, pending more specific role details.",
+    "reason_summary": "Strong company fit, but the role appears more general tech delivery than specialized data analytics leadership.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
   },
   {
     "title": "Technical Director - Remote Work",
@@ -11020,28 +11040,28 @@
   {
     "title": "Strategy & Operations – Data & Analytics Director",
     "company": "Elliott Davis",
-    "url": "https://www.linkedin.com/comm/jobs/view/4441625129/",
+    "url": "https://www.linkedin.com/comm/jobs/view/4441615660/",
     "skill_match": 85,
-    "experience_level_match": 80,
-    "company_fit": 80,
-    "growth_potential": 80,
+    "experience_level_match": 85,
+    "company_fit": 60,
+    "growth_potential": 75,
     "red_flags": 0,
-    "overall_fit": 74,
+    "overall_fit": 70,
     "fit_category": "medium",
     "key_strengths": [
-      "Data strategy",
-      "Operations improvement",
-      "Consulting approach"
+      "Data & Analytics strategy",
+      "Operations leadership",
+      "Enterprise metrics"
     ],
     "skill_gaps": [
-      "None identified"
+      "Consulting/Accounting firm specific dynamics"
     ],
     "red_flags_list": [
       "None identified"
     ],
-    "recommendation": "Solid opportunity to lead Data & Analytics strategy in a consulting environment.",
-    "reason_summary": "Good match for data strategy and operations leadership, fitting the candidate's consulting targets.",
-    "evaluated_at": "2026-09-21T12:08:00-04:00",
+    "recommendation": "Good technical and leadership fit, though company is outside core target list.",
+    "reason_summary": "Matches core competencies in data strategy and analytics leadership, but Elliott Davis is not a target tier firm.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
     "model": "antigravity-agent-session"
   },
   {
@@ -21751,6 +21771,705 @@
     "recommendation": "Skip. Unrelated role.",
     "reason_summary": "Academic program director role, completely unrelated to enterprise data.",
     "evaluated_at": "2026-09-21T15:25:16-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Test Multi File 1",
+    "company": "Company 1",
+    "url": "http://test1",
+    "skill_match": 80,
+    "experience_level_match": 80,
+    "company_fit": 80,
+    "growth_potential": 80,
+    "red_flags": 0,
+    "overall_fit": 80,
+    "fit_category": "high",
+    "key_strengths": [
+      "a"
+    ],
+    "skill_gaps": [
+      "b"
+    ],
+    "red_flags_list": [
+      "c"
+    ],
+    "recommendation": "apply",
+    "reason_summary": "good",
+    "evaluated_at": "2023-01-01T00:00:00Z",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Test Multi File 2",
+    "company": "Company 2",
+    "url": "http://test2",
+    "skill_match": 50,
+    "experience_level_match": 50,
+    "company_fit": 50,
+    "growth_potential": 50,
+    "red_flags": 50,
+    "overall_fit": 40,
+    "fit_category": "low",
+    "key_strengths": [
+      "a"
+    ],
+    "skill_gaps": [
+      "b"
+    ],
+    "red_flags_list": [
+      "c"
+    ],
+    "recommendation": "skip",
+    "reason_summary": "bad",
+    "evaluated_at": "2023-01-01T00:00:00Z",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Strategy Director",
+    "company": "Kidde Global Solutions",
+    "url": "https://www.linkedin.com/comm/jobs/view/4411563831/",
+    "skill_match": 30,
+    "experience_level_match": 70,
+    "company_fit": 40,
+    "growth_potential": 60,
+    "red_flags": 50,
+    "overall_fit": 39,
+    "fit_category": "skip",
+    "key_strengths": [
+      "Strategy leadership"
+    ],
+    "skill_gaps": [
+      "Fire and life safety industry",
+      "General corporate strategy rather than tech/data strategy"
+    ],
+    "red_flags_list": [
+      "Wrong industry",
+      "Not an IT/Data role"
+    ],
+    "recommendation": "Skip. Not aligned with career goals or expertise.",
+    "reason_summary": "This is a general corporate strategy role in the fire safety industry, completely unrelated to data and analytics.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Portfolio Leader (Manager/Director Levels)",
+    "company": "Salesforce",
+    "url": "https://www.linkedin.com/comm/jobs/view/4434076170/",
+    "skill_match": 60,
+    "experience_level_match": 70,
+    "company_fit": 95,
+    "growth_potential": 80,
+    "red_flags": 10,
+    "overall_fit": 66,
+    "fit_category": "medium",
+    "key_strengths": [
+      "AI adoption",
+      "Target company",
+      "Enterprise technology leadership"
+    ],
+    "skill_gaps": [
+      "Salesforce specific product suite (Agentforce) expertise"
+    ],
+    "red_flags_list": [
+      "Broad portfolio management rather than deep data platform engineering"
+    ],
+    "recommendation": "Worth a look given the target company (Salesforce), though role is broader than data.",
+    "reason_summary": "Excellent company fit, but the role is more focused on general CRM/AI portfolio management than data analytics and BI.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director of Interval Travel",
+    "company": "Marriott Vacations Worldwide",
+    "url": "https://www.linkedin.com/comm/jobs/view/4450362917/",
+    "skill_match": 20,
+    "experience_level_match": 60,
+    "company_fit": 40,
+    "growth_potential": 50,
+    "red_flags": 60,
+    "overall_fit": 21,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Travel industry operations",
+      "Supplier partnerships"
+    ],
+    "red_flags_list": [
+      "Not an IT/Data role",
+      "Completely different industry focus"
+    ],
+    "recommendation": "Skip. Operational role in the travel industry.",
+    "reason_summary": "The role is focused on travel supplier operations and cruise business growth, unrelated to data analytics.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director -TradeCo Inventory Finance Originations",
+    "company": "Wells Fargo",
+    "url": "https://www.linkedin.com/comm/jobs/view/4460833318/",
+    "skill_match": 20,
+    "experience_level_match": 60,
+    "company_fit": 60,
+    "growth_potential": 60,
+    "red_flags": 60,
+    "overall_fit": 26,
+    "fit_category": "skip",
+    "key_strengths": [
+      "Financial services background"
+    ],
+    "skill_gaps": [
+      "Supply chain finance",
+      "Inventory finance originations",
+      "Asset origination"
+    ],
+    "red_flags_list": [
+      "Core finance/banking role, not technology/data"
+    ],
+    "recommendation": "Skip. This is a traditional finance/lending role, not a data leadership position.",
+    "reason_summary": "Despite being in a target industry, this is a specialized finance origination role with no connection to data architecture.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Sr Director, IT Data & Analytics Engagement",
+    "company": "Philip Morris International U.S.",
+    "url": "https://www.linkedin.com/comm/jobs/view/4423308293/",
+    "skill_match": 85,
+    "experience_level_match": 90,
+    "company_fit": 70,
+    "growth_potential": 85,
+    "red_flags": 0,
+    "overall_fit": 75,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Data & Analytics leadership",
+      "Enterprise IT strategy",
+      "Business partnership and engagement"
+    ],
+    "skill_gaps": [
+      "None identified"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Solid opportunity matching seniority and core data leadership skills.",
+    "reason_summary": "Strong match for data strategy and business engagement at the right seniority, though not in a primary target industry.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director, Solutions - Commercial Enablement",
+    "company": "DP World",
+    "url": "https://www.linkedin.com/comm/jobs/view/4414639603/",
+    "skill_match": 30,
+    "experience_level_match": 60,
+    "company_fit": 40,
+    "growth_potential": 50,
+    "red_flags": 50,
+    "overall_fit": 25,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Logistics and supply chain",
+      "3PL operations",
+      "Commercial bidding/pricing"
+    ],
+    "red_flags_list": [
+      "Wrong domain (Logistics/Supply Chain solutions)"
+    ],
+    "recommendation": "Skip. Out of scope for candidate's background.",
+    "reason_summary": "Logistics and supply chain commercial operations role, lacking any connection to data analytics or enterprise IT.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director - IT Strategy Consulting - AI",
+    "company": "Gartner",
+    "url": "https://www.linkedin.com/comm/jobs/view/4450586529/",
+    "skill_match": 85,
+    "experience_level_match": 85,
+    "company_fit": 80,
+    "growth_potential": 85,
+    "red_flags": 0,
+    "overall_fit": 76,
+    "fit_category": "medium",
+    "key_strengths": [
+      "AI workflow implementation",
+      "IT Strategy",
+      "Enterprise transformation",
+      "Advisory skills"
+    ],
+    "skill_gaps": [
+      "Formal IT strategy consulting experience"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Strong fit for leveraging recent AI-driven BI transformations into a strategic advisory role.",
+    "reason_summary": "Identical to the other Gartner posting; highly relevant to candidate's AI transformation experience.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Application Support Tech Lead – Data & Analytics Platforms – VP",
+    "company": "Citi",
+    "url": "https://www.linkedin.com/comm/jobs/view/4440755748/",
+    "skill_match": 75,
+    "experience_level_match": 60,
+    "company_fit": 90,
+    "growth_potential": 50,
+    "red_flags": 50,
+    "overall_fit": 48,
+    "fit_category": "low",
+    "key_strengths": [
+      "Financial services",
+      "Data & Analytics platforms"
+    ],
+    "skill_gaps": [
+      "None identified"
+    ],
+    "red_flags_list": [
+      "Highly operational/support focused role",
+      "Potential step down in strategic scope"
+    ],
+    "recommendation": "Pass due to the operational support nature of the role, despite being at a target company.",
+    "reason_summary": "While at a target company (Citi), this is a pure operational support role which is a stated deal-breaker.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Senior Manager, Cybersecurity, Metrics & Reporting - Remote",
+    "company": "Stryker",
+    "url": "https://www.linkedin.com/comm/jobs/view/4465790175/",
+    "skill_match": 50,
+    "experience_level_match": 70,
+    "company_fit": 50,
+    "growth_potential": 60,
+    "red_flags": 30,
+    "overall_fit": 48,
+    "fit_category": "low",
+    "key_strengths": [
+      "Metrics and reporting",
+      "Data analytics"
+    ],
+    "skill_gaps": [
+      "Cybersecurity domain expertise",
+      "Cyber risk programs"
+    ],
+    "red_flags_list": [
+      "Focus is specifically on cybersecurity operations, not general data architecture"
+    ],
+    "recommendation": "Skip. Niche focus on cybersecurity reporting does not match core BI/Data engineering strengths.",
+    "reason_summary": "The role requires specific cybersecurity risk and compliance domain knowledge rather than enterprise data platform architecture.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Creative Services Director",
+    "company": "WPBF 25",
+    "url": "https://www.linkedin.com/comm/jobs/view/4439230846/",
+    "skill_match": 10,
+    "experience_level_match": 40,
+    "company_fit": 30,
+    "growth_potential": 40,
+    "red_flags": 60,
+    "overall_fit": 19,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Media marketing",
+      "Creative services",
+      "TV/Broadcast production"
+    ],
+    "red_flags_list": [
+      "Completely unrelated industry and function"
+    ],
+    "recommendation": "Skip.",
+    "reason_summary": "Media production and creative marketing role with no connection to data analytics.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director of Signature Events & Engagement",
+    "company": "Palm Beach Atlantic University",
+    "url": "https://www.linkedin.com/comm/jobs/view/4420163052/",
+    "skill_match": 10,
+    "experience_level_match": 40,
+    "company_fit": 30,
+    "growth_potential": 40,
+    "red_flags": 60,
+    "overall_fit": 19,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Event planning",
+      "University advancement"
+    ],
+    "red_flags_list": [
+      "Unrelated function",
+      "Below target compensation band"
+    ],
+    "recommendation": "Skip.",
+    "reason_summary": "University event management role.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Dir Diagnostic Imaging",
+    "company": "HCA Florida JFK Hospital",
+    "url": "https://www.linkedin.com/comm/jobs/view/4442414768/",
+    "skill_match": 10,
+    "experience_level_match": 40,
+    "company_fit": 30,
+    "growth_potential": 40,
+    "red_flags": 60,
+    "overall_fit": 19,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Clinical imaging",
+      "Healthcare operations"
+    ],
+    "red_flags_list": [
+      "Clinical healthcare role"
+    ],
+    "recommendation": "Skip.",
+    "reason_summary": "Clinical hospital administration role.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Market Sector Leader, Institutional (Civic + Education)",
+    "company": "LEO A DALY",
+    "url": "https://www.linkedin.com/comm/jobs/view/4432846698/",
+    "skill_match": 10,
+    "experience_level_match": 40,
+    "company_fit": 30,
+    "growth_potential": 40,
+    "red_flags": 60,
+    "overall_fit": 19,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Architecture/Engineering business development",
+      "Institutional sales"
+    ],
+    "red_flags_list": [
+      "Business development role in architecture firm"
+    ],
+    "recommendation": "Skip.",
+    "reason_summary": "Business development role for an architecture/engineering firm.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Head of Data Architecture - Director",
+    "company": "Citi",
+    "url": "https://www.linkedin.com/comm/jobs/view/4432972544/",
+    "skill_match": 95,
+    "experience_level_match": 90,
+    "company_fit": 90,
+    "growth_potential": 95,
+    "red_flags": 0,
+    "overall_fit": 93,
+    "fit_category": "high",
+    "key_strengths": [
+      "Enterprise data architecture",
+      "Financial services domain",
+      "Senior technology leadership",
+      "Data Strategy"
+    ],
+    "skill_gaps": [
+      "None identified"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Top priority application. Perfect alignment with candidate's strategic enterprise data architecture skills at a target company.",
+    "reason_summary": "An ideal match: Head of Data Architecture at Citi directly leverages the candidate's deep financial services background and enterprise data strategy expertise.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Principal AI Enablement",
+    "company": "Florida Blue",
+    "url": "https://www.linkedin.com/comm/jobs/view/4469103405/",
+    "skill_match": 85,
+    "experience_level_match": 85,
+    "company_fit": 70,
+    "growth_potential": 85,
+    "red_flags": 0,
+    "overall_fit": 74,
+    "fit_category": "medium",
+    "key_strengths": [
+      "AI enablement",
+      "Automation delivery",
+      "Transformational technology leadership"
+    ],
+    "skill_gaps": [
+      "Healthcare/Insurance domain knowledge"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Strongly consider. Great opportunity to lead enterprise AI enablement leveraging recent AI-driven automation successes.",
+    "reason_summary": "Good technical and leadership fit focusing on AI enablement, a core strength demonstrated in recent projects.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Sr. Director, Data Science & Experimentation",
+    "company": "Yahoo",
+    "url": "https://www.linkedin.com/comm/jobs/view/4441374156/",
+    "skill_match": 60,
+    "experience_level_match": 85,
+    "company_fit": 80,
+    "growth_potential": 85,
+    "red_flags": 20,
+    "overall_fit": 66,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Senior data leadership",
+      "Technology company environment"
+    ],
+    "skill_gaps": [
+      "Causal inference",
+      "Advanced pure data science (A/B testing, multi-armed bandits)"
+    ],
+    "red_flags_list": [
+      "Role leans heavily into statistical modeling and pure data science rather than BI/Data Engineering"
+    ],
+    "recommendation": "Consider if willing to stretch into pure data science/experimentation, though it is outside core BI competencies.",
+    "reason_summary": "The role requires deep statistical and experimentation (Data Science) expertise, which differs from the candidate's BI and Data Platform architecture focus.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Head of Business Intelligence",
+    "company": "Tilt",
+    "url": "https://www.linkedin.com/comm/jobs/view/4450780420/",
+    "skill_match": 95,
+    "experience_level_match": 80,
+    "company_fit": 70,
+    "growth_potential": 85,
+    "red_flags": 0,
+    "overall_fit": 75,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Deep BI expertise",
+      "Semantic modeling",
+      "Metadata management",
+      "Data democratization"
+    ],
+    "skill_gaps": [
+      "Startup/Fintech ecosystem experience might be lighter compared to enterprise"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Great functional fit for a pure BI leadership role focusing on semantic models.",
+    "reason_summary": "The role perfectly matches the candidate's hands-on and strategic expertise in modern BI, semantic modeling, and metadata management.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director, Large Deductible",
+    "company": "EMPLOYERS",
+    "url": "https://www.linkedin.com/comm/jobs/view/4430279711/",
+    "skill_match": 10,
+    "experience_level_match": 40,
+    "company_fit": 40,
+    "growth_potential": 40,
+    "red_flags": 60,
+    "overall_fit": 21,
+    "fit_category": "skip",
+    "key_strengths": [
+      "None identified"
+    ],
+    "skill_gaps": [
+      "Workers' compensation insurance",
+      "Underwriting",
+      "Loss fund administration"
+    ],
+    "red_flags_list": [
+      "Insurance underwriting role, not tech/data"
+    ],
+    "recommendation": "Skip.",
+    "reason_summary": "This is a specialized workers' compensation insurance product role, unrelated to data and technology.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director, Business Intelligence Team",
+    "company": "Miami University",
+    "url": "https://www.linkedin.com/comm/jobs/view/4412812708/",
+    "skill_match": 90,
+    "experience_level_match": 80,
+    "company_fit": 50,
+    "growth_potential": 70,
+    "red_flags": 40,
+    "overall_fit": 64,
+    "fit_category": "medium",
+    "key_strengths": [
+      "BI strategy",
+      "Scalable data architecture",
+      "Team leadership"
+    ],
+    "skill_gaps": [
+      "Higher education domain"
+    ],
+    "red_flags_list": [
+      "Compensation ($135K-$155K) is well below target band ($200K-$300K)"
+    ],
+    "recommendation": "Pass based on compensation mismatch, though functionally it is a good fit.",
+    "reason_summary": "While the technical and leadership requirements align well, the posted salary is significantly below the candidate's target compensation.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Sr. Manager, Technical Product Management",
+    "company": "McKesson",
+    "url": "https://www.linkedin.com/comm/jobs/view/4424738793/",
+    "skill_match": 85,
+    "experience_level_match": 70,
+    "company_fit": 80,
+    "growth_potential": 75,
+    "red_flags": 20,
+    "overall_fit": 68,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Data product strategy",
+      "Enterprise Data Warehouse",
+      "Analytics and reporting"
+    ],
+    "skill_gaps": [
+      "Technical Product Management specific methodologies"
+    ],
+    "red_flags_list": [
+      "Potentially a step down in seniority from AVP/SVP"
+    ],
+    "recommendation": "Consider if willing to take a Sr. Manager title for a strong data product role at a Fortune 10 company.",
+    "reason_summary": "Good functional match for enterprise data products, but the seniority level might be lower than desired.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Senior Manager, Data Analysis  (People Leader)",
+    "company": "Capital One",
+    "url": "https://www.linkedin.com/comm/jobs/view/4367953082/",
+    "skill_match": 75,
+    "experience_level_match": 75,
+    "company_fit": 90,
+    "growth_potential": 80,
+    "red_flags": 10,
+    "overall_fit": 70,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Financial services experience",
+      "Data analysis and validation",
+      "Team leadership"
+    ],
+    "skill_gaps": [
+      "Analytical tool risk validation is a specific niche"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Solid opportunity at a top target company, though role focuses on validation rather than architecture.",
+    "reason_summary": "Strong company alignment and acceptable seniority, but the role focuses more on risk validation of analytical tools than building modern data architectures.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Senior Manager, Data Analysis",
+    "company": "Capital One",
+    "url": "https://www.linkedin.com/comm/jobs/view/4371471449/",
+    "skill_match": 75,
+    "experience_level_match": 75,
+    "company_fit": 90,
+    "growth_potential": 80,
+    "red_flags": 10,
+    "overall_fit": 70,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Financial services experience",
+      "Data analysis and validation",
+      "Team leadership"
+    ],
+    "skill_gaps": [
+      "Analytical tool risk validation is a specific niche"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Solid opportunity at a top target company, though role focuses on validation rather than architecture.",
+    "reason_summary": "Identical to the other Capital One role; focuses heavily on risk validation of analytical tools.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Senior Principal Product Manager - GTM Analytics",
+    "company": "Palo Alto Networks",
+    "url": "https://www.linkedin.com/comm/jobs/view/4382744380/",
+    "skill_match": 60,
+    "experience_level_match": 70,
+    "company_fit": 80,
+    "growth_potential": 60,
+    "red_flags": 0,
+    "overall_fit": 61,
+    "fit_category": "medium",
+    "key_strengths": [
+      "Data analytics expertise",
+      "Strategic vision"
+    ],
+    "skill_gaps": [
+      "No explicit Product Management title in history",
+      "GTM analytics specific experience not highlighted"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Evaluate further to see if the role aligns with data leadership rather than pure product management.",
+    "reason_summary": "The job posting is very sparse and cuts off before detailing the role. Scored conservatively based on title and company fit.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
+    "model": "antigravity-agent-session"
+  },
+  {
+    "title": "Director of Data & Analytics",
+    "company": "Gallagher",
+    "url": "https://www.linkedin.com/comm/jobs/view/4424776294/",
+    "skill_match": 95,
+    "experience_level_match": 95,
+    "company_fit": 90,
+    "growth_potential": 90,
+    "red_flags": 0,
+    "overall_fit": 84,
+    "fit_category": "high",
+    "key_strengths": [
+      "Enterprise data strategy",
+      "Analytics team leadership",
+      "Data warehouse and BI experience"
+    ],
+    "skill_gaps": [
+      "None identified"
+    ],
+    "red_flags_list": [
+      "None identified"
+    ],
+    "recommendation": "Highly recommended. The role aligns perfectly with the candidate's target title, industry, and leadership experience.",
+    "reason_summary": "Strong alignment with candidate's target roles, industry preference, and core competencies in enterprise data analytics leadership.",
+    "evaluated_at": "2026-09-21T20:49:44-04:00",
     "model": "antigravity-agent-session"
   }
 ]

@@ -8,14 +8,17 @@ Execute the deterministic Job Scout workflow to process Gmail job alerts and eva
    ```
 
 2. **Evaluate Fit via Interactive Agent Session (Primary — No API Key Required)**:
+   *If skipping or bypassing the fetch step, do not restrict evaluation to today; inspect `data/inbox_queue.json` and evaluate all pending jobs (`status: 'pending_evaluation'`) across all dates or the desired window.*
+   
+   Prepare batches:
    ```bash
-   python tools/evaluate_jobs_gemini.py --days 14 --filter-only
+   python tools/evaluate_jobs_gemini.py --prepare-batches
    ```
-   - In **Antigravity (`agy`)**: delegate scoring to the dedicated `job-evaluator` subagent via `invoke_subagent` (pinned `Model: "pro"`). Tag records `"model": "antigravity-agent-session"`.
-   - In **Standalone Gemini CLI**: score jobs inline against `data/profile.md` using the fixed 5-dimension rubric. Tag records `"model": "gemini-agent-session"`.
-   - Write evaluations as a JSON array to scratch file `data/.tmp_agent_evals.json`, then merge back:
+   - In **Antigravity (`agy`)**: delegate scoring to the dedicated `job-evaluator` subagent via `invoke_subagent` (pinned `Model: "pro"`). Tag records `"model": "antigravity-agent-session"`. The subagent writes directly to `data/eval_batches/batch_XX.evaluated.json`.
+   - In **Standalone Gemini CLI**: score jobs inline against `data/profile.md` using the fixed 5-dimension rubric. Tag records `"model": "gemini-agent-session"`. Write directly to `data/eval_batches/batch_XX.evaluated.json`.
+   - Merge back all evaluated batches:
    ```bash
-   python tools/evaluate_jobs_gemini.py --save-evaluations data/.tmp_agent_evals.json
+   python tools/evaluate_jobs_gemini.py --save-evaluations "data/eval_batches/*.evaluated.json"
    ```
    *(Note: Calling `python tools/evaluate_jobs_gemini.py` with external Gemini API is strictly a headless fallback for unattended pipelines, not for interactive agent sessions.)*
 
