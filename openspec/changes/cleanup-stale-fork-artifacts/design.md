@@ -15,6 +15,41 @@ The project has evolved from a Danish job-portal scraping workflow to a Gmail-al
 - Archive to a separate branch or external repo (git history is sufficient)
 - Rewrite `/apply`'s full implementation in this change (scope limited to alignment clarification)
 
+## Technical Approach
+
+The cleanup follows a sequential workflow to minimize risk and ensure verification at each step:
+
+```mermaid
+flowchart TD
+    A["Start: feature/SCRUM-17 branch"] --> B["Delete 4 Danish skills"]
+    B --> B1["❌ .agents/skills/jobbank-search/"]
+    B --> B2["❌ .agents/skills/jobdanmark-search/"]
+    B --> B3["❌ .agents/skills/jobindex-search/"]
+    B --> B4["❌ .agents/skills/jobnet-search/"]
+    B1 --> C["Update documentation"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    C --> C1["📝 Clarify .claude/commands/apply.md"]
+    C1 --> D["Verify no broken references"]
+    D --> D1["🔍 Grep for skill names"]
+    D1 --> D2{References found?}
+    D2 -->|Yes| E["❌ FAIL - Investigate"]
+    D2 -->|No| F["✅ PASS - Safe to commit"]
+    E --> G["Resolve and retry"]
+    G --> D
+    F --> H["Single atomic commit"]
+    H --> I["Merge to dev branch"]
+    I --> J["Complete: SCRUM-17"]
+```
+
+**Workflow rationale**:
+1. Delete all four skills atomically (no intermediate partial states)
+2. Update docs to resolve CLAUDE.md contradiction
+3. Verify no stray references to deleted code
+4. Single commit captures the entire cleanup as one cohesive change
+5. Git history fully preserved for audit and recovery
+
 ## Decisions
 
 ### Decision 1: Direct Deletion vs. Archive
