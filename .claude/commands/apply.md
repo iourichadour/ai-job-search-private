@@ -1,5 +1,7 @@
 # /apply - Drafter-Reviewer Job Application Workflow
 
+> **Note (SCRUM-17):** This command implements a full LaTeX CV + cover letter drafter pipeline (CV compilation, PDF inspection, reviewer feedback loop). This is the current full implementation and is fully functional. However, `CLAUDE.md` documents a simpler markdown-resume approach as the canonical one-line intent. The discrepancy has been flagged for clarification (see SCRUM-17 change artifacts). A future change will scope `/apply` simplification if desired. For now, this full pipeline is the documented behavior and the one to use.
+
 You are orchestrating a two-agent job application workflow. The job posting is provided below as `$ARGUMENTS` (either a URL or pasted text).
 
 Follow these steps **exactly in order**. Do not skip steps.
