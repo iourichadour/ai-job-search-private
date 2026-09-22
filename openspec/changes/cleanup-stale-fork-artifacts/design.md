@@ -2,11 +2,15 @@
 
 The project has evolved from a Danish job-portal scraping workflow to a Gmail-alert-based sourcing system. The original fork from MadsLorentzen/ai-job-search included CLI tools for four Danish portals (JobBank, JobDanmark, JobIndex, JobNet), but these are no longer invoked anywhere in the active workflow (see RESUME.md, "Confirmed dead"). The `/apply` command's implementation contradicts the behavior documented in CLAUDE.md, creating maintenance confusion and increased cognitive load when reasoning about the workflow.
 
+Additionally, README.md and SETUP.md still describe the original Danish job-portal scraping workflow, Bun installation for CLI tools, and LaTeX CV/cover letter compilation—all of which are outdated. These documents directly contradict the actual current workflow (Gmail-alert sourcing, agent-based evaluation, simplified application process).
+
 ## Goals / Non-Goals
 
 **Goals:**
 - Remove all unused Danish job-portal scrapers (`jobbank-search`, `jobdanmark-search`, `jobindex-search`, `jobnet-search` skills)
 - Clarify `/apply` command to align with CLAUDE.md's one-line description or document the actual full pipeline
+- Rewrite README.md to document the current Gmail-alert-based workflow (not Danish portal scraping)
+- Update SETUP.md to reflect actual dependencies (remove Bun, LaTeX; add Gmail OAuth if needed)
 - Reduce repository size and maintenance surface
 - Preserve full git history for audit/recovery
 
@@ -78,9 +82,19 @@ flowchart TD
 ## Migration Plan
 
 1. Delete directories: `.agents/skills/{jobbank-search,jobdanmark-search,jobindex-search,jobnet-search}/`
-2. Update `.claude/commands/apply.md` to document the actual full pipeline with a note about ongoing clarification (link to a followup openspec change if it exists)
-3. Single commit: `chore(SCRUM-13): remove dead Danish job-portal scrapers, clarify /apply pipeline`
-4. No rollback needed (git history is fully recoverable)
+2. Update `.claude/commands/apply.md` to document the actual full pipeline with a note about ongoing clarification
+3. Rewrite `README.md`:
+   - Remove Danish job-portal scraping references
+   - Document actual workflow: Gmail alerts → agent evaluation → application
+   - Simplify Prerequisites (remove Bun, LaTeX unless explicitly needed)
+   - Preserve MIT license attribution to Mads Lorentzen
+4. Update `SETUP.md`:
+   - Remove Bun installation
+   - Remove LaTeX setup (or mark as optional for legacy `/apply` pipeline)
+   - Focus on Claude Code and Python setup
+   - Add Gmail OAuth configuration if required
+5. Single commit: `chore(SCRUM-17): remove dead Danish job-portal scrapers, clarify /apply, rewrite docs`
+6. No rollback needed (git history is fully recoverable)
 
 ## Open Questions
 
