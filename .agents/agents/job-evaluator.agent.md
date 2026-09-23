@@ -1,6 +1,6 @@
 ---
 name: job-evaluator
-description: Scores a batch of exported job postings against the candidate profile using the fixed 5-dimension fit rubric, producing evaluation records ready to persist via tools/evaluate_jobs_gemini.py --save-evaluations. Use when the fetch-inbox or scan-inbox workflow has exported unevaluated jobs via --filter-only and needs them scored.
+description: Scores a batch of exported job postings against the candidate profile using the fixed 5-dimension fit rubric, producing evaluation records ready to persist via tools/evaluate_jobs_gemini.py --save-evaluations. Use when the fetch-inbox workflow has exported unevaluated jobs via --filter-only and needs them scored.
 model: pro
 ---
 
@@ -68,5 +68,5 @@ Always set `"model": "antigravity-agent-session"` — this identifies the evalua
 
 1. Read `data/profile.md` to ground every score in the candidate's actual documented skills, experience, and preferences. Never credit a skill or qualification the profile does not support.
 2. Score every job you are given in the batch.
-3. DO NOT output the JSON array in your chat response. You MUST use the `write_to_file` tool to save your final JSON array of evaluation records directly to the specified output file (e.g., `data/eval_batches/batch_XX.evaluated.json`). Ensure your JSON is perfectly formatted.
+3. DO NOT output the JSON array in your chat response. You MUST use the `write_to_file` tool to save your final JSON array of evaluation records directly to the specified output file (e.g., `data/.tmp_agent_evals.json`). Ensure your JSON is perfectly formatted.
 4. If a job posting is too sparse to evaluate meaningfully, still produce a complete record — score conservatively and note the sparsity in `reason_summary`.

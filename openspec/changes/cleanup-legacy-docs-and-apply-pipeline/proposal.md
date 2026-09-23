@@ -17,7 +17,7 @@ The archived change `2026-09-22-cleanup-stale-fork-artifacts` (SCRUM-17) marked 
 - `job-application`: Defines the `/apply` command's drafter-reviewer workflow — fit evaluation gate, markdown CV + cover letter drafting into `applications/YYYY-MM_Company/`, reviewer critique/revision loop, and the verification checklist. Never previously spec'd; this is the first formal capture of `/apply`'s expected behavior, now aligned with `CLAUDE.md` instead of the legacy LaTeX implementation.
 
 ### Modified Capabilities
-(none — `job-application` did not exist as a spec'd capability before this change, so there is no existing delta to apply)
+- `job-evaluation`: **Added 2026-09-22**, discovered during implementation. Consolidating to a single Gmail entry point (Decision 6 in `design.md`) deletes `/scan-inbox`, which the existing "Evaluating pending jobs in an interactive session" requirement's scenario names explicitly ("fetch-inbox or scan-inbox"). That scenario is corrected to name only `fetch-inbox`, the sole remaining inbox-scanning entry point. No other behavior in this capability changes.
 
 ## Impact
 

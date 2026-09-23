@@ -36,7 +36,7 @@
 - [ ] 6.2 Move `data/eval_batches/` and any `data/scratch_*.json` -> `private/eval_batches/`, `private/scratch_*.json`
 - [ ] 6.3 Move `job_search_tracker.csv` -> `private/job_search_tracker.csv`
 - [ ] 6.4 Update `tools/fetch_inbox.py`, `tools/evaluate_jobs_gemini.py`, `tools/generate_mockup.py` to import these paths from `tools/config.py`
-- [ ] 6.5 Update `.claude/commands/fetch-inbox.md`, `.claude/commands/scan-inbox.md` (if kept per sibling change's decision), skill mirrors, and any OpenSpec spec prose (`openspec/specs/inbox-ingestion/spec.md`, `openspec/specs/job-evaluation/spec.md`) that names these paths
+- [ ] 6.5 Update `.claude/commands/fetch-inbox.md`, skill mirrors, and any OpenSpec spec prose (`openspec/specs/inbox-ingestion/spec.md`, `openspec/specs/job-evaluation/spec.md`) that names these paths. **Note (2026-09-22)**: `.claude/commands/scan-inbox.md` no longer exists — `cleanup-legacy-docs-and-apply-pipeline` deleted `/scan-inbox` entirely (consolidated to a single Gmail entry point via `/fetch-inbox`); nothing to update there.
 - [ ] 6.6 Run `python tools/fetch_inbox.py` and `python tools/generate_mockup.py` end to end and verify both complete without error against the new paths
 
 ## 7. Move `documents/` Personal Content

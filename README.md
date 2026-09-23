@@ -34,6 +34,19 @@ flowchart LR
 - Python 3.10+
 - Gmail account with job alert subscriptions (LinkedIn, Indeed)
 
+### If you plan to publish or open-source your fork
+
+This repo as committed is the maintainer's own working profile, not a scrubbed template — publishing it as-is publishes that data. Before making a fork public, scrub or exclude:
+
+- `CLAUDE.md` — full candidate profile
+- `data/profile.md` — candidate profile source of truth
+- `.claude/skills/job-application-assistant/01-candidate-profile.md` — structured profile data
+- `cv/*.md` — per-application tailored resumes
+- `applications/` — generated CV/cover-letter output per application
+- `job_search_tracker.csv` — application tracking spreadsheet
+- `documents/` — source materials (CV, LinkedIn export, diplomas, references)
+- `config.local.json`, `credentials.json`, `data/token.json` — already gitignored, but carry real credentials/PII, so call them out explicitly too
+
 ## Quick start
 
 ### 1. Clone
@@ -223,26 +236,26 @@ The framework supports two distinct modes of job searching:
 
 To get the most from this, invest time during `/setup` in describing not just your experience, but what energized you, what drained you, and what you'd want more of. This context directly shapes how the system evaluates fit and which roles it surfaces.
 
-## Repo cleanup: pending review
+## Repo cleanup (2026-09-22)
 
-A repo-wide audit (2026-09-22) found leftover artifacts from this project's original Danish job-portal fork that aren't part of the workflow described above. Full detail and rationale: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md`. Nothing listed here has been deleted yet — this is the review checkpoint.
+A repo-wide audit found leftover artifacts from this project's original Danish job-portal fork that weren't part of the workflow described above. Full detail and rationale: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md`.
 
-**Confirmed dead (no live references anywhere):**
+**Deleted (confirmed dead, no live references):**
 - `job_scraper/` — empty shell left over from the pre-Gmail-alert scraper era
 - `tools/evaluate_jobs.py`, `evaluate_past_week.py`, `print_data_ai_roles.py`, `refetch_jobs_browser.py`, `summarize_evals.py`
-- Duplicate `credentials.json` (identical copies at repo root and `private/credentials.json`)
+- Duplicate `credentials.json` (repo root is the live copy, read by `tools/fetch_inbox.py`)
 - Accumulated `data/` scratch/backup files (`inbox_queue.json.bkp.json`, `scratch_*.json`, `evaluated_jobs_summary.md`)
-- Top-level `prompts/scan_inbox_workflow.md` (superseded by `.gemini/prompts/scan_inbox_workflow.md`)
+- Top-level `prompts/scan_inbox_workflow.md`
 
-**Kept, not deleted:** `_brief/mockup.html`, `_brief/report-spec.md`, and `tools/generate_mockup.py` were initially flagged here too, but they're a real, working dashboard, not dead code — see [Dashboard: review tracking](#dashboard-review-tracking) below.
+**Consolidated to a single Gmail entry point:** `/fetch-inbox` is now the only inbox-fetch-and-evaluate command. `/scan-inbox` (a near-identical fork, never documented) and the `job-scraper` skill (a separate, weaker fetch+assess pass with its own ad-hoc heuristic) were deleted entirely, including `.claude/skills/job-scraper/search-queries.md`'s leftover Danish-CLI-tools reference. `.claude/commands/setup.md` onboarding was updated to match (dropped its job-scraper/`,/scrape` wiring).
 
-**Needs a decision (real, but undocumented/duplicated/contradicts `CLAUDE.md`):**
-- Three overlapping "fetch + evaluate inbox" paths exist: `/fetch-inbox` (the one `CLAUDE.md` actually names), `/scan-inbox` (near-identical, never documented), and the `job-scraper` skill (natural-language-triggered, also fetches + evaluates)
-- `.claude/skills/job-scraper/search-queries.md` still says *"The framework's built-in CLI tools (jobindex, jobbank, etc.) are Denmark-specific"* — referencing CLI tools already deleted in SCRUM-17
+**Kept, not deleted:** `_brief/mockup.html`, `_brief/report-spec.md`, and `tools/generate_mockup.py` were initially flagged as dead too, but they're a real, working dashboard — see [Dashboard: review tracking](#dashboard-review-tracking) below.
+
+**Security fix:** the personal Gmail address hardcoded in `tools/fetch_inbox.py`'s search query is now read from a gitignored `config.local.json` (see `config.local.example.json` for the expected shape) instead of being baked into tracked source.
 
 **Deferred to a follow-up change, not decided here:** `tools/build_job_scout.py` ("job scout setup") and `data/master_resume.md` (its only consumer) are intentionally left untouched by this cleanup — kept intact, not deleted, not modified. Their keep/delete decision, hardcoded-email fix, and path/config handling all move to the staged `openspec/changes/centralize-config-and-private-store/` change instead.
 
-The LaTeX CV/cover-letter pipeline (`cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`) is **already decided** — confirmed for deletion, not listed above as pending.
+The LaTeX CV/cover-letter pipeline (`cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`) has been deleted, and `/apply` now drafts and outputs markdown directly to `applications/YYYY-MM_Company/`.
 
 ## Acknowledgements
 

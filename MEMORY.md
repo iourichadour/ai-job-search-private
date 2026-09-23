@@ -56,9 +56,9 @@ Adding or editing a file under `.claude/agents/*.md` does not make it invocable 
 This repo mirrors its commands/skills for three interactive agents:
 - `.claude/` — Claude Code. Evaluations tagged `model: "claude-agent-session"`.
 - `.gemini/` — Google's Gemini CLI (global model set once in `.gemini/settings.json`, currently `gemini-2.5-flash`; no per-task model override mechanism exists here). Evaluations tagged `model: "gemini-agent-session"`.
-- `.agents/` — a third agent runtime (likely "Antigravity" — matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Its `fetch-inbox`/`scan-inbox` skills already documented Agent Mode as the recommended default ahead of the other two. Evaluations tagged `model: "antigravity-agent-session"`.
+- `.agents/` — a third agent runtime (likely "Antigravity" — matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Its `fetch-inbox` skill already documented Agent Mode as the recommended default ahead of the other two. Evaluations tagged `model: "antigravity-agent-session"`.
 
-Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless a change is deliberately scoped to just one. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
+Keep changes to `fetch-inbox` behavior mirrored across all three unless a change is deliberately scoped to just one. `/scan-inbox` (a near-duplicate `fetch-inbox` fork) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point — see `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
 
 ## Gmail query is timestamp-based, not `is:unread`-based
 
@@ -88,7 +88,7 @@ Fix tracked in `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/` (tasks
 Tracked for a **separate, not-yet-created** OpenSpec change — see RESUME.md for current status. Do not fold cleanup work into unrelated changes.
 
 - `/apply` (`.claude/commands/apply.md`) still implements the original fork's full drafter-reviewer LaTeX pipeline (CV + cover letter, PDF compile-and-inspect, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — this **contradicts** `CLAUDE.md`'s current one-line description of `/apply` producing "a tailored markdown resume" in `applications/YYYY-MM_Company/` (a directory that doesn't exist). Nobody has reconciled these since `CLAUDE.md` was rewritten for the Gmail-alert workflow.
-- Danish job-portal scraper skills under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` appear fully dead now that sourcing is Gmail-alert-based.
-- `.claude/skills/job-scraper/SKILL.md` was already adapted (not dead) — it explicitly documents reading from `data/inbox_queue.json` instead of scraping portals.
+- Danish job-portal scraper skills that once lived under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` are already gone (confirmed absent as of 2026-09-22) — sourcing is Gmail-alert-based only.
+- `.claude/skills/job-scraper/` (once adapted to read from `data/inbox_queue.json` instead of scraping portals) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point (`/fetch-inbox` only) — its own fetch+quick-assess pass duplicated `/fetch-inbox` + `job-evaluator`'s work with a weaker heuristic. See `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6.
 - `documents/` still has the original fork's onboarding layout (`cv/`, `diplomas/`, `linkedin/`, `references/`, `applications/`) alongside the user's own `documents/plans/` notes folder.
 - License is MIT, copyright Mads Lorentzen (original fork author) — any cleanup must preserve the copyright/permission notice per `LICENSE`.

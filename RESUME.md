@@ -2,9 +2,33 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-22 (README checkpoint ready for user review)
+**Last updated**: 2026-09-22 (openspec-explore analysis complete; single blocking decision identified)
 
-## Planned, awaiting user checkpoint: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
+## BLOCKING DECISION: README.md Checkpoint (Task 1.3)
+
+**Status**: `cleanup-legacy-docs-and-apply-pipeline` is **planning-complete but stuck at Task 1.3** awaiting your checkpoint review.
+
+**What needs review**: 
+- Rewritten `README.md` (uncommitted, in working directory) with Mermaid workflow diagram + fixed Prerequisites/file structure
+- Audit Findings (in `design.md`) with three buckets:
+  - **Confirmed dead** (safe to delete): `job_scraper/`, five `tools/*.py` scripts, duplicate `credentials.json`, stale `data/` backups, top-level `prompts/scan_inbox_workflow.md`
+  - **Needs your call** (Section 2.7): consolidate three inbox-fetch pathways? keep `data/master_resume.md` + `tools/build_job_scout.py`? (note: latter is deferred to next change)
+  - **Security addition**: de-hardcode personal Gmail from `tools/fetch_inbox.py` into `config.local.json` template
+
+**Why this matters**: Every other change is blocked waiting for this to land:
+```
+cleanup-legacy-docs (THIS DECISION)
+  ↓ unblocks
+centralize-config-and-private-store (hard dependency)
+  ↓ unblocks  
+headhunter-agent (SCRUM-16) — needs job-application spec from cleanup
+```
+
+**Next step**: Review the rewritten README.md checkpoint and confirm the deletion scope at Section 2.7.
+
+---
+
+## In Progress: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
 
 Location: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/` (branch: `feature/SCRUM-17-cleanup-stale-artifacts`, reused/fast-forwarded from dev — see JIRA/branch notes below)
 Status: **planning complete + Task 1.1/1.2 done, waiting on Task 1.3 checkpoint (user review)**. Proposal, design, `job-application` delta spec, and tasks.md pass `openspec validate --changes cleanup-legacy-docs-and-apply-pipeline --strict`. `README.md` has already been rewritten in place (uncommitted) with the real workflow + a Mermaid diagram, per user request, as the review artifact.
@@ -25,10 +49,10 @@ Status: **planning complete + Task 1.1/1.2 done, waiting on Task 1.3 checkpoint 
 
 **Security scope addition, 2026-09-22 (user-flagged, re: open-sourcing)**: found the maintainer's real email (`iouri.chadour@gmail.com`) hardcoded directly into the Gmail query string in `tools/fetch_inbox.py:344` and `tools/build_job_scout.py:153` (not just in expected places like resume/profile files — 10 tracked files total carry it, see `design.md` - Security/open-source hygiene finding). Documented as a durable convention in the repo's own `MEMORY.md` (new "PII / personal-data hygiene" section — user pointed out this belongs there, not in a private per-user memory file, since it's a project convention any agent working here should see). Scoped into this change's `tasks.md`: 2.8 (de-hardcode `tools/fetch_inbox.py` only into new gitignored `config.local.json` + tracked `config.local.example.json` template), 5.7 updated (SETUP.md's new Gmail subsection also covers creating `config.local.json`), 5.8 (new — README "if you plan to publish/open-source your fork" callout listing every file with real PII), 7.6 (verify zero hits for the literal email in `tools/fetch_inbox.py`). **`tools/build_job_scout.py`'s instance of the same bug is explicitly deferred** to `centralize-config-and-private-store` (see below) — it will still contain the hardcoded literal after this change lands; that's expected, not a miss. None of this is implemented yet — still planning-artifact-only, pending the Section 1.3 checkpoint.
 
-## Staged, not started: `centralize-config-and-private-store` OpenSpec change (2026-09-22)
+## Staged, blocked on cleanup: `centralize-config-and-private-store` OpenSpec change (2026-09-22)
 
 Location: `openspec/changes/centralize-config-and-private-store/`
-Status: **planning complete** (`skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Hard sequencing dependency: must be implemented after `cleanup-legacy-docs-and-apply-pipeline`** (deletes dead scripts this change would otherwise also have to touch, and this change's `tools/config.py` supersedes that change's narrower `config.local.json`).
+Status: **planning complete, ready to implement** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Hard sequencing dependency: blocked until `cleanup-legacy-docs-and-apply-pipeline` lands** (deletes dead scripts this change would otherwise also have to touch, and this change's `tools/config.py` supersedes that change's narrower `config.local.json`).
 
 **Why this exists**: follow-up to a "should we adopt a `private/` folder for all private artifacts?" exploratory question — user confirmed yes, and asked to make it larger: every kept Python tool should read paths/settings from one central config instead of hardcoding relative-string literals per script (11 files inventoried in `design.md` - Context).
 
@@ -94,10 +118,26 @@ Status: **planning complete** (`skip_specs: true` — pure infra/organization ch
 
 **Next steps**: Select 3–5 from top 11 for targeted applications; prepare customized application packages.
 
-## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
+## Staged, blocked on cleanup: `headhunter-agent` OpenSpec change (2026-09-21)
+
+Location: `openspec/changes/headhunter-agent/`
+Status: **planning complete, ready to implement** (0/22 tasks). Proposal, design, 3 specs, and task list are done and validated. **Blocked until `cleanup-legacy-docs-and-apply-pipeline` lands** — needs `job-application` spec defining markdown `/apply` output format/location to target for resume-bullet-diff requests.
+
+**Scope**: Three new capabilities for HIGH_FIT/FIT roles and OFFER/FINAL_ROUND opportunities:
+- `opportunity-positioning`: Score against positioning-specific rubric (title/level fit, dual-threat, domain, comp signal, tech stack), draft positioning rationale + resume bullet diffs
+- `interview-negotiation-prep`: Three-lens adversarial interview simulation (hiring manager / peer / bar raiser) + negotiation talking points
+- `evidence-verification`: Block any drafted claim not traced to `data/profile.md`
+
+**Known open input**: target compensation band not yet defined — negotiation prep cannot be considered usable until user supplies one.
+
+**Next step**: Once `cleanup-legacy-docs-and-apply-pipeline` lands with markdown `/apply` spec, implement this change per its tasks.md.
+
+---
+
+## Independent: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 
 Location: `openspec/changes/eval-dashboard/`
-Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, design, both specs, and task list are done and validated.
+Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, design, both specs, and task list are done and validated. **Independent** — does not block or depend on other changes; deferred pending application decisions.
 
 **Scope**: Multi-page HTML dashboard (evaluations browser + applied-jobs tracker) reading from `data/job_evaluations.json` and `job_search_tracker.csv`. Single-file vanilla JS/CSS, no backend, works offline in a browser.
 
@@ -108,7 +148,7 @@ Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, de
 - `data/job_evaluations.json`: normalized Celonis (4413352108) and FTI Consulting (4421660792) URLs from full tracking-param form to canonical short form
 - `tools/fetch_inbox.py`: added `extract_indeed_job_id()` and `normalize_indeed_url()` functions; applied them at Indeed URL ingestion time (same pattern as LinkedIn)
 
-**Next step**: User reconsidered workflow — wants to re-fetch/re-evaluate jobs and pick a few high-fit roles to apply to *before* building the dashboard, so the dashboard has real application data to work with. Dashboard implementation (tasks 1.1+) deferred pending fresh job evaluations and application decisions.
+**Next step**: User wants to apply to a few high-fit roles first so the dashboard has real application data to work with. Deferred pending cleanup landing + targeted applications from top 11 high-fit targets (SCRUM-12).
 
 ## Recently Archived: `interactive-agent-job-evaluation` OpenSpec change
 
@@ -194,6 +234,21 @@ Discussed via `/openspec-explore`, deliberately **not started** as a change yet 
 - Fate of `/apply`'s original LaTeX drafter-reviewer pipeline (`.claude/commands/apply.md`, `cv/`, `cover_letters/`, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — currently contradicts `CLAUDE.md`'s simplified description of `/apply`. Is the LaTeX pipeline still wanted in any form, or fully superseded?
 - Fate of `/setup`, `/expand`, `/reset` (original onboarding commands) and the `documents/` folder layout they depend on.
 - README.md / SETUP.md rewrite scope, and where the MIT attribution (copyright notice to Mads Lorentzen, per `LICENSE`) should live once the README no longer describes the original fork's workflow.
+
+## Untracked: `data/positioning_rubric.md`
+
+A new positioning-scoring rubric for HIGH_FIT/FIT roles (distinct from job-evaluation rubric) was created but is untracked. Its scope is unclear:
+- Is this part of **headhunter-agent** (SCRUM-16) scope? (looks like it could be the `career-advisor` subagent's rubric)
+- Or a standalone new capability?
+
+**Decision needed**: Determine if this should be:
+- Integrated into `headhunter-agent`'s design.md + specs as the positioning-scoring rubric (task 2 under `opportunity-positioning` spec)
+- Scoped as a separate change
+- Archived for later review
+
+**Current**: file is in working directory but untracked; don't commit until scope is decided.
+
+---
 
 ## Dropped this session
 

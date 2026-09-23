@@ -146,5 +146,4 @@ Retrying failed records currently means fixing them by hand and re-running `--sa
 | Script | Purpose |
 |---|---|
 | `tools/fetch_inbox.py` | Fetches job postings into `inbox_queue.json` |
-| `tools/evaluate_jobs.py` | Evaluation using Claude API |
 | `job_search_tracker.csv` | Master job submission tracking spreadsheet |

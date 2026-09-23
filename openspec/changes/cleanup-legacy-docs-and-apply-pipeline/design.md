@@ -26,7 +26,7 @@ Current repo-root remote is `https://github.com/iourichadour/ai-job-search-priva
 Full inventory of `.claude/`, `.gemini/`, `.agents/`, and top-level directories, cross-referenced by grepping every skill/command/doc for references to each candidate file. Two buckets:
 
 ### Confirmed orphaned (zero live references outside git/archive history)
-- `job_scraper/` (top-level) — contains only `.gitkeep` and a gitignored `seen_jobs.json`; leftover empty shell from the pre-Gmail-alert Danish scraper era that SCRUM-17's code deletion didn't fully clean up.
+- `job_scraper/` (top-level) — contains only `.gitkeep` and a gitignored `seen_jobs.json`. **Revised 2026-09-22**: not independently orphaned as first assessed here — it holds live dedup state for the `job-scraper` skill's Step 0. It becomes orphaned only as a consequence of deleting that skill (see Decision 6), so its deletion (tasks.md 2.1) is now explicitly sequenced after the skill's deletion (2.7/2.8).
 - `tools/evaluate_jobs.py` — zero references; superseded by `tools/evaluate_jobs_gemini.py` (26 live references).
 - `tools/evaluate_past_week.py` — zero references.
 - `tools/print_data_ai_roles.py` — zero references.
@@ -34,7 +34,7 @@ Full inventory of `.claude/`, `.gemini/`, `.agents/`, and top-level directories,
 - `tools/summarize_evals.py` — referenced only from an *archived* change's design.md (`openspec/changes/archive/2026-09-17-interactive-agent-job-evaluation/design.md`), not from any live skill/command.
 - Duplicate `credentials.json`: an identical (byte-for-byte, same timestamp) copy exists at repo root and at `private/credentials.json`. Both are gitignored, so this isn't a leak. **Resolved 2026-09-22**: `tools/fetch_inbox.py` reads `credentials.json` from the repo root by relative path (`InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)`), so root is the live copy; `private/credentials.json` is the redundant one, safe to delete (see tasks.md 2.4).
 - `data/` accumulated scratch/backup artifacts: `inbox_queue.json.bkp.json`, eight timestamped `scratch_*.json` files, `evaluated_jobs_summary.md` — transient debug output from past runs, not referenced by any current skill as an input.
-- `prompts/scan_inbox_workflow.md` (top-level; distinct from the still-live `.gemini/prompts/scan_inbox_workflow.md`) — referenced only from archived changes, not any live command.
+- `prompts/scan_inbox_workflow.md` (top-level) — referenced only from archived changes, not any live command. **Revised 2026-09-22**: originally described as distinct from "the still-live `.gemini/prompts/scan_inbox_workflow.md`," but that file is no longer live either — see Decision 6, it's deleted as part of the `/scan-inbox` consolidation.
 
 ### Reversed: kept, not deleted (2026-09-22)
 - `_brief/mockup.html`, `_brief/report-spec.md`, `tools/generate_mockup.py` — **not dead.** Initially flagged as zero-reference orphans (true at the time — nothing in `.claude/`/`.gemini/`/`.agents/`/`openspec/` pointed to them), but investigation showed `generate_mockup.py` is a real, working interim dashboard generator tied to the pending `eval-dashboard` OpenSpec change (its `_brief/report-spec.md` is a design brief for the same "evaluations + applied-jobs tracker" idea `eval-dashboard` proposes, just never cross-referenced). User asked to keep and fix it rather than delete it. Fixed 2026-09-22 (see `tools/generate_mockup.py` git history for the before/after): removed several hardcoded placeholder KPI values (a fake "68%"/"76%"/"88%"/"82%"/"85%", a fabricated tech-stack chart, and a broken model-name-casing filter that silently dropped most of `data/job_evaluations.json`'s 875 records) and replaced them with values computed live from `data/job_evaluations.json` and `job_search_tracker.csv`. Verified rendering correctly in-browser across all three tabs with real data (875 evals, 236 high-fit, 1 real tracked application) and zero console errors. See `openspec/changes/eval-dashboard/design.md` - Interim Artifact for how this relates to that change's fuller planned dashboard.
@@ -43,9 +43,9 @@ Full inventory of `.claude/`, `.gemini/`, `.agents/`, and top-level directories,
 - `tools/build_job_scout.py` ("job scout setup") — **not decided in this change at all**, not even conditionally. Originally listed as "needs a decision" here, but the user asked to keep it intact and defer everything about it — keep/delete status, its hardcoded-email fix (see Security finding below), and its path/config handling — to the `centralize-config-and-private-store` change instead. This change makes zero edits to `tools/build_job_scout.py`.
 - `data/master_resume.md` — deferred alongside `build_job_scout.py` for the same reason: its only consumer is the deferred script, so evaluating its redundancy against `data/profile.md` in isolation (without also deciding the script's fate) doesn't produce a stable answer. Also untouched by this change.
 
-### Needs a user decision (real but undocumented, duplicated, or contradicting CLAUDE.md)
-- **Three overlapping "fetch + evaluate inbox" pathways** exist side by side: `/fetch-inbox` (the one `CLAUDE.md` actually names), `.claude/commands/scan-inbox.md` (near-identical pipeline, mirrored into `.gemini/skills/scan-inbox/` and `.agents/skills/scan-inbox/`, never mentioned in `CLAUDE.md` or README's Quick Start), and the `job-scraper` skill (natural-language-triggered — "Evaluate inbox jobs" / `/scrape` — also reads `inbox_queue.json` and does its own fetch+assess pass). Worth consolidating to one documented path.
-- `.claude/skills/job-scraper/search-queries.md` still contains the sentence *"The framework's built-in CLI tools (jobindex, jobbank, etc.) are Denmark-specific"* — a direct leftover reference to the CLI tools SCRUM-17 already deleted. This is more Danish-era content than just README/SETUP had.
+### Resolved at the README checkpoint (2026-09-22) — see Decision 6
+- **Three overlapping "fetch + evaluate inbox" pathways** existed side by side: `/fetch-inbox` (the one `CLAUDE.md` actually names), `.claude/commands/scan-inbox.md` (near-identical pipeline, mirrored into `.gemini/skills/scan-inbox/` and `.agents/skills/scan-inbox/`, never mentioned in `CLAUDE.md` or README's Quick Start), and the `job-scraper` skill (natural-language-triggered — "Evaluate inbox jobs" / `/scrape` — also reads `inbox_queue.json` and does its own fetch+assess pass). **User confirmed 2026-09-22**: consolidate to one entry point, `/fetch-inbox` (Gmail is the only intended job source); delete `/scan-inbox` and the `job-scraper` skill.
+- `.claude/skills/job-scraper/search-queries.md` still contained the sentence *"The framework's built-in CLI tools (jobindex, jobbank, etc.) are Denmark-specific"* — a direct leftover reference to the CLI tools SCRUM-17 already deleted, and the surrounding file is entirely a manual pre-Gmail-alert search-query strategy doc, not just that one sentence. **User confirmed 2026-09-22**: delete the whole `job-scraper` skill (see above), which removes this file entirely rather than editing it.
 
 ### Security/open-source hygiene finding (2026-09-22, user-flagged)
 `grep -rn "iouri.chadour@gmail.com" $(git ls-files)` (excluding one binary font false-positive) hits 10 tracked files. Two different categories:
@@ -79,6 +79,11 @@ Full inventory of `.claude/`, `.gemini/`, `.agents/`, and top-level directories,
 **Rationale**: User flagged (2026-09-22) that if this repo is ever open-sourced, contributors/forkers should never be exposing their actual email address by way of this project's own code — and investigation found it's already hardcoded into `tools/fetch_inbox.py`'s live Gmail query logic today, not just a hypothetical future risk. A JSON config file matches this repo's existing convention (`credentials.json`, `data/token.json`, `.claude/settings.local.json` are all gitignored local files already) better than introducing a new `.env`/`python-dotenv` dependency the project doesn't otherwise use.
 **Alternative (declined)**: Environment variable (`JOB_SEARCH_EMAIL=...`) — rejected only because it's a second, inconsistent config mechanism next to the existing local-JSON-file convention; not a wrong approach in general, just not this repo's pattern.
 
+### Decision 6: Consolidate to a single Gmail entry point — delete `/scan-inbox` and the `job-scraper` skill
+**Chosen**: Keep `/fetch-inbox` as the only inbox-fetch-and-evaluate command. Delete `/scan-inbox` in full (`.claude/commands/scan-inbox.md`, `.gemini/commands/scan-inbox.md`, `.gemini/skills/scan-inbox/`, `.agents/skills/scan-inbox/`, `.gemini/prompts/scan_inbox_workflow.md`, plus the stray mentions in `.claude/settings.local.json`'s permission list and `.claude/agents/job-evaluator.md`/`.agents/agents/job-evaluator.agent.md`'s description text). Delete the `job-scraper` skill in full (`.claude/skills/job-scraper/SKILL.md`, `.claude/skills/job-scraper/search-queries.md`). Once the skill is gone, top-level `job_scraper/` (its dedup-state directory) is deleted too (tasks.md 2.1, sequenced after 2.7/2.8). Fix `.claude/commands/setup.md`, which actively wires up both deleted artifacts (a Step 8 that populates `job-scraper/search-queries.md`, a "Try it out: run `/scrape`" callout, and separate `cv/main_example.tex` references already broken by the LaTeX deletion) — new task 2.9.
+**Rationale**: User has exactly one job-search input in practice — Gmail — confirmed directly (2026-09-22): "I have only 1 entry point gmail." `/scan-inbox` was architecturally a near-byte-identical fork of `/fetch-inbox` (same Gmail poll via `tools/fetch_inbox.py`, same `job-evaluator` subagent and 5-dimension rubric, differing only in batching mechanism — `--filter-only`/single-file output vs `--prepare-batches`/multi-file output) with no independent purpose, and was never documented in `CLAUDE.md` or README's Quick Start in the first place. The `job-scraper` skill was architecturally different but strictly weaker: its own WebFetch pass duplicates work `/fetch-inbox` already does, and its own ad-hoc High/Medium/Low heuristic is a lesser substitute for the real 5-dimension rubric `job-evaluator` runs. Its `search-queries.md` is a manual LinkedIn/Google search-query strategy doc for a pre-Gmail-alert era, now fully obsolete — the Danish-era CLI-tools sentence flagged during audit was a symptom of the whole file being stale, not an isolated leftover.
+**Alternative (declined)**: Keep `/scan-inbox` as a batch-processing variant for large backlogs, or keep `job-scraper` as a lighter-weight quick-triage tool distinct from the full evaluation pipeline — rejected by the user in favor of one path with no parallel maintenance burden.
+
 ## Technical Approach
 
 ```mermaid
@@ -91,14 +96,15 @@ flowchart TD
 
     B --> B1["LaTeX pipeline:\ncv/main_example.tex, cover_letters/cover.cls,\ncover_letters/OpenFonts/"]
     B --> B2["Confirmed-orphaned tools/files\n(per audit: dead scripts, job_scraper/,\ndata/ scratch+backup files,\nduplicate credentials.json --\nNOT _brief/generate_mockup.py, kept & fixed)"]
-    B --> B3["User-confirmed 'needs a decision' items\n(scan-inbox consolidation, job-scraper\nDanish-era text) -- only what user approves.\nNOT build_job_scout.py/master_resume.md --\nfully deferred to centralize-config-and-private-store"]
+    B --> B3["Consolidate to single Gmail entry point:\ndelete /scan-inbox (all 4 locations + stray refs)\nand job-scraper skill entirely (Decision 6).\nNOT build_job_scout.py/master_resume.md --\nfully deferred to centralize-config-and-private-store"]
 
     B1 --> C["Rewrite implementation"]
     B2 --> C
     B3 --> C
     C --> C1["apply.md Steps 2 and 5 -> markdown output"]
     C1 --> C2["job-application-assistant/SKILL.md Steps 2-3"]
-    C2 --> D2["SETUP.md: drop LaTeX section, fix test-workflow steps"]
+    C2 --> C3["setup.md: remove job-scraper Step 8,\n/scrape callout, main_example.tex refs"]
+    C3 --> D2["SETUP.md: drop LaTeX section, fix test-workflow steps"]
     D2 --> E["Verify no stray references"]
     E --> E1["grep for lualatex/xelatex/moderncv/.tex,\nDenmark-specific text, and every deleted\npath, outside git/archive history"]
     E1 --> F{References found?}
@@ -127,7 +133,7 @@ flowchart TD
 2. Rewrite `README.md` to describe only the real, current-intended workflow (Gmail alerts -> evaluate -> markdown `/apply`), with a Mermaid diagram of that process. This is the artifact the user reviews.
 3. **Checkpoint**: user reviews the rewritten `README.md` and confirms which Audit Findings items to actually delete (confirmed-orphaned bucket is expected to be approved as-is; "needs a decision" bucket requires explicit per-item confirmation).
 4. Delete `cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`; remove the now-empty `cover_letters/` directory if nothing else lives in it
-5. Delete whatever else the checkpoint approved from the Audit Findings (confirmed-orphaned bucket, plus any approved "needs a decision" items)
+5. Delete whatever else the checkpoint approved from the Audit Findings (confirmed-orphaned bucket, plus the resolved "needs a decision" items — see Decision 6): `/scan-inbox` in full, the `job-scraper` skill in full, then top-level `job_scraper/`; fix `.claude/commands/setup.md`'s references to both deleted artifacts
 6. Add `config.local.json` handling: create `config.local.example.json`, add a loader to `tools/fetch_inbox.py` only, replace the hardcoded `iouri.chadour@gmail.com` literal there with the loaded value (`tools/build_job_scout.py` is untouched — deferred to `centralize-config-and-private-store`)
 7. Rewrite `.claude/commands/apply.md` Steps 2 and 5 for markdown output to `applications/YYYY-MM_Company/`; drop the SCRUM-17 contradiction note now that it's resolved
 8. Rewrite `.claude/skills/job-application-assistant/SKILL.md` Steps 2-3, `05-cv-templates.md`, `06-cover-letter-templates.md` for markdown
