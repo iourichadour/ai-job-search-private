@@ -11,7 +11,7 @@ You are resetting parts of the job search framework back to a blank state so the
 Check `$ARGUMENTS` for a scope keyword:
 
 - `profile` — clears candidate profile data from skill files only
-- `documents` — deletes user-provided files from the `documents/` folder only
+- `documents` — deletes user-provided files from the `private/documents/` folder only
 - `all` — both of the above
 
 If `$ARGUMENTS` is empty or does not contain a recognized scope keyword, ask:
@@ -20,7 +20,7 @@ If `$ARGUMENTS` is empty or does not contain a recognized scope keyword, ask:
 >
 > - **`profile`** — Clears candidate data from the skill files (profile, behavioral, STAR examples, profile statements). The framework structure and writing rules are preserved. Use this to re-run `/setup` from scratch.
 >
-> - **`documents`** — Deletes all files you've placed in the `documents/` folder (CV PDFs, LinkedIn export, diplomas, references, past applications). The folder structure and `README.md` are preserved.
+> - **`documents`** — Deletes all files you've placed in the `private/documents/` folder (CV PDFs, LinkedIn export, diplomas, references, past applications). The folder structure and `README.md` are preserved.
 >
 > - **`all`** — Both of the above.
 >
@@ -68,24 +68,24 @@ The following files are NOT touched (they contain framework rules, not candidate
 
 ### If scope includes `documents`:
 
-Use Glob to list all files present in `documents/cv/`, `documents/linkedin/`, `documents/diplomas/`, `documents/references/`, and `documents/applications/`. Present as:
+Use Glob to list all files present in `private/documents/cv/`, `private/documents/linkedin/`, `private/documents/diplomas/`, `private/documents/references/`, and `private/documents/applications/`. Present as:
 
 ```
 ## Documents reset will delete:
 
-documents/cv/
+private/documents/cv/
   - [filename] or "(empty)"
 
-documents/linkedin/
+private/documents/linkedin/
   - [filename] or "(empty)"
 
-documents/diplomas/
+private/documents/diplomas/
   - [filename] or "(empty)"
 
-documents/references/
+private/documents/references/
   - [filename] or "(empty)"
 
-documents/applications/
+private/documents/applications/
   - [subfolder/filename] or "(empty)"
 
 documents/README.md — NOT deleted (instructions file)
@@ -189,11 +189,11 @@ Leave all other content in `07-interview-prep.md` intact (STAR format explanatio
 For each non-empty document subfolder, delete all files within it using Bash `rm`. Do not delete the folder itself, and do not delete `documents/README.md`.
 
 ```bash
-rm -f documents/cv/*
-rm -f documents/linkedin/*
-rm -f documents/diplomas/*
-rm -f documents/references/*
-rm -rf documents/applications/*/
+rm -f private/documents/cv/*
+rm -f private/documents/linkedin/*
+rm -f private/documents/diplomas/*
+rm -f private/documents/references/*
+rm -rf private/documents/applications/*/
 ```
 
 ---
@@ -215,10 +215,10 @@ After the reset is complete, report:
 Then tell the user what to do next based on what was reset:
 
 **If profile was reset:**
-> Your candidate profile is now blank. Run `/setup` to repopulate it. The command auto-detects any files in your `documents/` folder and offers to read from there; otherwise it walks you through a CV import or interactive interview.
+> Your candidate profile is now blank. Run `/setup` to repopulate it. The command auto-detects any files in your `private/documents/` folder and offers to read from there; otherwise it walks you through a CV import or interactive interview.
 
 **If documents were reset:**
-> The `documents/` folder is now empty. Add your career documents and run `/setup` to populate your profile. See `documents/README.md` for instructions on what to put where.
+> The `private/documents/` folder is now empty. Add your career documents and run `/setup` to populate your profile. See `documents/README.md` for instructions on what to put where.
 
 **If both were reset:**
-> Both your profile files and documents folder are now empty. Add documents to `documents/` (or skip and use the CV import / interview path), then run `/setup`.
+> Both your profile files and documents folder are now empty. Add documents to `private/documents/` (or skip and use the CV import / interview path), then run `/setup`.

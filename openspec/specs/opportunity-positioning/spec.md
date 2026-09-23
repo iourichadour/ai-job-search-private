@@ -6,14 +6,14 @@ Defines how HIGH_FIT/FIT jobs from the existing evaluation pipeline get a second
 ## Requirements
 
 ### Requirement: Positioning scoring is scoped to HIGH_FIT/FIT jobs only
-The system SHALL only run positioning scoring on jobs whose existing `fit_category` (from `data/job_evaluations.json`) is `high` or `medium`. Jobs categorized `low` or `skip` SHALL NOT be scored or drafted for positioning.
+The system SHALL only run positioning scoring on jobs whose existing `fit_category` (from `private/job_evaluations.json`) is `high` or `medium`. Jobs categorized `low` or `skip` SHALL NOT be scored or drafted for positioning.
 
 #### Scenario: A high-fit job is scored for positioning
-- **WHEN** a job in `data/job_evaluations.json` has `fit_category: "high"`
+- **WHEN** a job in `private/job_evaluations.json` has `fit_category: "high"`
 - **THEN** the system produces a positioning score and rationale for that job
 
 #### Scenario: A low-fit job is skipped
-- **WHEN** a job in `data/job_evaluations.json` has `fit_category: "low"` or `"skip"`
+- **WHEN** a job in `private/job_evaluations.json` has `fit_category: "low"` or `"skip"`
 - **THEN** the system does not produce a positioning score or rationale for that job
 
 ### Requirement: Positioning rubric is distinct from the fit-evaluation rubric
@@ -31,7 +31,7 @@ For every job scored, the system SHALL produce a rationale of no more than one p
 - **THEN** the rationale text names at least one specific technology or delivered outcome from the candidate's background and states which of cost, risk, revenue, or scale it maps to for that role
 
 ### Requirement: Resume bullet diffs are proposals, not edits
-The system SHALL express resume bullet changes as a diff-style list of proposed replacements (3-5 per scored job) rather than rewriting `data/master_resume.md` or any resume file directly.
+The system SHALL express resume bullet changes as a diff-style list of proposed replacements (3-5 per scored job) rather than rewriting `private/profile.md` or any CV file in `private/cv/` directly.
 
 #### Scenario: A scored job produces bullet proposals, not a file edit
 - **WHEN** a HIGH_FIT job is scored for positioning

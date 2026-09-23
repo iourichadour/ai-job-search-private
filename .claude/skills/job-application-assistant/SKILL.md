@@ -25,15 +25,15 @@ When the user provides a job posting (URL or text), follow this workflow:
 - Ask the user if they want to proceed with an application
 
 ### Step 2: Tailor CV
-- Read the most relevant existing CV variant from `cv/` as a starting point
+- Read the most relevant existing CV variant from `private/cv/` as a starting point
 - Follow the guidelines in `05-cv-templates.md`
-- Create `applications/YYYY-MM_<Company>/cv.md` with tailored content
+- Create `private/applications/YYYY-MM_<Company>/cv.md` with tailored content
 - Adjust: profile statement, skills section, experience bullet emphasis, section order
 
 ### Step 3: Write Cover Letter
 - Follow the writing style rules in `03-writing-style.md` (critical: no em-dashes, no cliches)
 - Follow the template structure in `06-cover-letter-templates.md`
-- Create `applications/YYYY-MM_<Company>/cover_letter.md`
+- Create `private/applications/YYYY-MM_<Company>/cover_letter.md`
 - Ensure the letter connects specific experience to the role requirements
 
 ### Step 4: Interview Preparation

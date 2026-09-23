@@ -41,10 +41,10 @@ Once created, subscribe that new address to job alerts from LinkedIn and Indeed.
 2. Enable the **Gmail API** for that project (APIs & Services -> Library)
 3. Configure the **OAuth consent screen** (External, Testing mode is sufficient for personal use) and add the dedicated job-search Gmail address as a test user
 4. Create an **OAuth 2.0 Client ID** (Application type: Desktop app)
-5. Download the credential JSON and save it as `credentials.json` in the repo root (already gitignored — never commit it)
+5. Download the credential JSON and save it as `private/credentials.json` (the whole `private/` folder is gitignored — never commit it)
 6. Required scope: `https://www.googleapis.com/auth/gmail.readonly` (read-only; the tooling never sends or modifies mail)
-7. Copy `config.local.example.json` to `config.local.json` (gitignored) and set `job_search_email` to your dedicated address — this is what `tools/fetch_inbox.py`'s query filter reads; never hardcode it into a `.py` file
-8. Run `/fetch-inbox` (or `python tools/fetch_inbox.py`) once — this opens a browser window for the OAuth consent flow; sign in with the **dedicated job-search account**, not your personal one. On success, `data/token.json` is created (gitignored) and reused on subsequent runs without re-prompting.
+7. Copy `config.example.json` (repo root) to `private/config.json` and set `job_search_email` to your dedicated address — this is what `tools/fetch_inbox.py`'s query filter reads via `tools/config.py`; never hardcode it into a `.py` file
+8. Run `/fetch-inbox` (or `python tools/fetch_inbox.py`) once — this opens a browser window for the OAuth consent flow; sign in with the **dedicated job-search account**, not your personal one. On success, `private/token.json` is created (gitignored) and reused on subsequent runs without re-prompting.
 
 ## 2. Fork and clone
 
@@ -107,7 +107,7 @@ Once your profile is set up, monitor Gmail for job alerts:
 This command:
 1. Polls your Gmail inbox for unread job alerts from LinkedIn and Indeed
 2. Fetches full job descriptions from the URLs in those alerts
-3. Stores them in `data/inbox_queue.json`
+3. Stores them in `private/inbox_queue.json`
 4. Presents each job with a quick fit assessment against your profile
 
 **Gmail authentication:** The first time you run `/fetch-inbox`, you'll be prompted to authenticate with Gmail. Claude Code will open a browser window to authorize access to your inbox. This is a one-time setup.
@@ -116,14 +116,14 @@ This command:
 
 If you have salary data (from a union, salary survey, Glassdoor, or personal research):
 
-1. **Option A:** Create `salary_data.json` manually in the repo root (see `tools/README_SALARY_TOOL.md` for the format)
+1. **Option A:** Create `private/salary_data.json` manually (see `tools/README_SALARY_TOOL.md` for the format)
 2. **Option B:** Convert from Excel:
    ```bash
    pip install openpyxl
    python tools/convert_salary_excel.py path/to/salary-data.xlsx --source "My Salary Data 2025"
    ```
 
-This creates `salary_data.json` which the `/apply` workflow uses for salary benchmarking. If you skip this step, salary lookup is simply omitted.
+This creates `private/salary_data.json` which the `/apply` workflow uses for salary benchmarking. If you skip this step, salary lookup is simply omitted.
 
 ## 6. Test the workflow
 
@@ -146,7 +146,7 @@ Claude will:
 4. Have a reviewer agent critique the drafts
 5. Revise and present the final output
 
-Confirm the output landed under `applications/YYYY-MM_<Company>/` — you should see `cv.md` and `cover_letter.md` there, ready to read directly or convert to PDF before submitting.
+Confirm the output landed under `private/applications/YYYY-MM_<Company>/` — you should see `cv.md` and `cover_letter.md` there, ready to read directly or convert to PDF before submitting.
 
 ## Troubleshooting
 
@@ -158,5 +158,5 @@ This is expected if you haven't set up salary benchmarking. The `/apply` workflo
 - Verify that emails from these services are reaching your inbox (not spam folder)
 - Run `/fetch-inbox` again a few moments later
 
-### "Missing config.local.json"
-`tools/fetch_inbox.py` requires `config.local.json` at the repo root with your `job_search_email`. Copy `config.local.example.json` to `config.local.json` and fill in your dedicated job-search address (see Prerequisites above).
+### "Missing private/config.json"
+`tools/fetch_inbox.py` requires `private/config.json` with your `job_search_email`. Copy `config.example.json` (repo root) to `private/config.json` and fill in your dedicated job-search address (see Prerequisites above).
