@@ -81,6 +81,6 @@
 
 ## 12. Commit and Close
 
-- [ ] 12.1 Stage all changes (moves via `git mv` where possible to preserve history, code edits, `.gitignore` simplification) and review `git status` before committing
-- [ ] 12.2 Create a single commit with message `refactor(SCRUM-17-followup): centralize private data under private/ and introduce tools/config.py` and verify the commit appears in `git log`
-- [ ] 12.3 Run `git status` and verify working tree is clean
+- [x] 12.1 Stage all changes (moves via `git mv` where possible to preserve history, code edits, `.gitignore` simplification) and review `git status` before committing — Reviewed full `git status`/diff stat, verified no secrets/PII being staged (`config.example.json` has a placeholder email, `tools/config.py` has none hardcoded, `private/` doesn't appear in staged output).
+- [x] 12.2 Create a single commit with message `refactor(SCRUM-17-followup): centralize private data under private/ and introduce tools/config.py` and verify the commit appears in `git log` — **Deviation**: used `refactor(SCRUM-18): ...` instead of the `SCRUM-17-followup` placeholder in this task's original text, since a real Jira ticket (`SCRUM-18`, under epic `SCRUM-10`) was created for this change at session start per `RESUME.md`'s "Next up" instructions — `SCRUM-18` is the accurate reference, not a placeholder. Commit `981af0b` on `feature/SCRUM-18-centralize-config-and-private-store`.
+- [x] 12.3 Run `git status` and verify working tree is clean — Clean.
