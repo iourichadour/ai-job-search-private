@@ -2,57 +2,34 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-22 (openspec-explore analysis complete; single blocking decision identified)
+**Last updated**: 2026-09-22 (`cleanup-legacy-docs-and-apply-pipeline` shipped, verified, and archived)
 
-## BLOCKING DECISION: README.md Checkpoint (Task 1.3)
+## Completed & Archived: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
 
-**Status**: `cleanup-legacy-docs-and-apply-pipeline` is **planning-complete but stuck at Task 1.3** awaiting your checkpoint review.
+Archived as: `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/`
+Main specs updated: `openspec/specs/job-application/spec.md` (new capability), `openspec/specs/job-evaluation/spec.md` (modified: dropped the scan-inbox mention)
+Branch: `feature/SCRUM-17-cleanup-stale-artifacts` — 3 commits (`bda145c` cleanup, `3f0aa66` task bookkeeping, `ae39305` archive move), pushed to origin. **Not yet merged to `dev`** — open a PR when ready.
+Status: **all 42 tasks complete, archived**.
 
-**What needs review**: 
-- Rewritten `README.md` (uncommitted, in working directory) with Mermaid workflow diagram + fixed Prerequisites/file structure
-- Audit Findings (in `design.md`) with three buckets:
-  - **Confirmed dead** (safe to delete): `job_scraper/`, five `tools/*.py` scripts, duplicate `credentials.json`, stale `data/` backups, top-level `prompts/scan_inbox_workflow.md`
-  - **Needs your call** (Section 2.7): consolidate three inbox-fetch pathways? keep `data/master_resume.md` + `tools/build_job_scout.py`? (note: latter is deferred to next change)
-  - **Security addition**: de-hardcode personal Gmail from `tools/fetch_inbox.py` into `config.local.json` template
+**What shipped**:
+- Repo-wide audit (Section 1) surfaced everything below; checkpoint review with the user resolved every open decision (consolidate to one Gmail entry point, delete `job-scraper` skill entirely, LaTeX confirmed for deletion).
+- **Deleted**: `job_scraper/`, 5 dead `tools/*.py` scripts (one — `evaluate_jobs.py` etc — had been falsely marked done in an earlier session without actually being deleted; caught and fixed during this session via re-verification), duplicate `credentials.json`, stale `data/` scratch/backup files, top-level `prompts/scan_inbox_workflow.md`.
+- **Consolidated to a single Gmail entry point**: deleted `/scan-inbox` (all 4 locations: `.claude/`, `.gemini/` command+skill, `.agents/` skill) and the `job-scraper` skill entirely (its `search-queries.md` was a whole obsolete manual-search-query doc, not just the flagged Danish-CLI sentence). Fixed `.claude/commands/setup.md` onboarding, which actively wired up both (a `job-scraper` Step 8, a `/scrape` "try it out" callout, plus its own separate `cv/main_example.tex` references) — this was larger than the original task text anticipated but was mechanical execution of the same confirmed decision.
+- **Deleted the LaTeX CV/cover-letter pipeline** (`cv/main_example.tex`, `cover_letters/cover.cls` + `OpenFonts/`) and rewrote `/apply`, `job-application-assistant/SKILL.md`, `05-cv-templates.md`, `06-cover-letter-templates.md` for markdown output to `applications/YYYY-MM_Company/cv.md`/`cover_letter.md` — kept and adapted all the non-LaTeX content (profile statement templates, relevance-weighted cutting logic, section ordering).
+- **De-hardcoded the maintainer's email** out of `tools/fetch_inbox.py` into a gitignored `config.local.json` (tracked `config.local.example.json` template) — verified end-to-end against live Gmail auth. `tools/build_job_scout.py`'s same bug is deferred to `centralize-config-and-private-store` (below), not fixed here.
+- **Rewrote `SETUP.md`**: dropped all LaTeX install/compile/troubleshooting content, added real "create a dedicated Gmail account" + "configure Gmail API access" (8-step, `config.local.json`-aware) subsections.
+- **Rewrote `README.md`**: real Mermaid workflow diagram, correct fork/clone origin, corrected file structure, an "if you plan to publish/open-source your fork" PII callout.
+- **New `openspec/specs/job-application/spec.md`** — first formal spec for `/apply`'s behavior (fit gate, markdown output, `applications/YYYY-MM_Company/` location, reviewer loop, no-fabrication rule), cross-checked against the rewritten `apply.md`.
+- **Fixed several stale references discovered along the way** (not in the original task list, but direct consequences of the confirmed decisions): the live `job-evaluation` spec's "fetch-inbox or scan-inbox" scenario (formally declared as a Modified Capability delta, not silently patched), dead `.gitignore` rules for deleted LaTeX/job_scraper paths, a dead `settings.local.json` permission entry, `MEMORY.md`'s stale Danish-scraper note.
 
-**Why this matters**: Every other change is blocked waiting for this to land:
-```
-cleanup-legacy-docs (THIS DECISION)
-  ↓ unblocks
-centralize-config-and-private-store (hard dependency)
-  ↓ unblocks  
-headhunter-agent (SCRUM-16) — needs job-application spec from cleanup
-```
+**Known gap, not fixed (pre-existing, out of scope)**: `apply.md` Step 6 says "run the verification checklist from `CLAUDE.md`" but `CLAUDE.md` has no such checklist and never did. Worth a follow-up if you want that step to actually do something.
 
-**Next step**: Review the rewritten README.md checkpoint and confirm the deletion scope at Section 2.7.
+**Next step**: open a PR from `feature/SCRUM-17-cleanup-stale-artifacts` into `dev` when ready, or continue directly with `centralize-config-and-private-store` (now unblocked, see below).
 
----
-
-## In Progress: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
-
-Location: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/` (branch: `feature/SCRUM-17-cleanup-stale-artifacts`, reused/fast-forwarded from dev — see JIRA/branch notes below)
-Status: **planning complete + Task 1.1/1.2 done, waiting on Task 1.3 checkpoint (user review)**. Proposal, design, `job-application` delta spec, and tasks.md pass `openspec validate --changes cleanup-legacy-docs-and-apply-pipeline --strict`. `README.md` has already been rewritten in place (uncommitted) with the real workflow + a Mermaid diagram, per user request, as the review artifact.
-
-**Why this exists**: the archived `2026-09-22-cleanup-stale-fork-artifacts` (SCRUM-17) change checked off "rewrite README.md"/"update SETUP.md" as done, but they still documented the original Danish-fork LaTeX CV/cover-letter workflow. `.claude/commands/apply.md` and the `job-application-assistant` skill still implement that LaTeX pipeline end to end, contradicting `CLAUDE.md`'s "tailored markdown resume" directive. User confirmed this is actively confusing the pending `headhunter-agent` change (SCRUM-16).
-
-**Scope confirmed with user during proposal**: delete the LaTeX pipeline outright (not archive) — `cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`, LaTeX sections of `05-cv-templates.md`/`06-cover-letter-templates.md` — and rewrite `/apply`, the skill, README.md, and SETUP.md to be markdown-only, matching the real `cv/*.md` resumes already in use. Adds a new `job-application` OpenSpec capability (never spec'd before) so this doesn't silently drift again.
-
-**Expanded scope, 2026-09-22 (user asked for a full repo rescan before any deletion)**: ran a repo-wide audit beyond the known LaTeX files, cross-referencing every skill/command/tool script for live usage. Findings recorded in `design.md` - Repo-Wide Audit Findings, and surfaced in `README.md`'s new "Repo cleanup: pending review" section:
-- **Confirmed dead**: `job_scraper/` (empty shell), five zero-reference `tools/*.py` scripts, a duplicate `credentials.json`, accumulated `data/` scratch/backup files, top-level `prompts/scan_inbox_workflow.md`.
-- **Needs a user decision**: three overlapping inbox-fetch pathways (`/fetch-inbox`, `/scan-inbox`, the `job-scraper` skill), a leftover Danish-CLI-tools sentence in `.claude/skills/job-scraper/search-queries.md`.
-- **Deferred entirely to `centralize-config-and-private-store`** (2026-09-22 scoping clarification, not decided by this change even conditionally): `tools/build_job_scout.py` ("job scout setup") and `data/master_resume.md` (its only consumer) — kept intact, untouched, including their hardcoded-email instance (see Security scope addition below).
-- `tasks.md` Section 1 is the checkpoint gate: nothing in Section 2+ (actual deletions) runs until the user reviews `README.md` and confirms what to drop.
-
-**Reversal, 2026-09-22 (`_brief/`/`tools/generate_mockup.py`)**: initially flagged as dead (zero references), but user asked to keep and fix it instead — it's a real, working dashboard generator tied to the pending `eval-dashboard` change (its `_brief/report-spec.md` is a design brief for the same idea, never cross-referenced). Fixed real bugs: a broken model-name-casing filter that silently dropped most of `data/job_evaluations.json`'s 875 records, and several hardcoded placeholder KPIs (fake 68%/76%/88%/82%/85%, a fabricated tech-stack chart). Rewrote it to compute everything live; verified rendering correctly in-browser across all 3 tabs (875 evals, 236 high-fit sorted correctly, real tracker data) with 0 console errors. README.md now documents it under a new "Dashboard: review tracking" section. `eval-dashboard/proposal.md` and `design.md` updated with an "Interim Artifact" note explaining the relationship (this is a quick static-generation tool, not a replacement for `eval-dashboard`'s larger planned live-reloading two-page design). Also resolved which `credentials.json` is live: `tools/fetch_inbox.py` reads the repo-root copy by relative path, so `private/credentials.json` is the confirmed-redundant one (updates tasks.md 2.4).
-
-**Scope addition, 2026-09-22 (user-requested)**: `tasks.md` 5.7 now specifies that the SETUP.md rewrite must replace the current thin "Gmail Account with Job Alerts" note with two real subsections — "Create a dedicated Gmail account for job search" (a separate address, not personal Gmail, to isolate the OAuth grant) and "Configure Gmail API access" (step-by-step Google Cloud Console project creation, enabling the Gmail API, OAuth consent screen + test user, creating an OAuth Client ID, downloading `credentials.json` to repo root, and the first-run browser auth flow) — verified against `tools/fetch_inbox.py`'s actual implementation (`SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']`, reads `credentials.json` from repo root, caches token to `data/token.json`). Not yet written into the real `SETUP.md` file — still pending Section 5 execution after the checkpoint.
-
-**Security scope addition, 2026-09-22 (user-flagged, re: open-sourcing)**: found the maintainer's real email (`iouri.chadour@gmail.com`) hardcoded directly into the Gmail query string in `tools/fetch_inbox.py:344` and `tools/build_job_scout.py:153` (not just in expected places like resume/profile files — 10 tracked files total carry it, see `design.md` - Security/open-source hygiene finding). Documented as a durable convention in the repo's own `MEMORY.md` (new "PII / personal-data hygiene" section — user pointed out this belongs there, not in a private per-user memory file, since it's a project convention any agent working here should see). Scoped into this change's `tasks.md`: 2.8 (de-hardcode `tools/fetch_inbox.py` only into new gitignored `config.local.json` + tracked `config.local.example.json` template), 5.7 updated (SETUP.md's new Gmail subsection also covers creating `config.local.json`), 5.8 (new — README "if you plan to publish/open-source your fork" callout listing every file with real PII), 7.6 (verify zero hits for the literal email in `tools/fetch_inbox.py`). **`tools/build_job_scout.py`'s instance of the same bug is explicitly deferred** to `centralize-config-and-private-store` (see below) — it will still contain the hardcoded literal after this change lands; that's expected, not a miss. None of this is implemented yet — still planning-artifact-only, pending the Section 1.3 checkpoint.
-
-## Staged, blocked on cleanup: `centralize-config-and-private-store` OpenSpec change (2026-09-22)
+## Ready to implement (unblocked): `centralize-config-and-private-store` OpenSpec change (2026-09-22)
 
 Location: `openspec/changes/centralize-config-and-private-store/`
-Status: **planning complete, ready to implement** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Hard sequencing dependency: blocked until `cleanup-legacy-docs-and-apply-pipeline` lands** (deletes dead scripts this change would otherwise also have to touch, and this change's `tools/config.py` supersedes that change's narrower `config.local.json`).
+Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — that dependency is now resolved** (cleanup shipped and archived 2026-09-22). One small stale reference already fixed during cleanup: `tasks.md` 6.5's "if kept per sibling change's decision" conditional on `/scan-inbox` was resolved (deleted, not kept) and the task text updated accordingly — worth a quick read of that task before implementing 6.x.
 
 **Why this exists**: follow-up to a "should we adopt a `private/` folder for all private artifacts?" exploratory question — user confirmed yes, and asked to make it larger: every kept Python tool should read paths/settings from one central config instead of hardcoding relative-string literals per script (11 files inventoried in `design.md` - Context).
 
@@ -118,10 +95,10 @@ Status: **planning complete, ready to implement** (0/42 tasks; `skip_specs: true
 
 **Next steps**: Select 3–5 from top 11 for targeted applications; prepare customized application packages.
 
-## Staged, blocked on cleanup: `headhunter-agent` OpenSpec change (2026-09-21)
+## Ready to implement (unblocked): `headhunter-agent` OpenSpec change (2026-09-21)
 
 Location: `openspec/changes/headhunter-agent/`
-Status: **planning complete, ready to implement** (0/22 tasks). Proposal, design, 3 specs, and task list are done and validated. **Blocked until `cleanup-legacy-docs-and-apply-pipeline` lands** — needs `job-application` spec defining markdown `/apply` output format/location to target for resume-bullet-diff requests.
+Status: **planning complete, ready to implement now** (0/22 tasks). Proposal, design, 3 specs, and task list are done and validated. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — now unblocked**: `openspec/specs/job-application/spec.md` exists (fit gate, markdown output, `applications/YYYY-MM_Company/` location, reviewer loop, no-fabrication rule) for resume-bullet-diff requests to target.
 
 **Scope**: Three new capabilities for HIGH_FIT/FIT roles and OFFER/FINAL_ROUND opportunities:
 - `opportunity-positioning`: Score against positioning-specific rubric (title/level fit, dual-threat, domain, comp signal, tech stack), draft positioning rationale + resume bullet diffs
@@ -130,7 +107,9 @@ Status: **planning complete, ready to implement** (0/22 tasks). Proposal, design
 
 **Known open input**: target compensation band not yet defined — negotiation prep cannot be considered usable until user supplies one.
 
-**Next step**: Once `cleanup-legacy-docs-and-apply-pipeline` lands with markdown `/apply` spec, implement this change per its tasks.md.
+**Possible overlap to check before implementing**: `data/positioning_rubric.md` (see "Untracked" section below) may be intended as this change's positioning-scoring rubric — resolve that scope question first.
+
+**Next step**: Implement this change per its tasks.md.
 
 ---
 
@@ -223,17 +202,6 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 - Savings: ~170 tokens per run, zero upfront cost (parsing is rule-based, not LLM)
 
 **Why after this change**: Profile caching is a standalone optimization that doesn't block current work and can ship independently.
-
-## Deferred: repo cleanup / fork-provenance
-
-Discussed via `/openspec-explore`, deliberately **not started** as a change yet — no name chosen, no artifacts created. Decision made: this is a **separate** OpenSpec change from `interactive-agent-job-evaluation` (no file overlap, different capability, different blast radius, don't block one on the other).
-
-**Confirmed dead** (safe to remove in that future change): `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` (Danish job-portal scraper CLIs).
-
-**Still undecided** — needs the user's call before scoping that change:
-- Fate of `/apply`'s original LaTeX drafter-reviewer pipeline (`.claude/commands/apply.md`, `cv/`, `cover_letters/`, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — currently contradicts `CLAUDE.md`'s simplified description of `/apply`. Is the LaTeX pipeline still wanted in any form, or fully superseded?
-- Fate of `/setup`, `/expand`, `/reset` (original onboarding commands) and the `documents/` folder layout they depend on.
-- README.md / SETUP.md rewrite scope, and where the MIT attribution (copyright notice to Mads Lorentzen, per `LICENSE`) should live once the README no longer describes the original fork's workflow.
 
 ## Untracked: `data/positioning_rubric.md`
 

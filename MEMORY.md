@@ -81,14 +81,19 @@ The maintainer's real email address (`iouri.chadour@gmail.com`) was found hardco
 
 **Convention going forward**: any personal identifier a script needs at runtime (email address, account name, API key, phone number) goes in a gitignored local config file — this repo's existing pattern is `*.local.json` (already in `.gitignore`; see `credentials.json`, `data/token.json`, `.claude/settings.local.json` for the established local-file convention). Ship a tracked `*.example.json` template alongside it. Never a literal string in a `.py`, tracked `.json`, or committed `.md` file (outside the profile/resume files whose whole job is to carry that data).
 
-Fix tracked in `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/` (tasks 2.8, 5.7, 5.8, 7.6): introduces `config.local.json` + `config.local.example.json`, and adds a README "if you plan to publish/open-source your fork" callout listing every tracked file that carries real personal data (`CLAUDE.md`, `data/profile.md`, `01-candidate-profile.md`, `cv/*.md`, `applications/`, `job_search_tracker.csv`, `documents/`). Not yet implemented as of 2026-09-22 — see `RESUME.md`.
+**Implemented 2026-09-22** via `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/`: `tools/fetch_inbox.py` now loads `job_search_email` from `config.local.json` (gitignored) via a small helper that raises a clear error if the file/key is missing; `config.local.example.json` is the tracked template. `README.md` has an "if you plan to publish/open-source your fork" callout listing every tracked file that carries real personal data (`CLAUDE.md`, `data/profile.md`, `01-candidate-profile.md`, `cv/*.md`, `applications/`, `job_search_tracker.csv`, `documents/`, plus the already-gitignored `config.local.json`/`credentials.json`/`data/token.json`). **`tools/build_job_scout.py`'s identical hardcoded-email bug was deliberately left unfixed** — deferred to the still-open `centralize-config-and-private-store` change.
 
-## Known repo debt (fork remnants, not yet cleaned up)
+## Resolved repo debt (was tracked here, cleaned up 2026-09-22)
 
-Tracked for a **separate, not-yet-created** OpenSpec change — see RESUME.md for current status. Do not fold cleanup work into unrelated changes.
+Fixed via `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/` — kept here as historical closure, not as open items:
 
-- `/apply` (`.claude/commands/apply.md`) still implements the original fork's full drafter-reviewer LaTeX pipeline (CV + cover letter, PDF compile-and-inspect, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — this **contradicts** `CLAUDE.md`'s current one-line description of `/apply` producing "a tailored markdown resume" in `applications/YYYY-MM_Company/` (a directory that doesn't exist). Nobody has reconciled these since `CLAUDE.md` was rewritten for the Gmail-alert workflow.
-- Danish job-portal scraper skills that once lived under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` are already gone (confirmed absent as of 2026-09-22) — sourcing is Gmail-alert-based only.
-- `.claude/skills/job-scraper/` (once adapted to read from `data/inbox_queue.json` instead of scraping portals) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point (`/fetch-inbox` only) — its own fetch+quick-assess pass duplicated `/fetch-inbox` + `job-evaluator`'s work with a weaker heuristic. See `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6.
+- `/apply` no longer implements the fork's LaTeX drafter-reviewer pipeline. It now drafts markdown CV + cover letter directly to `applications/YYYY-MM_Company/`, matching `CLAUDE.md`'s directive. See `openspec/specs/job-application/spec.md` for the formal spec.
+- Danish job-portal scraper skills that once lived under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` are gone (confirmed absent as of 2026-09-22) — sourcing is Gmail-alert-based only.
+- `.claude/skills/job-scraper/` (once adapted to read from `data/inbox_queue.json` instead of scraping portals) was deleted as part of consolidating to a single Gmail entry point (`/fetch-inbox` only) — its own fetch+quick-assess pass duplicated `/fetch-inbox` + `job-evaluator`'s work with a weaker heuristic. See the archived change's `design.md` Decision 6.
+
+## Known repo debt (still open)
+
 - `documents/` still has the original fork's onboarding layout (`cv/`, `diplomas/`, `linkedin/`, `references/`, `applications/`) alongside the user's own `documents/plans/` notes folder.
 - License is MIT, copyright Mads Lorentzen (original fork author) — any cleanup must preserve the copyright/permission notice per `LICENSE`.
+- `tools/build_job_scout.py` still has the same hardcoded-email bug `fetch_inbox.py` had — deliberately deferred to the still-open `centralize-config-and-private-store` change, not a miss.
+- `apply.md` Step 6 references "the verification checklist from `CLAUDE.md`", but `CLAUDE.md` has no such checklist and never did — pre-existing, unresolved.
