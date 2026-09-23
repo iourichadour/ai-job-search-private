@@ -71,6 +71,6 @@
 
 ## 8. Commit and Close
 
-- [ ] 8.1 Stage all changes (deletions, rewrites, new spec file) via targeted `git add` (not `git add -A`) and review `git status` before committing
-- [ ] 8.2 Create a single commit with message `chore(SCRUM-17-followup): repo-wide dead-artifact cleanup, delete LaTeX pipeline, align apply.md/docs with markdown workflow, add job-application spec` and verify the commit appears in `git log`
-- [ ] 8.3 Run `git status` and verify working tree is clean
+- [x] 8.1 Stage all changes (deletions, rewrites, new spec file) via targeted `git add` (not `git add -A`) and review `git status` before committing. **Done 2026-09-22**: used `git add -u` (stages modifications/deletions to already-tracked files only) plus explicit `git add` for the 3 new files (`config.local.example.json`, the two new spec.md files). Reviewed staged output — `data/positioning_rubric.md` (pre-existing untracked file from before this session, unrelated to this change) correctly excluded; `config.local.json` correctly absent (gitignored).
+- [x] 8.2 Create a single commit with message `chore(SCRUM-17-followup): repo-wide dead-artifact cleanup, delete LaTeX pipeline, align apply.md/docs with markdown workflow, add job-application spec` and verify the commit appears in `git log`. **Done 2026-09-22**: commit `bda145c`, 60 files changed, verified via `git log --oneline -1`.
+- [x] 8.3 Run `git status` and verify working tree is clean. **Done 2026-09-22**: clean except for this file's own trailing progress-bookkeeping edit (marking 8.2/8.3 done after the commit that covers them — inherent to a self-tracking task list, resolved with one small follow-up docs commit, matching this repo's own precedent from `80ba4c5 docs(SCRUM-17): mark all tasks complete`) and `data/positioning_rubric.md` (pre-existing untracked file from before this session, unrelated to this change, left untouched).
