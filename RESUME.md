@@ -107,9 +107,11 @@ Status: **planning complete, ready to implement now** (0/22 tasks). Proposal, de
 
 **Resolved (2026-09-22)**: target compensation band is defined in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp), confirmed current by the user — no longer an open input. `proposal.md`, `tasks.md` (1.1, 3.5), and `design.md` (Non-Goals, Risks, Open Questions) updated to reflect this via `/opsx:update`.
 
-**Possible overlap to check before implementing**: `data/positioning_rubric.md` (see "Untracked" section below) may be intended as this change's positioning-scoring rubric — resolve that scope question first.
+**Resolved (2026-09-22)**: `data/positioning_rubric.md` (previously untracked, scope unclear) IS this change's `opportunity-positioning` rubric — verified field-for-field against `specs/opportunity-positioning/spec.md` (5 dimensions weighted 20/25/20/15/20 summing to 100, named High/Medium/Low anchors, output schema matches exactly: `positioning_score`, `positioning_rationale`, `resume_bullet_diffs`, `verdict`). Now tracked in git; `tasks.md` task 1.2 reworded from "write" to "verify" since the file already satisfies it — no new file needs to be written.
 
-**Next step**: Implement this change per its tasks.md.
+**No open questions remain** — all three previously-open items (comp band, rubric scope, and the branch this gets implemented on) are resolved as of 2026-09-22.
+
+**Next step**: Implement this change per its `tasks.md`, starting on a fresh `feature/SCRUM-16-headhunter-agent` branch cut from `dev` after `feature/SCRUM-17-cleanup-stale-artifacts` merges (see cleanup section below).
 
 ---
 
@@ -140,10 +142,12 @@ Status: **archived, 26/26 tasks complete** (2026-09-17). Verified live on both C
 - **Gemini batch (task 4.3)**: 5 real jobs evaluated with `model: "gemini-agent-session"` (Clearwater Analytics — 80% high fit, FTI Consulting — 79%, BlackRock — 78%, Celonis — 72%, Wellington Management — 58%).
 - Total evaluations in `data/job_evaluations.json`: 423 records, 0 duplicate URLs, pre-existing historical records completely intact.
 
-## Active: `agy-job-evaluator-subagent` OpenSpec change
+## Archived: `agy-job-evaluator-subagent` OpenSpec change
 
-Location: `openspec/changes/agy-job-evaluator-subagent/`
-Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 1-4 are done and verified live.
+Archived as: `openspec/changes/archive/2026-09-22-agy-job-evaluator-subagent/`
+Status: **applied, 8/8 tasks complete** (2026-09-17), **archived 2026-09-22**. All tasks across sections 1-4 were done and verified live back in September; archiving was blocked until 2026-09-22 by a stale delta spec (its "Evaluations are tagged by evaluator provenance" MODIFIED block used an older scenario name/wording than the live main spec, which `openspec archive` refuses to silently drop). Fixed by reconciling the delta's two MODIFIED requirements to match the live main spec exactly (a no-op for those two, since the later `interactive-agent-job-evaluation` and `cleanup-legacy-docs-and-apply-pipeline` changes had already superseded that wording) — its one genuinely new `ADDED` requirement ("Dedicated evaluator subagents pinned to specialized models") archived cleanly into `openspec/specs/job-evaluation/spec.md`.
+
+**Side note surfaced while fixing this, not acted on**: the live `job-evaluation` spec's "Interactive-agent evaluation is the primary path" requirement still only mentions Claude Code/Gemini CLI, not `.agents/`/Antigravity — even though Antigravity evaluation is live and working (`antigravity-agent-session` tag, `MEMORY.md`'s "Three parallel agent ecosystems"). Possible spec-completeness gap, not a behavior bug; leave for a future change if it matters.
 
 **Completed work**:
 - Defined `.agents/agents/job-evaluator.agent.md` pinned to `Model: pro` (`gemini-2.5-pro`) for high-nuance executive role evaluation (~$0.20/50 jobs).
@@ -208,18 +212,9 @@ Status: **planning complete (0/16 tasks across 6 sections), implementation delib
 
 **Next step**: none for now — deferred. If picked back up, implement per `tasks.md` (extractor → generate+commit initial cache → wire Gemini API fallback → wire 3 interactive-agent instruction files → grep cross-check for stragglers → live verification batches on both paths).
 
-## Untracked: `data/positioning_rubric.md`
+## Resolved: `data/positioning_rubric.md` scope (was "Untracked", resolved 2026-09-22)
 
-A new positioning-scoring rubric for HIGH_FIT/FIT roles (distinct from job-evaluation rubric) was created but is untracked. Its scope is unclear:
-- Is this part of **headhunter-agent** (SCRUM-16) scope? (looks like it could be the `career-advisor` subagent's rubric)
-- Or a standalone new capability?
-
-**Decision needed**: Determine if this should be:
-- Integrated into `headhunter-agent`'s design.md + specs as the positioning-scoring rubric (task 2 under `opportunity-positioning` spec)
-- Scoped as a separate change
-- Archived for later review
-
-**Current**: file is in working directory but untracked; don't commit until scope is decided.
+Confirmed as `headhunter-agent`'s `opportunity-positioning` rubric and tracked in git — see that change's section above for details. No longer an open question.
 
 ---
 

@@ -144,3 +144,10 @@ The system SHALL export all pending unevaluated jobs across all dates when `--fi
 #### Scenario: Explicit date filtering respects user parameter
 - **WHEN** a user or agent specifies `--days 30` or `--days 14`
 - **THEN** the system restricts the candidate jobs to those fetched within the specified number of days
+
+### Requirement: Dedicated evaluator subagents pinned to specialized models
+Interactive agent workflows in Claude Code and Antigravity (`agy`) SHALL delegate the evaluation of exported jobs to dedicated subagents pinned to specialized models (`haiku` in Claude Code, `pro` in Antigravity) rather than consuming interactive session context in the main orchestrating session.
+
+#### Scenario: Antigravity workflow delegates to pinned pro subagent
+- **WHEN** `/fetch-inbox` or `scan-inbox` is executed in Antigravity (`agy`)
+- **THEN** the orchestrating agent invokes the `job-evaluator` subagent with `Model: pro` to score the batch against `data/profile.md`

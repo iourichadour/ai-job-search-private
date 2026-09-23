@@ -1,7 +1,7 @@
 ## 1. Context and rubric files
 
 - [ ] 1.1 Verify the target compensation band already present in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp, confirmed current by the user 2026-09-22) is in a location and format `evidence-verifier` and `deal-architect` can reliably detect; no new field needs to be added — if the format needs adjusting for detection, adjust it in place rather than duplicating a second field
-- [ ] 1.2 Write `data/positioning_rubric.md` using JobFinderOS's weights-summing-to-100%-with-named-anchors structure (title level, dual-threat fit, domain fit, comp signal, technology fit) and verify weights sum to exactly 100
+- [ ] 1.2 Verify `data/positioning_rubric.md` (already drafted, tracked 2026-09-22) against `specs/opportunity-positioning/spec.md`: confirm weights (title level 20%, dual-threat 25%, domain 20%, comp signal 15%, technology 20%) sum to exactly 100, each dimension has named High/Medium/Low anchors, and the file's `## Output Schema` (positioning_score, positioning_rationale, resume_bullet_diffs, verdict) matches the spec's required fields field-for-field — no new file needs to be written
 
 ## 2. `career-advisor` subagent
 
