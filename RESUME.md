@@ -2,7 +2,47 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-21 17:55:00 UTC (past 30-day evaluation complete)
+**Last updated**: 2026-09-22 (`cleanup-legacy-docs-and-apply-pipeline` shipped, verified, and archived)
+
+## Completed & Archived: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
+
+Archived as: `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/`
+Main specs updated: `openspec/specs/job-application/spec.md` (new capability), `openspec/specs/job-evaluation/spec.md` (modified: dropped the scan-inbox mention)
+Branch: `feature/SCRUM-17-cleanup-stale-artifacts` — 3 commits (`bda145c` cleanup, `3f0aa66` task bookkeeping, `ae39305` archive move), pushed to origin. **Not yet merged to `dev`** — open a PR when ready.
+Status: **all 42 tasks complete, archived**.
+
+**What shipped**:
+- Repo-wide audit (Section 1) surfaced everything below; checkpoint review with the user resolved every open decision (consolidate to one Gmail entry point, delete `job-scraper` skill entirely, LaTeX confirmed for deletion).
+- **Deleted**: `job_scraper/`, 5 dead `tools/*.py` scripts (one — `evaluate_jobs.py` etc — had been falsely marked done in an earlier session without actually being deleted; caught and fixed during this session via re-verification), duplicate `credentials.json`, stale `data/` scratch/backup files, top-level `prompts/scan_inbox_workflow.md`.
+- **Consolidated to a single Gmail entry point**: deleted `/scan-inbox` (all 4 locations: `.claude/`, `.gemini/` command+skill, `.agents/` skill) and the `job-scraper` skill entirely (its `search-queries.md` was a whole obsolete manual-search-query doc, not just the flagged Danish-CLI sentence). Fixed `.claude/commands/setup.md` onboarding, which actively wired up both (a `job-scraper` Step 8, a `/scrape` "try it out" callout, plus its own separate `cv/main_example.tex` references) — this was larger than the original task text anticipated but was mechanical execution of the same confirmed decision.
+- **Deleted the LaTeX CV/cover-letter pipeline** (`cv/main_example.tex`, `cover_letters/cover.cls` + `OpenFonts/`) and rewrote `/apply`, `job-application-assistant/SKILL.md`, `05-cv-templates.md`, `06-cover-letter-templates.md` for markdown output to `applications/YYYY-MM_Company/cv.md`/`cover_letter.md` — kept and adapted all the non-LaTeX content (profile statement templates, relevance-weighted cutting logic, section ordering).
+- **De-hardcoded the maintainer's email** out of `tools/fetch_inbox.py` into a gitignored `config.local.json` (tracked `config.local.example.json` template) — verified end-to-end against live Gmail auth. `tools/build_job_scout.py`'s same bug is deferred to `centralize-config-and-private-store` (below), not fixed here.
+- **Rewrote `SETUP.md`**: dropped all LaTeX install/compile/troubleshooting content, added real "create a dedicated Gmail account" + "configure Gmail API access" (8-step, `config.local.json`-aware) subsections.
+- **Rewrote `README.md`**: real Mermaid workflow diagram, correct fork/clone origin, corrected file structure, an "if you plan to publish/open-source your fork" PII callout.
+- **New `openspec/specs/job-application/spec.md`** — first formal spec for `/apply`'s behavior (fit gate, markdown output, `applications/YYYY-MM_Company/` location, reviewer loop, no-fabrication rule), cross-checked against the rewritten `apply.md`.
+- **Fixed several stale references discovered along the way** (not in the original task list, but direct consequences of the confirmed decisions): the live `job-evaluation` spec's "fetch-inbox or scan-inbox" scenario (formally declared as a Modified Capability delta, not silently patched), dead `.gitignore` rules for deleted LaTeX/job_scraper paths, a dead `settings.local.json` permission entry, `MEMORY.md`'s stale Danish-scraper note.
+
+**Known gap, not fixed (pre-existing, out of scope)**: `apply.md` Step 6 says "run the verification checklist from `CLAUDE.md`" but `CLAUDE.md` has no such checklist and never did. Worth a follow-up if you want that step to actually do something.
+
+**Next step**: open a PR from `feature/SCRUM-17-cleanup-stale-artifacts` into `dev` when ready, or continue directly with `centralize-config-and-private-store` (now unblocked, see below).
+
+## Ready to implement (unblocked): `centralize-config-and-private-store` OpenSpec change (2026-09-22)
+
+Location: `openspec/changes/centralize-config-and-private-store/`
+Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — that dependency is now resolved** (cleanup shipped and archived 2026-09-22). One small stale reference already fixed during cleanup: `tasks.md` 6.5's "if kept per sibling change's decision" conditional on `/scan-inbox` was resolved (deleted, not kept) and the task text updated accordingly — worth a quick read of that task before implementing 6.x.
+
+**Why this exists**: follow-up to a "should we adopt a `private/` folder for all private artifacts?" exploratory question — user confirmed yes, and asked to make it larger: every kept Python tool should read paths/settings from one central config instead of hardcoding relative-string literals per script (11 files inventoried in `design.md` - Context).
+
+**Scope, confirmed via direct questions to the user (2026-09-22)**:
+- `tools/config.py` (tracked code) + `private/config.json` (gitignored data, `config.example.json` tracked template at repo root) becomes the single source every kept script reads paths/settings from.
+- Full `private/` consolidation, not partial: `data/profile.md`, `cv/*.md`, `job_search_tracker.csv`, `credentials.json`, `data/token.json` move in (as previously discussed) — **plus**, per explicit user confirmation, `data/job_evaluations.json`/`.failed.json` (not classic PII, but sensitive-by-association — user chose to move it) and `documents/`'s personal subfolders (`cv/`, `linkedin/`, `diplomas/`, `references/`, `applications/` — currently protected by granular `.gitignore` rules instead of the single-folder pattern; user chose to move these too for consistency). Already-gitignored operational data (`fetch_state.json`, `scratch_*.json`, `eval_batches/`) moves too, for location consistency (not a new privacy decision, since already excluded from git).
+- `documents/README.md` and the top-level `documents/` structure stay tracked in place (public setup instructions) — only the personal *content* underneath moves.
+- Future `/apply` output redirects from `applications/YYYY-MM_Company/` to `private/applications/YYYY-MM_Company/` — requires editing the sibling change's still-open `job-application` delta spec (or `openspec/specs/job-application/spec.md` directly if that change archives first).
+- **`tools/build_job_scout.py` fully owned by this change** (2026-09-22 scoping clarification, mid-session correction from an earlier draft that had it split across both changes): its keep/delete decision, its hardcoded-email fix, and its config/path wiring all happen here, not in `cleanup-legacy-docs-and-apply-pipeline`. That sibling change makes zero edits to it.
+
+**Next step**: implement `cleanup-legacy-docs-and-apply-pipeline` first (see above — still awaiting the Section 1.3 README checkpoint). Once that's committed, implement this change per its `tasks.md` (11 sections: prerequisite check, config module, then move-and-rewire in groups — OAuth, candidate data, evaluation data/tracker, `documents/`, future `/apply` output — then `.gitignore` simplification, full verification, single commit).
+
+**Next step (for the checkpoint-gated change above)**: user reviews the rewritten `README.md` (specifically the "Repo cleanup: pending review" section) and confirms what to delete. Once confirmed, continue that change's `tasks.md` from Section 2 onward.
 
 ## Completed: SCRUM-11 — Verify timestamp-based Gmail query fix (2026-09-20 12:41:05 UTC)
 
@@ -55,10 +95,30 @@ Snapshot of in-progress work, for picking this back up in a new session (any age
 
 **Next steps**: Select 3–5 from top 11 for targeted applications; prepare customized application packages.
 
-## Active: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
+## Ready to implement (unblocked): `headhunter-agent` OpenSpec change (2026-09-21)
+
+Location: `openspec/changes/headhunter-agent/`
+Status: **planning complete, ready to implement now** (0/22 tasks). Proposal, design, 3 specs, and task list are done and validated. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — now unblocked**: `openspec/specs/job-application/spec.md` exists (fit gate, markdown output, `applications/YYYY-MM_Company/` location, reviewer loop, no-fabrication rule) for resume-bullet-diff requests to target.
+
+**Scope**: Three new capabilities for HIGH_FIT/FIT roles and OFFER/FINAL_ROUND opportunities:
+- `opportunity-positioning`: Score against positioning-specific rubric (title/level fit, dual-threat, domain, comp signal, tech stack), draft positioning rationale + resume bullet diffs
+- `interview-negotiation-prep`: Three-lens adversarial interview simulation (hiring manager / peer / bar raiser) + negotiation talking points
+- `evidence-verification`: Block any drafted claim not traced to `data/profile.md`
+
+**Resolved (2026-09-22)**: target compensation band is defined in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp), confirmed current by the user — no longer an open input. `proposal.md`, `tasks.md` (1.1, 3.5), and `design.md` (Non-Goals, Risks, Open Questions) updated to reflect this via `/opsx:update`.
+
+**Resolved (2026-09-22)**: `data/positioning_rubric.md` (previously untracked, scope unclear) IS this change's `opportunity-positioning` rubric — verified field-for-field against `specs/opportunity-positioning/spec.md` (5 dimensions weighted 20/25/20/15/20 summing to 100, named High/Medium/Low anchors, output schema matches exactly: `positioning_score`, `positioning_rationale`, `resume_bullet_diffs`, `verdict`). Now tracked in git; `tasks.md` task 1.2 reworded from "write" to "verify" since the file already satisfies it — no new file needs to be written.
+
+**No open questions remain** — all three previously-open items (comp band, rubric scope, and the branch this gets implemented on) are resolved as of 2026-09-22.
+
+**Next step**: Implement this change per its `tasks.md`, starting on a fresh `feature/SCRUM-16-headhunter-agent` branch cut from `dev` after `feature/SCRUM-17-cleanup-stale-artifacts` merges (see cleanup section below).
+
+---
+
+## Independent: `eval-dashboard` OpenSpec change (planning phase, 2026-09-18)
 
 Location: `openspec/changes/eval-dashboard/`
-Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, design, both specs, and task list are done and validated.
+Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, design, both specs, and task list are done and validated. **Independent** — does not block or depend on other changes; deferred pending application decisions.
 
 **Scope**: Multi-page HTML dashboard (evaluations browser + applied-jobs tracker) reading from `data/job_evaluations.json` and `job_search_tracker.csv`. Single-file vanilla JS/CSS, no backend, works offline in a browser.
 
@@ -69,7 +129,7 @@ Status: **planning complete, 0/68 tasks implemented** (2026-09-18). Proposal, de
 - `data/job_evaluations.json`: normalized Celonis (4413352108) and FTI Consulting (4421660792) URLs from full tracking-param form to canonical short form
 - `tools/fetch_inbox.py`: added `extract_indeed_job_id()` and `normalize_indeed_url()` functions; applied them at Indeed URL ingestion time (same pattern as LinkedIn)
 
-**Next step**: User reconsidered workflow — wants to re-fetch/re-evaluate jobs and pick a few high-fit roles to apply to *before* building the dashboard, so the dashboard has real application data to work with. Dashboard implementation (tasks 1.1+) deferred pending fresh job evaluations and application decisions.
+**Next step**: User wants to apply to a few high-fit roles first so the dashboard has real application data to work with. Deferred pending cleanup landing + targeted applications from top 11 high-fit targets (SCRUM-12).
 
 ## Recently Archived: `interactive-agent-job-evaluation` OpenSpec change
 
@@ -82,10 +142,12 @@ Status: **archived, 26/26 tasks complete** (2026-09-17). Verified live on both C
 - **Gemini batch (task 4.3)**: 5 real jobs evaluated with `model: "gemini-agent-session"` (Clearwater Analytics — 80% high fit, FTI Consulting — 79%, BlackRock — 78%, Celonis — 72%, Wellington Management — 58%).
 - Total evaluations in `data/job_evaluations.json`: 423 records, 0 duplicate URLs, pre-existing historical records completely intact.
 
-## Active: `agy-job-evaluator-subagent` OpenSpec change
+## Archived: `agy-job-evaluator-subagent` OpenSpec change
 
-Location: `openspec/changes/agy-job-evaluator-subagent/`
-Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 1-4 are done and verified live.
+Archived as: `openspec/changes/archive/2026-09-22-agy-job-evaluator-subagent/`
+Status: **applied, 8/8 tasks complete** (2026-09-17), **archived 2026-09-22**. All tasks across sections 1-4 were done and verified live back in September; archiving was blocked until 2026-09-22 by a stale delta spec (its "Evaluations are tagged by evaluator provenance" MODIFIED block used an older scenario name/wording than the live main spec, which `openspec archive` refuses to silently drop). Fixed by reconciling the delta's two MODIFIED requirements to match the live main spec exactly (a no-op for those two, since the later `interactive-agent-job-evaluation` and `cleanup-legacy-docs-and-apply-pipeline` changes had already superseded that wording) — its one genuinely new `ADDED` requirement ("Dedicated evaluator subagents pinned to specialized models") archived cleanly into `openspec/specs/job-evaluation/spec.md`.
+
+**Side note surfaced while fixing this, not acted on**: the live `job-evaluation` spec's "Interactive-agent evaluation is the primary path" requirement still only mentions Claude Code/Gemini CLI, not `.agents/`/Antigravity — even though Antigravity evaluation is live and working (`antigravity-agent-session` tag, `MEMORY.md`'s "Three parallel agent ecosystems"). Possible spec-completeness gap, not a behavior bug; leave for a future change if it matters.
 
 **Completed work**:
 - Defined `.agents/agents/job-evaluator.agent.md` pinned to `Model: pro` (`gemini-2.5-pro`) for high-nuance executive role evaluation (~$0.20/50 jobs).
@@ -112,9 +174,9 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 
 **Known gap, still not resolved (unchanged from before this apply session)**: `tasks.md` doesn't cover `.agents/skills/fetch-inbox/SKILL.md` or `.agents/skills/scan-inbox/SKILL.md` (the third, "Antigravity" mirror). Those already document Agent Mode as the default, so they likely only need a provenance tag, not a rewrite — this was deliberately left out of this change's scope and never revisited. Decide via `/opsx:update` on a future change, or explicitly declare out of scope.
 
-## Planned follow-up 1: `fix-failed-evals` skill
+## Deferred: `fix-failed-evals` skill
 
-**Status**: Not yet scoped as OpenSpec change — durable facts captured in MEMORY.md, ready to build as a standalone skill after `interactive-agent-job-evaluation` ships.
+**Status**: Deliberately deferred (2026-09-22) — `data/job_evaluations.failed.json` doesn't currently exist (no accumulated failures). User decided to wait until failures actually land there again before building the retry tool, rather than build against a guessed schema now.
 
 **Purpose**: Manage accumulated failed evaluations in `data/job_evaluations.failed.json`:
 - List failed jobs (by session or all accumulated)
@@ -130,31 +192,31 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 
 **Scope boundary**: This change handles partial save + failure tracking; the retry skill handles post-hoc recovery. Don't fold retry logic into the current change.
 
-## Planned follow-up 2: Profile caching optimization
+## Deferred: `profile-caching-optimization` OpenSpec change (planned 2026-09-22, deferred 2026-09-22)
 
-**Status**: Quick optimization script (not a formal OpenSpec change), to be built after `interactive-agent-job-evaluation` ships.
+Location: `openspec/changes/profile-caching-optimization/`
+Status: **planning complete (0/16 tasks across 6 sections), implementation deliberately deferred.** Proposal, one modified + one new requirement in a `job-evaluation` delta spec, design, and tasks are all done and pass `openspec validate --changes profile-caching-optimization --strict`. Standalone/independent — no dependency on `centralize-config-and-private-store`, `headhunter-agent`, or `eval-dashboard` — so it can be picked up any time without re-sequencing other work.
 
-**Goal**: Save ~100 tokens per evaluation run by replacing full `data/profile.md` (118 lines) with a structured JSON cache.
+**Why deferred**: the token-savings case is much stronger for the Gemini API fallback path (full profile re-embedded per job, ~423x multiplier in a large run) than for the interactive-agent path (profile read once per batch invocation, not per job — e.g. only 22 reads across SCRUM-12's 423-job/22-batch run). The user's primary evaluation path is the interactive agent, not the API fallback, so the realistic payoff right now is smaller than the proposal originally framed it. Revisit if Gemini-API-fallback usage picks up, or if interactive-agent batch counts grow enough to make the smaller per-batch saving worthwhile.
 
-**Approach**:
-- Create `tools/extract_profile.py` — rule-based parser that reads profile.md and extracts key structured facts (skills, target companies, role level, avoid-patterns, etc.) into a 2-3 line JSON cache
-- Cache stored as `data/profile.cache.json` (check into git, regenerate only when profile.md changes)
-- Update agent instructions (`.claude/agents/job-evaluator.md`, Gemini CLI workflow) to reference cache instead of full profile
-- Agent receives ~30 tokens instead of ~200 tokens per run
-- Savings: ~170 tokens per run, zero upfront cost (parsing is rule-based, not LLM)
+**Why this exists** (original motivation, still accurate for the API path): `data/profile.md` (139 lines, ~10KB, ~2,000-2,500 tokens) is read in full by 4 separate evaluator entry points, most wastefully by the Gemini API fallback which embeds it in *every per-job* prompt (not once per batch).
 
-**Why after this change**: Profile caching is a standalone optimization that doesn't block current work and can ship independently.
+**Scope**:
+- New `tools/extract_profile.py` — rule-based (non-LLM) extractor generating `data/profile.cache.json` (checked into git).
+- Freshness guarantee via a SHA-256 content hash stored in the cache's `_meta` (not mtime — git doesn't preserve mtimes across clones), checked via `extract_profile.py --check`.
+- Auto-regeneration on staleness for the Gemini API path (it's code, so it self-heals); interactive-agent paths (`.claude/agents/job-evaluator.md`, `.agents/agents/job-evaluator.agent.md`, `.gemini/GEMINI.md`) are instructed to run the check-then-regenerate themselves via their shell tool.
+- **Key design constraint**: the cache is NOT a fully re-structured metadata blob — `company_fit`/`growth_potential` score against `profile.md`'s narrative sections (Behavioral Profile, Key AI-Driven Projects, etc.), so those stay near-verbatim in the cache. Only the multi-decade job-history section gets meaningfully condensed (current role kept in full, pre-2020 roles collapsed to one line each).
+- Extractor fails loudly (non-zero exit) on unrecognized `profile.md` section structure, so future profile.md restructuring can't silently degrade the cache.
 
-## Deferred: repo cleanup / fork-provenance
+**Side finding surfaced while researching this change**: `data/profile.md` already has a `Target Compensation Band: $200K-$300K (total comp)` line (under "Target Roles & Industries") — this may resolve the `headhunter-agent` change's noted blocker ("target compensation band not yet defined — negotiation prep cannot be considered usable"). Worth checking whether that's actually current/accurate before treating it as resolved.
 
-Discussed via `/openspec-explore`, deliberately **not started** as a change yet — no name chosen, no artifacts created. Decision made: this is a **separate** OpenSpec change from `interactive-agent-job-evaluation` (no file overlap, different capability, different blast radius, don't block one on the other).
+**Next step**: none for now — deferred. If picked back up, implement per `tasks.md` (extractor → generate+commit initial cache → wire Gemini API fallback → wire 3 interactive-agent instruction files → grep cross-check for stragglers → live verification batches on both paths).
 
-**Confirmed dead** (safe to remove in that future change): `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` (Danish job-portal scraper CLIs).
+## Resolved: `data/positioning_rubric.md` scope (was "Untracked", resolved 2026-09-22)
 
-**Still undecided** — needs the user's call before scoping that change:
-- Fate of `/apply`'s original LaTeX drafter-reviewer pipeline (`.claude/commands/apply.md`, `cv/`, `cover_letters/`, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — currently contradicts `CLAUDE.md`'s simplified description of `/apply`. Is the LaTeX pipeline still wanted in any form, or fully superseded?
-- Fate of `/setup`, `/expand`, `/reset` (original onboarding commands) and the `documents/` folder layout they depend on.
-- README.md / SETUP.md rewrite scope, and where the MIT attribution (copyright notice to Mads Lorentzen, per `LICENSE`) should live once the README no longer describes the original fork's workflow.
+Confirmed as `headhunter-agent`'s `opportunity-positioning` rubric and tracked in git — see that change's section above for details. No longer an open question.
+
+---
 
 ## Dropped this session
 

@@ -1,7 +1,5 @@
 # /apply - Drafter-Reviewer Job Application Workflow
 
-> **Note (SCRUM-17):** This command implements a full LaTeX CV + cover letter drafter pipeline (CV compilation, PDF inspection, reviewer feedback loop). This is the current full implementation and is fully functional. However, `CLAUDE.md` documents a simpler markdown-resume approach as the canonical one-line intent. The discrepancy has been flagged for clarification (see SCRUM-17 change artifacts). A future change will scope `/apply` simplification if desired. For now, this full pipeline is the documented behavior and the one to use.
-
 You are orchestrating a two-agent job application workflow. The job posting is provided below as `$ARGUMENTS` (either a URL or pasted text).
 
 Follow these steps **exactly in order**. Do not skip steps.
@@ -10,7 +8,7 @@ Follow these steps **exactly in order**. Do not skip steps.
 - Never re-Read a file whose contents are already in your context from an earlier step. If you read it in Step 1, it is still available in Step 2.
 - When dispatching the reviewer agent, pass draft content **inline in the agent prompt** rather than asking the agent to Read files you already have in memory.
 - Run the full verification checklist exactly once, at the end (Step 6). The reviewer focuses on content critique, not verification.
-- Step 5 (compile and inspect PDFs) is mandatory and non-skippable — LaTeX page-break decisions are unpredictable, and `.tex` files that look fine often produce broken PDFs (orphaned entry titles, cover letters spilling to page 2, bullet fonts mismatching).
+- Step 5 (quality pass) is mandatory and non-skippable — re-reading and checking the drafts against their length budgets and templates catches placeholder text, over-length sections, and structural drift that a single drafting pass often leaves in.
 
 ---
 
@@ -61,33 +59,30 @@ Read only the reference files you do not yet have:
 - `.claude/skills/job-application-assistant/05-cv-templates.md`
 - `.claude/skills/job-application-assistant/06-cover-letter-templates.md`
 
-Also read the most recent existing CV and cover letter files for concrete structural reference (one of each is enough):
-- Read any existing `cv/main_*.tex` file as a LaTeX template reference
-- Read any existing `cover_letters/cover_*.tex` or `cover_letters/Cover_*.tex` file as a template reference
+Determine the output folder from the company name extracted in Step 0 and the current year-month: `applications/YYYY-MM_<Company>/` (spaces in the company name become hyphens, e.g. `applications/2026-09_Acme-Corp/`). Create the folder if it does not already exist.
 
-### CV (`cv/main_<company>.tex`)
+### CV (`applications/YYYY-MM_<Company>/cv.md`)
 - Always in **English**
-- Follow the moderncv/banking format from `05-cv-templates.md`
+- Follow the structure and tailoring guidance from `05-cv-templates.md`
 - Tailor the profile statement and experience bullets to the specific role
 - Reframe skills and achievements to match job requirements
-- Keep to 2 pages
+- Target the length budget in `05-cv-templates.md` (~2-page equivalent)
 
-### Cover Letter (`cover_letters/cover_<company>_<role>.tex`)
+### Cover Letter (`applications/YYYY-MM_<Company>/cover_letter.md`)
 - **Match the language of the job posting** (Danish posting -> Danish cover letter, English posting -> English cover letter)
 - Follow the structure from `06-cover-letter-templates.md`
-- Use the `cover.cls` template
 - Tailor the opening paragraph to the specific role and company
 - Address to a named person if available in the posting, otherwise "Dear Hiring Manager" (or equivalent in posting language)
-- Keep to approximately one page
+- Target the length budget in `06-cover-letter-templates.md` (~1 page, 250-300 words)
 - Any mention of agentic coding or AI tooling must reference **Claude Code** by name
 
-Write both files to disk. Keep the exact text of both drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading.
+Write both files to disk as markdown. Keep the exact text of both drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading.
 
 ---
 
 ## Step 3: REVIEWER - Research & Critique
 
-Use the **Agent tool** to spawn a `general-purpose` reviewer agent. The reviewer gets a fresh context, so pass the drafts **inline in the prompt** below (do not make the reviewer Read them). Scope the reviewer's file reads to content-critique essentials only — the reviewer does not need the LaTeX template files (`05`, `06`) to critique content, since those govern structural/LaTeX concerns the drafter already applied.
+Use the **Agent tool** to spawn a `general-purpose` reviewer agent. The reviewer gets a fresh context, so pass the drafts **inline in the prompt** below (do not make the reviewer Read them). Scope the reviewer's file reads to content-critique essentials only — the reviewer does not need the CV/cover-letter template files (`05`, `06`) to critique content, since those govern structural/formatting concerns the drafter already applied.
 
 Replace `<COMPANY>`, `<ROLE>`, `<INSERT_JOB_POSTING_TEXT_HERE>`, `<INSERT_CV_DRAFT_HERE>`, and `<INSERT_COVER_LETTER_DRAFT_HERE>` with actual values before dispatching.
 
@@ -110,16 +105,16 @@ Read these four files — and only these — to ground your critique:
 - `.claude/skills/job-application-assistant/03-writing-style.md`
 - `.claude/skills/job-application-assistant/04-job-evaluation.md`
 
-Do NOT read `05-cv-templates.md` or `06-cover-letter-templates.md` — those govern LaTeX structure the drafter already applied and are not needed for content critique.
+Do NOT read `05-cv-templates.md` or `06-cover-letter-templates.md` — those govern formatting/structure the drafter already applied and are not needed for content critique.
 
 ### 3. Drafts to Review
 Both drafts are provided inline below. Do NOT use the Read tool on the draft files — use these exact texts.
 
-<CV_DRAFT file="cv/main_<COMPANY>.tex">
+<CV_DRAFT file="applications/<YYYY-MM_COMPANY>/cv.md">
 <INSERT_CV_DRAFT_HERE>
 </CV_DRAFT>
 
-<COVER_LETTER_DRAFT file="cover_letters/cover_<COMPANY>_<ROLE>.tex">
+<COVER_LETTER_DRAFT file="applications/<YYYY-MM_COMPANY>/cover_letter.md">
 <INSERT_COVER_LETTER_DRAFT_HERE>
 </COVER_LETTER_DRAFT>
 
@@ -136,7 +131,7 @@ Return your feedback in **two parts**:
 A JSON array of concrete edits the drafter can apply directly without re-reading the files. Each edit is an object:
 ```json
 {
-  "file": "cv/main_<COMPANY>.tex" | "cover_letters/cover_<COMPANY>_<ROLE>.tex",
+  "file": "applications/<YYYY-MM_COMPANY>/cv.md" | "applications/<YYYY-MM_COMPANY>/cover_letter.md",
   "old_string": "<exact text currently in the draft>",
   "new_string": "<replacement text>",
   "reason": "<one-line rationale: keyword match / company angle / reframing / style>"
@@ -177,52 +172,25 @@ After all edits are applied, the two files on disk are the final drafts.
 
 ---
 
-## Step 5: DRAFTER - Compile & Inspect PDFs (MANDATORY)
+## Step 5: DRAFTER - Quality Pass (MANDATORY)
 
-**Never skip this step.** The `.tex` files looking fine is not sufficient — LaTeX page-break decisions are unpredictable and commonly produce broken layouts (orphaned job titles separated from their bullets, cover letters spilling to 2 pages, bullet fonts not matching body text). Compile both documents and visually verify the PDFs before presenting.
+**Never skip this step.** Re-read both markdown files from disk — this catches leftover placeholder text and length/structure drift that a single drafting pass often leaves in, even when the draft looked fine in working memory.
 
-### 5a. Compile
+**CV (`applications/YYYY-MM_<Company>/cv.md`):**
+- [ ] Length is reasonable for the format (roughly the budget in `05-cv-templates.md` — ~700-900 words of substantive content)
+- [ ] No leftover placeholder text (e.g. `[COMPANY]`, `[ROLE]`, bracketed template tokens)
+- [ ] Markdown is well-formed: headings, bullet lists, and bold text render cleanly
+- [ ] Section order matches the recommended order in `05-cv-templates.md` for the role type
 
-```bash
-cd cv && lualatex -interaction=nonstopmode main_<company>.tex
-cd ../cover_letters && xelatex -interaction=nonstopmode cover_<company>_<role>.tex
-```
+**Cover letter (`applications/YYYY-MM_<Company>/cover_letter.md`):**
+- [ ] Within the word budget from `06-cover-letter-templates.md` (250-300 words of body text)
+- [ ] No leftover placeholder text
+- [ ] Markdown is well-formed
+- [ ] Salutation, opening, body, and closing are all present
 
-- CV uses **lualatex** — pdflatex fails on modern MiKTeX with fontawesome5 font-expansion errors. lualatex handles the same sources cleanly.
-- Cover letter uses **xelatex** — cover.cls requires fontspec.
+If either file has problems, edit and re-check. If length runs over budget, use **relevance-weighted cutting** (see `05-cv-templates.md` → "Relevance-weighted cutting"): score each candidate line by (a) relevance to THIS posting's keywords and responsibilities, (b) uniqueness (is it duplicated elsewhere?), (c) narrative load (does the cover letter depend on it?). Cut the lowest-total-score line first, regardless of section. Do NOT mechanically apply a static section-based priority order — an older-role bullet that hits posting keywords is worth more than a recent-role bullet that does not.
 
-If either compile fails, fix the error and re-compile until clean.
-
-### 5b. Inspect layout
-
-Read both PDFs via the Read tool and verify:
-
-**CV (`cv/main_<company>.pdf`):**
-- [ ] Exactly 2 pages (not 1, not 3)
-- [ ] No orphaned `\cventry` titles — a job/education title line must never sit alone at the bottom of page 1 with its bullets on page 2. This is the most common failure.
-- [ ] Section headings are not isolated at the top of page 2 with only 1-2 lines below
-- [ ] No awkward whitespace gaps
-
-**Cover letter (`cover_letters/cover_<company>_<role>.pdf`):**
-- [ ] Exactly 1 page
-- [ ] Signature block visible, not cut off or pushed to a second page
-- [ ] Bullet list font matches surrounding body text (both should be Raleway-Medium)
-
-### 5c. Iterate until clean
-
-If the layout has problems, edit the `.tex` files and recompile. Common fixes (see `05-cv-templates.md` and `06-cover-letter-templates.md` for full details):
-
-- **Orphaned CV entry title:** `\usepackage{needspace}` in preamble, then `\needspace{5\baselineskip}` immediately before the problematic `\cventry`
-- **CV spills to page 3 with only a trailing section:** `\enlargethispage{2-3\baselineskip}` before a late section
-- **Substantial content on page 3:** cut content using **relevance-weighted cutting** (see `05-cv-templates.md` → "Relevance-weighted cutting"). Score each candidate line by (a) relevance to THIS posting's keywords and responsibilities, (b) uniqueness (is it duplicated elsewhere?), (c) narrative load (does the cover letter depend on it?). Cut the lowest-total-score line first, regardless of section. Do NOT mechanically apply a static section-based priority order — an older-role bullet that hits posting keywords is worth more than a recent-role bullet that does not.
-- **Cover letter itemize breaks compile or uses wrong font:** close `\lettercontent{}` before the list, wrap the list in `{\raggedright\fontspec[Path = OpenFonts/fonts/raleway/]{Raleway-Medium}\fontsize{11pt}{13pt}\selectfont \begin{itemize}...\end{itemize}\par}`
-- **Cover letter spills to 2 pages:** trim using the same relevance-weighted logic. First cut: sentences that restate what a bullet already said. Second cut: a bullet that does not hit posting keywords. Last resort: a bullet that does hit posting keywords. Never reduce geometry or line spacing.
-
-Do not proceed to Step 6 until both PDFs pass inspection.
-
-### 5d. Clean up build artifacts
-
-After the final clean compile, delete the `.aux`, `.log`, `.out` files (keep the `.tex` and `.pdf`).
+Do not proceed to Step 6 until both files pass this check.
 
 ---
 
@@ -242,7 +210,7 @@ Summarize 3-5 key decisions made to tailor the application:
 
 ### Files Created
 List the files written:
-- `cv/main_<company>.tex`
-- `cover_letters/cover_<company>_<role>.tex`
+- `applications/YYYY-MM_<Company>/cv.md`
+- `applications/YYYY-MM_<Company>/cover_letter.md`
 
-Tell the user: "Both files are ready for your review. Open them to check the final output before compiling."
+Tell the user: "Both files are ready for your review."

@@ -22,27 +22,35 @@ Python 3.10+ is required for the salary lookup tool and job processing. Check wi
 python --version
 ```
 
-### Gmail Account with Job Alerts
+### Create a dedicated Gmail account for job search
 
-Set up job alerts from LinkedIn and Indeed to your Gmail inbox. Claude will monitor these alerts via `/fetch-inbox` and queue jobs for evaluation.
+Create a new, separate Gmail address used only for job-search alerts — not your personal/primary Gmail. This matters for a few reasons:
 
-### LaTeX (Optional, for `/apply` workflow)
+- Isolates the OAuth grant scope (`gmail.readonly`) to job-alert mail only
+- Keeps the OAuth consent screen's test-user list, and any future scope audit, scoped to one purpose
+- Lets you revoke API access later without touching your personal account
+- Avoids hardcoding a personal address anywhere (see the config step below)
 
-If you plan to use the `/apply` command to generate LaTeX CVs and cover letters, install a LaTeX distribution:
+Once created, subscribe that new address to job alerts from LinkedIn and Indeed.
 
-- **Windows:** [MiKTeX](https://miktex.org/download)
-- **macOS:** [MacTeX](https://tug.org/mactex/)
-- **Linux:** `sudo apt install texlive-full` or `sudo dnf install texlive-scheme-full`
+### Configure Gmail API access
 
-The CV compiles with `lualatex` (pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors). The cover letter compiles with `xelatex` because `cover.cls` requires `fontspec` for its custom Lato/Raleway fonts.
+`tools/fetch_inbox.py` reads mail via the Gmail API with `SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']`. To set this up:
 
-**If you skip this step**, you can still use `/apply` for evaluation and drafting, but you'll need to compile the generated `.tex` files manually or not at all. Alternatively, use a markdown-based resume approach (see Customization in README.md).
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a new project (e.g. "ai-job-search")
+2. Enable the **Gmail API** for that project (APIs & Services -> Library)
+3. Configure the **OAuth consent screen** (External, Testing mode is sufficient for personal use) and add the dedicated job-search Gmail address as a test user
+4. Create an **OAuth 2.0 Client ID** (Application type: Desktop app)
+5. Download the credential JSON and save it as `credentials.json` in the repo root (already gitignored — never commit it)
+6. Required scope: `https://www.googleapis.com/auth/gmail.readonly` (read-only; the tooling never sends or modifies mail)
+7. Copy `config.local.example.json` to `config.local.json` (gitignored) and set `job_search_email` to your dedicated address — this is what `tools/fetch_inbox.py`'s query filter reads; never hardcode it into a `.py` file
+8. Run `/fetch-inbox` (or `python tools/fetch_inbox.py`) once — this opens a browser window for the OAuth consent flow; sign in with the **dedicated job-search account**, not your personal one. On success, `data/token.json` is created (gitignored) and reused on subsequent runs without re-prompting.
 
 ## 2. Fork and clone
 
 ```bash
-gh repo fork MadsLorentzen/ai-job-search --clone
-cd ai-job-search
+gh repo fork iourichadour/ai-job-search-private --clone
+cd ai-job-search-private
 ```
 
 Or manually: fork on GitHub, then clone your fork.
@@ -78,7 +86,6 @@ Both paths produce the same result: fully populated profile files.
 | `04-job-evaluation.md` | Personalized skill match areas and career goals |
 | `05-cv-templates.md` | Profile statement templates for your background |
 | `07-interview-prep.md` | STAR examples from your experience |
-| `cv/main_example.tex` | Your LaTeX CV with actual details |
 
 ### Re-running setup
 
@@ -135,23 +142,11 @@ Or paste the job description directly:
 Claude will:
 1. Evaluate the fit against your profile
 2. Ask if you want to proceed
-3. Draft a tailored CV and cover letter (in LaTeX)
+3. Draft a tailored CV and cover letter (in markdown)
 4. Have a reviewer agent critique the drafts
 5. Revise and present the final output
 
-## 7. Compile your documents (if using LaTeX)
-
-After `/apply` creates the LaTeX files:
-
-```bash
-# Compile CV
-cd cv && lualatex main_<company>.tex && cd ..
-
-# Compile cover letter
-cd cover_letters && xelatex cover_<company>_<role>.tex && cd ..
-```
-
-The `/apply` workflow includes automatic PDF compilation and inspection in Step 5. If you have LaTeX installed, the workflow will verify the PDFs before presenting them to you.
+Confirm the output landed under `applications/YYYY-MM_<Company>/` — you should see `cv.md` and `cover_letter.md` there, ready to read directly or convert to PDF before submitting.
 
 ## Troubleshooting
 
@@ -163,16 +158,5 @@ This is expected if you haven't set up salary benchmarking. The `/apply` workflo
 - Verify that emails from these services are reaching your inbox (not spam folder)
 - Run `/fetch-inbox` again a few moments later
 
-### LaTeX compilation errors (if you have LaTeX installed)
-- CV: uses `lualatex` (pdflatex often fails on modern MiKTeX with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly)
-- Cover letter: uses `xelatex` (for custom fonts in `OpenFonts/fonts/`)
-- Make sure your LaTeX distribution includes the `moderncv` package
-
-### Fonts not found in cover letter
-The cover letter template expects fonts in `cover_letters/OpenFonts/fonts/`. Make sure this directory exists and contains the Lato and Raleway font files.
-
-### LaTeX not installed, but `/apply` is generating files
-If you don't have LaTeX installed, the workflow will still draft the `.tex` files. You can either:
-1. Install LaTeX later and compile them
-2. Use an online LaTeX compiler like Overleaf (upload the `.tex` file and fonts)
-3. Convert the `.tex` to `.html` or `.markdown` for a simpler resume format
+### "Missing config.local.json"
+`tools/fetch_inbox.py` requires `config.local.json` at the repo root with your `job_search_email`. Copy `config.local.example.json` to `config.local.json` and fill in your dedicated job-search address (see Prerequisites above).

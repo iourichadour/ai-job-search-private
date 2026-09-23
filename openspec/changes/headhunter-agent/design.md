@@ -13,7 +13,7 @@ Two open-source Claude Code career-agent projects were reviewed for reusable pro
 
 **Non-Goals:**
 - Porting JobFinderOS's `scout`/`mark` crawler and market-intel roles — out of scope per proposal.md, since this repo's ingestion stays Gmail-alert-only.
-- Solving the target-compensation-band gap — this design surfaces it as a required input; it does not invent a default.
+- Solving the target-compensation-band *input* problem — this design only surfaces the requirement that a band must be present and blocks if it isn't; it does not invent a default. (As of 2026-09-22, `data/profile.md` has one — `$200K-$300K`, confirmed current — but the block-if-absent behavior is a standing requirement independent of that, not conditioned on the input currently existing.)
 - Changing anything in the existing `job-evaluation` capability's rubric, schema, or persistence rules.
 
 ## Decisions
@@ -43,8 +43,8 @@ Following both the existing `job-evaluator.md` pattern and the reviewed projects
 
 - **[Risk]** A third subagent invocation per draft roughly triples the number of Agent-tool calls for a single positioning or interview-prep pass, adding latency. → **Mitigation**: acceptable given low job volume already documented in `MEMORY.md` ("not processing thousands of applications... no need for batch/unattended evaluation infrastructure"); this is an interactive, low-frequency workflow, not a batch job.
 - **[Risk]** `evidence-verifier` checking against `data/profile.md`'s prose (rather than a structured evidence-with-IDs bank like career-agent's `evidence.yaml`) may under- or over-match claims if the profile's wording is loose. → **Mitigation**: start with prose matching; if false blocks or false passes turn out to be frequent in practice, a follow-up change can introduce a structured evidence log — not started speculatively here.
-- **[Risk]** Negotiation prep is fully blocked until the user supplies a target compensation band. → **Mitigation**: this is deliberate (see proposal.md's known gap) — the alternative (inventing a number) is exactly the failure mode this change's evidence-verification requirement exists to prevent.
+- **[Risk, now resolved]** Negotiation prep would have been fully blocked until a target compensation band was supplied. → **Resolution**: `data/profile.md` already has one (`$200K-$300K`, confirmed current 2026-09-22). The underlying precondition-check behavior (block rather than invent a number if the band is ever absent) remains a hard requirement per `specs/interview-negotiation-prep/spec.md`, and task 3.5 still verifies it — against a scratch copy with the band removed, since the live file now has a real value.
 
 ## Open Questions
 
-- Should the target compensation band live directly in `data/profile.md` (a new field) or in a separate small config file? Either satisfies the spec's requirement; this can be decided during implementation without affecting the spec, design approach, or task breakdown.
+None — the target compensation band already lives in `data/profile.md` ("Target Roles & Industries" section), which resolves the placement question this section previously left open.

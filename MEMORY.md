@@ -56,9 +56,9 @@ Adding or editing a file under `.claude/agents/*.md` does not make it invocable 
 This repo mirrors its commands/skills for three interactive agents:
 - `.claude/` — Claude Code. Evaluations tagged `model: "claude-agent-session"`.
 - `.gemini/` — Google's Gemini CLI (global model set once in `.gemini/settings.json`, currently `gemini-2.5-flash`; no per-task model override mechanism exists here). Evaluations tagged `model: "gemini-agent-session"`.
-- `.agents/` — a third agent runtime (likely "Antigravity" — matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Its `fetch-inbox`/`scan-inbox` skills already documented Agent Mode as the recommended default ahead of the other two. Evaluations tagged `model: "antigravity-agent-session"`.
+- `.agents/` — a third agent runtime (likely "Antigravity" — matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Its `fetch-inbox` skill already documented Agent Mode as the recommended default ahead of the other two. Evaluations tagged `model: "antigravity-agent-session"`.
 
-Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless a change is deliberately scoped to just one. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
+Keep changes to `fetch-inbox` behavior mirrored across all three unless a change is deliberately scoped to just one. `/scan-inbox` (a near-duplicate `fetch-inbox` fork) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point — see `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
 
 ## Gmail query is timestamp-based, not `is:unread`-based
 
@@ -75,12 +75,34 @@ Keep changes to fetch-inbox/scan-inbox behavior mirrored across all three unless
 - Low job volume (not processing thousands of applications) — no need for batch/unattended evaluation infrastructure.
 - Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md`** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
 
-## Known repo debt (fork remnants, not yet cleaned up)
+## Profile-caching token math: batch-invocation vs per-job re-embedding
 
-Tracked for a **separate, not-yet-created** OpenSpec change — see RESUME.md for current status. Do not fold cleanup work into unrelated changes.
+**Decision (2026-09-22)**: `profile-caching-optimization` (fully planned in `openspec/changes/profile-caching-optimization/`) is **deferred**, not abandoned. Reason: its token-savings case is much weaker on the user's actual primary path than the proposal initially assumed.
 
-- `/apply` (`.claude/commands/apply.md`) still implements the original fork's full drafter-reviewer LaTeX pipeline (CV + cover letter, PDF compile-and-inspect, `salary_lookup.py`, `.claude/skills/job-application-assistant/01-07`) — this **contradicts** `CLAUDE.md`'s current one-line description of `/apply` producing "a tailored markdown resume" in `applications/YYYY-MM_Company/` (a directory that doesn't exist). Nobody has reconciled these since `CLAUDE.md` was rewritten for the Gmail-alert workflow.
-- Danish job-portal scraper skills under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` appear fully dead now that sourcing is Gmail-alert-based.
-- `.claude/skills/job-scraper/SKILL.md` was already adapted (not dead) — it explicitly documents reading from `data/inbox_queue.json` instead of scraping portals.
+- **Interactive-agent evaluation** (the user's primary path, per "User context" above): each subagent invocation reads `data/profile.md` **once per batch**, not once per job — e.g. SCRUM-12's 423-job run only cost 22 full-profile reads (one per parallel batch), not 423. Caching the profile here saves tokens per *batch invocation*, a comparatively small number.
+- **Gemini API fallback**: `evaluate_job_api()` re-embeds the full profile into **every per-job prompt**, inside the per-job loop — so a 423-job run costs 423 full-profile embeddings. This is where caching actually pays off.
+
+Since the user evaluates via the interactive-agent path, not the API fallback, the realistic savings right now are much smaller than "full profile size × job count" suggests. Revisit only if Gemini-API-fallback usage increases, or interactive-agent batch counts grow enough for the smaller per-batch saving to matter. Don't re-propose this from scratch — the planning artifacts already exist and validate cleanly; just resume `tasks.md` if/when the calculus changes.
+
+## PII / personal-data hygiene — never hardcode into source
+
+The maintainer's real email address (`iouri.chadour@gmail.com`) was found hardcoded directly into the Gmail query string in `tools/fetch_inbox.py` and `tools/build_job_scout.py` (2026-09-22 audit) — not just in expected places like resume/profile files (`data/profile.md`, `cv/*.md` legitimately need contact info), but baked into actual query logic in tracked `.py` source. This is wrong independent of whether the repo is ever made public: config values don't belong in source, and it breaks portability for anyone else forking the repo.
+
+**Convention going forward**: any personal identifier a script needs at runtime (email address, account name, API key, phone number) goes in a gitignored local config file — this repo's existing pattern is `*.local.json` (already in `.gitignore`; see `credentials.json`, `data/token.json`, `.claude/settings.local.json` for the established local-file convention). Ship a tracked `*.example.json` template alongside it. Never a literal string in a `.py`, tracked `.json`, or committed `.md` file (outside the profile/resume files whose whole job is to carry that data).
+
+**Implemented 2026-09-22** via `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/`: `tools/fetch_inbox.py` now loads `job_search_email` from `config.local.json` (gitignored) via a small helper that raises a clear error if the file/key is missing; `config.local.example.json` is the tracked template. `README.md` has an "if you plan to publish/open-source your fork" callout listing every tracked file that carries real personal data (`CLAUDE.md`, `data/profile.md`, `01-candidate-profile.md`, `cv/*.md`, `applications/`, `job_search_tracker.csv`, `documents/`, plus the already-gitignored `config.local.json`/`credentials.json`/`data/token.json`). **`tools/build_job_scout.py`'s identical hardcoded-email bug was deliberately left unfixed** — deferred to the still-open `centralize-config-and-private-store` change.
+
+## Resolved repo debt (was tracked here, cleaned up 2026-09-22)
+
+Fixed via `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/` — kept here as historical closure, not as open items:
+
+- `/apply` no longer implements the fork's LaTeX drafter-reviewer pipeline. It now drafts markdown CV + cover letter directly to `applications/YYYY-MM_Company/`, matching `CLAUDE.md`'s directive. See `openspec/specs/job-application/spec.md` for the formal spec.
+- Danish job-portal scraper skills that once lived under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` are gone (confirmed absent as of 2026-09-22) — sourcing is Gmail-alert-based only.
+- `.claude/skills/job-scraper/` (once adapted to read from `data/inbox_queue.json` instead of scraping portals) was deleted as part of consolidating to a single Gmail entry point (`/fetch-inbox` only) — its own fetch+quick-assess pass duplicated `/fetch-inbox` + `job-evaluator`'s work with a weaker heuristic. See the archived change's `design.md` Decision 6.
+
+## Known repo debt (still open)
+
 - `documents/` still has the original fork's onboarding layout (`cv/`, `diplomas/`, `linkedin/`, `references/`, `applications/`) alongside the user's own `documents/plans/` notes folder.
 - License is MIT, copyright Mads Lorentzen (original fork author) — any cleanup must preserve the copyright/permission notice per `LICENSE`.
+- `tools/build_job_scout.py` still has the same hardcoded-email bug `fetch_inbox.py` had — deliberately deferred to the still-open `centralize-config-and-private-store` change, not a miss.
+- `apply.md` Step 6 references "the verification checklist from `CLAUDE.md`", but `CLAUDE.md` has no such checklist and never did — pre-existing, unresolved.

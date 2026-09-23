@@ -27,6 +27,20 @@ except ImportError:
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
+
+def load_local_config():
+    config_path = 'config.local.json'
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(
+            f"Missing {config_path}. Copy config.local.example.json to {config_path} "
+            "and set your own values (see SETUP.md)."
+        )
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    if 'job_search_email' not in config:
+        raise KeyError(f"{config_path} is missing required key 'job_search_email'.")
+    return config
+
 # ============================================
 # CONFIGURATION - Browser Fetch Settings
 # ============================================
@@ -307,6 +321,8 @@ def main():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     logger = setup_logging(timestamp)
 
+    config = load_local_config()
+
     # ── Phase 1: Gmail auth ──
     logger.info('Authenticating with Gmail API...')
     creds = None
@@ -341,7 +357,7 @@ def main():
             logger.warning("No fetch_state.json or logs found; using last 7 days as fallback")
             after_epoch = run_start_epoch - (7 * 86400)
 
-    gmail_query = f"from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR iouri.chadour@gmail.com) after:{after_epoch}"
+    gmail_query = f"from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR {config['job_search_email']}) after:{after_epoch}"
     logger.info(f'Gmail query: {gmail_query}')
     results = service.users().messages().list(userId='me', q=gmail_query).execute()
     messages = results.get('messages', [])

@@ -27,13 +27,13 @@ When the user provides a job posting (URL or text), follow this workflow:
 ### Step 2: Tailor CV
 - Read the most relevant existing CV variant from `cv/` as a starting point
 - Follow the guidelines in `05-cv-templates.md`
-- Create `cv/main_<company>.tex` with tailored content
+- Create `applications/YYYY-MM_<Company>/cv.md` with tailored content
 - Adjust: profile statement, skills section, experience bullet emphasis, section order
 
 ### Step 3: Write Cover Letter
 - Follow the writing style rules in `03-writing-style.md` (critical: no em-dashes, no cliches)
 - Follow the template structure in `06-cover-letter-templates.md`
-- Create `cover_letters/cover_<company>_<role>.tex`
+- Create `applications/YYYY-MM_<Company>/cover_letter.md`
 - Ensure the letter connects specific experience to the role requirements
 
 ### Step 4: Interview Preparation
@@ -52,8 +52,8 @@ When the user provides a job posting (URL or text), follow this workflow:
 | `02-behavioral-profile.md` | Behavioral assessment, strengths, ideal environments |
 | `03-writing-style.md` | Tone, structure, do's and don'ts |
 | `04-job-evaluation.md` | Scoring framework for job fit |
-| `05-cv-templates.md` | LaTeX CV structure and tailoring rules |
-| `06-cover-letter-templates.md` | LaTeX cover letter structure and tailoring rules |
+| `05-cv-templates.md` | Markdown CV structure and tailoring rules |
+| `06-cover-letter-templates.md` | Markdown cover letter structure and tailoring rules |
 | `07-interview-prep.md` | STAR examples, tough questions, roleplay guidelines |
 
 ---

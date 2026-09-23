@@ -2,6 +2,8 @@
 
 The job evaluation system generates detailed JSON data on candidate-job fit across multiple dimensions, but users lack visibility into both evaluated opportunities and application decisions. Currently, evaluations are stored in raw JSON and applications are tracked manually in a CSV—requiring manual cross-reference. An integrated dashboard provides immediate visibility into fit scores, allows browsing and filtering evaluated jobs, and connects submitted applications back to their evaluation data for post-application analysis and tracking.
 
+**Note (2026-09-22):** `tools/generate_mockup.py` already exists and produces a working interim dashboard (`_brief/mockup.html`) — a Python-generated single-file HTML with real KPIs, a fit-category donut, a computed tech-stack chart, and an application-tracker table, all computed from `data/job_evaluations.json` and `job_search_tracker.csv` (no hardcoded/placeholder values as of this note — see its git history for the pre-2026-09-22 version, which had several). It satisfies the immediate need to review tracking today. It is a simpler architecture than this proposal's MVP (regenerate-by-rerunning-the-script vs. this design's dynamic `fetch()`-based live reload, single evaluations-only view vs. this design's two-page evaluations+applied-jobs-with-URL-matching), not a replacement for it. Treat it as the interim/v0 tool while this change's fuller design remains the target for the two-page, live-reloading, exportable version. See `design.md` - Interim Artifact for how they relate.
+
 ## What Changes
 
 - **New**: Multi-page HTML dashboard application with evaluation browser and application tracker

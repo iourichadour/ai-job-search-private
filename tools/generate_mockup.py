@@ -1,33 +1,98 @@
+"""Generate the executive job-search dashboard as a single static HTML file.
+
+Reads data/job_evaluations.json and job_search_tracker.csv, computes every
+KPI/chart value from real data (no placeholders), and writes _brief/mockup.html.
+"""
 import json
 import csv
 import os
+import re
+import sys
 
-evals = json.load(open('data/job_evaluations.json', encoding='utf-8'))
-queue = json.load(open('data/inbox_queue.json', encoding='utf-8'))
+TECH_KEYWORDS = [
+    "Microsoft Fabric", "OneLake", "Snowflake", "Power BI", "Azure Data Factory",
+    "Python", "DAX", "Data Mesh", "SQL",
+]
 
-# Filter past week evals
-past_week_evals = [e for e in evals if e.get('model') == 'Antigravity-Agent-Session']
+TERMINAL_STATUSES = {"rejected", "withdrawn", "closed", "declined"}
 
-high_fits = [e for e in past_week_evals if e.get('overall_fit', 0) >= 80 and e.get('fit_category') != 'closed']
-med_fits = [e for e in past_week_evals if 65 <= e.get('overall_fit', 0) < 80 and e.get('fit_category') != 'closed']
-low_fits = [e for e in past_week_evals if e.get('overall_fit', 0) < 65 and e.get('fit_category') != 'closed']
-closed_fits = [e for e in past_week_evals if e.get('fit_category') == 'closed' or e.get('status') == 'closed']
 
-# Application tracker log
-tracker_rows = []
-if os.path.exists('job_search_tracker.csv'):
-    with open('job_search_tracker.csv', 'r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row.get('company'):
-                tracker_rows.append(row)
+def load_evaluations(path="data/job_evaluations.json"):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
 
-html_content = f"""<!DOCTYPE html>
+
+def load_tracker(path="job_search_tracker.csv"):
+    rows = []
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("company"):
+                    rows.append(row)
+    return rows
+
+
+def avg(values):
+    values = [v for v in values if isinstance(v, (int, float))]
+    return round(sum(values) / len(values)) if values else 0
+
+
+def tech_stack_counts(evals):
+    haystacks = []
+    for e in evals:
+        text = " ".join([
+            e.get("title", ""),
+            " ".join(e.get("key_strengths", []) or []),
+            " ".join(e.get("skill_gaps", []) or []),
+            e.get("reason_summary", "") or "",
+        ]).lower()
+        haystacks.append(text)
+    counts = {}
+    for kw in TECH_KEYWORDS:
+        pattern = re.escape(kw.lower())
+        counts[kw] = sum(1 for h in haystacks if re.search(pattern, h))
+    return counts
+
+
+def main():
+    evals = load_evaluations()
+    tracker_rows = load_tracker()
+
+    active_evals = [e for e in evals if e.get("fit_category") != "closed"]
+    high_fits = sorted(
+        (e for e in active_evals if e.get("fit_category") == "high"),
+        key=lambda e: e.get("overall_fit", 0), reverse=True,
+    )
+    med_fits = [e for e in active_evals if e.get("fit_category") == "medium"]
+    low_fits = [e for e in active_evals if e.get("fit_category") in ("low", "skip")]
+    closed_fits = [e for e in evals if e.get("fit_category") == "closed"]
+
+    avg_overall = avg([e.get("overall_fit") for e in active_evals])
+    avg_skill = avg([e.get("skill_match") for e in active_evals])
+    avg_experience = avg([e.get("experience_level_match") for e in active_evals])
+    avg_company = avg([e.get("company_fit") for e in active_evals])
+    avg_growth = avg([e.get("growth_potential") for e in active_evals])
+    avg_red_flags = avg([e.get("red_flags") for e in active_evals])
+
+    tech_counts = tech_stack_counts(active_evals)
+
+    total_submitted = len(tracker_rows)
+    active_in_progress = sum(
+        1 for r in tracker_rows if (r.get("status") or "").strip().lower() not in TERMINAL_STATUSES
+    )
+    responded = sum(
+        1 for r in tracker_rows if (r.get("status") or "").strip().lower() not in ({"applied"} | TERMINAL_STATUSES)
+    )
+    response_rate = round(100 * responded / total_submitted) if total_submitted else 0
+    latest_submission = tracker_rows[-1]["date"] if tracker_rows else "N/A"
+
+    html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Job Search & Career Analytics - Power BI Mockup</title>
+    <title>Executive Job Search & Career Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {{
@@ -281,6 +346,13 @@ html_content = f"""<!DOCTYPE html>
             position: relative;
             height: 280px;
         }}
+
+        .empty-state {{
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 24px;
+            text-align: center;
+        }}
     </style>
 </head>
 <body>
@@ -291,27 +363,27 @@ html_content = f"""<!DOCTYPE html>
             <p>Candidate Profile: Iouri "Yuri" Chadour — AVP / VP / SVP Data Analytics & AI</p>
         </div>
         <div class="controls">
-            <button class="btn-theme" onclick="toggleTheme()">🌓 Toggle Light/Dark</button>
+            <button class="btn-theme" onclick="toggleTheme()">Toggle Light/Dark</button>
         </div>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('landing')">📊 Executive Landing</button>
-        <button class="tab-btn" onclick="switchTab('fit')">🎯 5-Dimension Fit Analytics</button>
-        <button class="tab-btn" onclick="switchTab('tracker')">🚀 Application Funnel</button>
+        <button class="tab-btn active" onclick="switchTab('landing')">Executive Landing</button>
+        <button class="tab-btn" onclick="switchTab('fit')">5-Dimension Fit Analytics</button>
+        <button class="tab-btn" onclick="switchTab('tracker')">Application Funnel</button>
     </div>
 
     <!-- TAB 1: EXECUTIVE LANDING -->
     <div id="tab-landing" class="tab-content active">
         <div class="kpi-grid">
             <div class="kpi-card">
-                <div class="kpi-title">Total Jobs Scanned</div>
-                <div class="kpi-value">{len(past_week_evals)}</div>
-                <div class="kpi-subtext">Past 7 days inbox alerts</div>
+                <div class="kpi-title">Total Jobs Evaluated</div>
+                <div class="kpi-value">{len(evals)}</div>
+                <div class="kpi-subtext">All evaluated roles, all time</div>
             </div>
             <div class="kpi-card green">
                 <div class="kpi-title">Active Open Roles</div>
-                <div class="kpi-value">{len(high_fits) + len(med_fits) + len(low_fits)}</div>
+                <div class="kpi-value">{len(active_evals)}</div>
                 <div class="kpi-subtext">Excludes closed postings</div>
             </div>
             <div class="kpi-card gold">
@@ -321,12 +393,12 @@ html_content = f"""<!DOCTYPE html>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Avg Overall Fit Score</div>
-                <div class="kpi-value">68%</div>
+                <div class="kpi-value">{avg_overall}%</div>
                 <div class="kpi-subtext">Across active evaluated roles</div>
             </div>
             <div class="kpi-card green">
                 <div class="kpi-title">Applications Submitted</div>
-                <div class="kpi-value">{len(tracker_rows)}</div>
+                <div class="kpi-value">{total_submitted}</div>
                 <div class="kpi-subtext">Logged in tracker</div>
             </div>
         </div>
@@ -344,27 +416,30 @@ html_content = f"""<!DOCTYPE html>
                                 <th>Overall Fit</th>
                                 <th>Role Title</th>
                                 <th>Company</th>
-                                <th>Tech Match</th>
-                                <th>Seniority</th>
+                                <th>Skill Match</th>
+                                <th>Experience Match</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
 """
 
-for e in high_fits:
-    html_content += f"""
+    if high_fits:
+        for e in high_fits:
+            html_content += f"""
                             <tr>
-                                <td><span class="badge badge-high">{e['overall_fit']}%</span></td>
-                                <td><strong>{e['title']}</strong></td>
-                                <td>{e['company']}</td>
-                                <td>{e['skill_match']}%</td>
-                                <td>{e['experience_level_match']}%</td>
-                                <td><a href="{e.get('url','#')}" target="_blank" class="job-link">View Job ↗</a></td>
+                                <td><span class="badge badge-high">{e.get('overall_fit', 0)}%</span></td>
+                                <td><strong>{e.get('title', '')}</strong></td>
+                                <td>{e.get('company', '')}</td>
+                                <td>{e.get('skill_match', 0)}%</td>
+                                <td>{e.get('experience_level_match', 0)}%</td>
+                                <td><a href="{e.get('url', '#')}" target="_blank" class="job-link">View Job</a></td>
                             </tr>
 """
+    else:
+        html_content += '<tr><td colspan="6" class="empty-state">No high-fit (80%+) roles in the current evaluation set.</td></tr>'
 
-html_content += f"""
+    html_content += f"""
                         </tbody>
                     </table>
                 </div>
@@ -379,9 +454,9 @@ html_content += f"""
                 </div>
 
                 <div class="card">
-                    <div class="card-title" style="margin-bottom: 16px;">Source Channel Breakdown</div>
+                    <div class="card-title" style="margin-bottom: 16px;">Tech Stack Alignment Frequency</div>
                     <div class="chart-container">
-                        <canvas id="sourceBarChart"></canvas>
+                        <canvas id="techStackChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -393,23 +468,23 @@ html_content += f"""
         <div class="kpi-grid">
             <div class="kpi-card">
                 <div class="kpi-title">Avg Technical Skill Match</div>
-                <div class="kpi-value">76%</div>
-                <div class="kpi-subtext">Fabric, Snowflake, Power BI</div>
+                <div class="kpi-value">{avg_skill}%</div>
+                <div class="kpi-subtext">Across active evaluated roles</div>
             </div>
             <div class="kpi-card green">
-                <div class="kpi-title">Avg Seniority Level Match</div>
-                <div class="kpi-value">88%</div>
-                <div class="kpi-subtext">VP / Director / Head of</div>
+                <div class="kpi-title">Avg Experience/Seniority Match</div>
+                <div class="kpi-value">{avg_experience}%</div>
+                <div class="kpi-subtext">Across active evaluated roles</div>
             </div>
             <div class="kpi-card gold">
                 <div class="kpi-title">Avg Company / Industry Fit</div>
-                <div class="kpi-value">82%</div>
-                <div class="kpi-subtext">Fintech, Tech, Consulting</div>
+                <div class="kpi-value">{avg_company}%</div>
+                <div class="kpi-subtext">Across active evaluated roles</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Avg Growth Potential</div>
-                <div class="kpi-value">85%</div>
-                <div class="kpi-subtext">AI transformation & scale</div>
+                <div class="kpi-value">{avg_growth}%</div>
+                <div class="kpi-subtext">Across active evaluated roles</div>
             </div>
         </div>
 
@@ -424,12 +499,12 @@ html_content += f"""
             <div class="card">
                 <div class="card-title" style="margin-bottom: 16px;">Core Tech Stack Alignment Frequency</div>
                 <div class="chart-container" style="height: 320px;">
-                    <canvas id="techStackChart"></canvas>
+                    <canvas id="techStackChart2"></canvas>
                 </div>
             </div>
 
             <div class="card full-width">
-                <div class="card-title" style="margin-bottom: 16px;">Key Strengths & Skill Gaps Explorer</div>
+                <div class="card-title" style="margin-bottom: 16px;">Key Strengths & Skill Gaps Explorer (Top 15 High-Fit)</div>
                 <div style="max-height: 400px; overflow-y: auto;">
                     <table>
                         <thead>
@@ -444,20 +519,23 @@ html_content += f"""
                         <tbody>
 """
 
-for e in high_fits[:15]:
-    strengths_str = "<br>• ".join(e.get('key_strengths', []))
-    gaps_str = "<br>• ".join(e.get('skill_gaps', [])) or "None identified"
-    html_content += f"""
+    if high_fits:
+        for e in high_fits[:15]:
+            strengths_str = "<br>&bull; ".join(e.get("key_strengths", []) or []) or "None listed"
+            gaps_str = "<br>&bull; ".join(e.get("skill_gaps", []) or []) or "None identified"
+            html_content += f"""
                             <tr>
-                                <td><span class="badge badge-high">{e['overall_fit']}%</span></td>
-                                <td><strong>{e['title']}</strong><br><small style="color:var(--text-secondary)">{e['company']}</small></td>
-                                <td style="font-size:12px; color:var(--accent-cyan)">• {strengths_str}</td>
+                                <td><span class="badge badge-high">{e.get('overall_fit', 0)}%</span></td>
+                                <td><strong>{e.get('title', '')}</strong><br><small style="color:var(--text-secondary)">{e.get('company', '')}</small></td>
+                                <td style="font-size:12px; color:var(--accent-cyan)">&bull; {strengths_str}</td>
                                 <td style="font-size:12px; color:var(--text-secondary)">{gaps_str}</td>
-                                <td style="font-size:12px;">{e.get('recommendation','')}</td>
+                                <td style="font-size:12px;">{e.get('recommendation', '')}</td>
                             </tr>
 """
+    else:
+        html_content += '<tr><td colspan="5" class="empty-state">No high-fit roles to explore yet.</td></tr>'
 
-html_content += f"""
+    html_content += f"""
                         </tbody>
                     </table>
                 </div>
@@ -470,23 +548,23 @@ html_content += f"""
         <div class="kpi-grid">
             <div class="kpi-card green">
                 <div class="kpi-title">Total Applications Submitted</div>
-                <div class="kpi-value">{len(tracker_rows)}</div>
+                <div class="kpi-value">{total_submitted}</div>
                 <div class="kpi-subtext">Logged in job_search_tracker.csv</div>
             </div>
             <div class="kpi-card gold">
                 <div class="kpi-title">Active In-Progress</div>
-                <div class="kpi-value">{len(tracker_rows)}</div>
-                <div class="kpi-subtext">Awaiting recruiter feedback</div>
+                <div class="kpi-value">{active_in_progress}</div>
+                <div class="kpi-subtext">Not rejected/withdrawn/closed</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Response Rate</div>
-                <div class="kpi-value">0%</div>
-                <div class="kpi-subtext">Initial tracking phase</div>
+                <div class="kpi-value">{response_rate}%</div>
+                <div class="kpi-subtext">Progressed beyond initial application</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">Latest Submission Date</div>
-                <div class="kpi-value" style="font-size:22px;">{tracker_rows[0]['date'] if tracker_rows else 'N/A'}</div>
-                <div class="kpi-subtext">Recent activity</div>
+                <div class="kpi-value" style="font-size:22px;">{latest_submission}</div>
+                <div class="kpi-subtext">Most recent tracker entry</div>
             </div>
         </div>
 
@@ -508,20 +586,26 @@ html_content += f"""
                     <tbody>
 """
 
-for row in tracker_rows:
-    html_content += f"""
+    if tracker_rows:
+        for row in tracker_rows:
+            html_content += f"""
                         <tr>
-                            <td>{row.get('date')}</td>
-                            <td><strong>{row.get('company')}</strong></td>
-                            <td>{row.get('role')}</td>
-                            <td><span class="badge badge-high">{row.get('channel')}</span></td>
-                            <td><span class="badge badge-med">{row.get('status')}</span></td>
-                            <td>{row.get('fit_rating')}</td>
-                            <td>{row.get('source')}</td>
+                            <td>{row.get('date', '')}</td>
+                            <td><strong>{row.get('company', '')}</strong></td>
+                            <td>{row.get('role', '')}</td>
+                            <td><span class="badge badge-high">{row.get('channel', '')}</span></td>
+                            <td><span class="badge badge-med">{row.get('status', '')}</span></td>
+                            <td>{row.get('fit_rating', '')}</td>
+                            <td>{row.get('source', '')}</td>
                         </tr>
 """
+    else:
+        html_content += '<tr><td colspan="7" class="empty-state">No applications logged yet in job_search_tracker.csv.</td></tr>'
 
-html_content += f"""
+    tech_labels = json.dumps(list(tech_counts.keys()))
+    tech_values = json.dumps(list(tech_counts.values()))
+
+    html_content += f"""
                     </tbody>
                 </table>
             </div>
@@ -550,11 +634,39 @@ html_content += f"""
             }});
         }}
 
+        const techLabels = {tech_labels};
+        const techValues = {tech_values};
+
+        function techStackChartConfig() {{
+            return {{
+                type: 'bar',
+                data: {{
+                    labels: techLabels,
+                    datasets: [{{
+                        label: 'Mentions across active evaluations',
+                        data: techValues,
+                        backgroundColor: '#FFD700',
+                        borderRadius: 6
+                    }}]
+                }},
+                options: {{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {{ legend: {{ display: false }} }},
+                    scales: {{
+                        y: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ color: '#2E3545' }} }},
+                        x: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ display: false }} }}
+                    }}
+                }}
+            }};
+        }}
+
         // Donut Chart
         new Chart(document.getElementById('fitDonutChart'), {{
             type: 'doughnut',
             data: {{
-                labels: ['High Fit (80%+)', 'Medium Fit (65-79%)', 'Low Fit (<65%)', 'Closed / Expired'],
+                labels: ['High Fit (80%+)', 'Medium Fit (60-79%)', 'Low Fit (<60%)', 'Closed / Expired'],
                 datasets: [{{
                     data: [{len(high_fits)}, {len(med_fits)}, {len(low_fits)}, {len(closed_fits)}],
                     backgroundColor: ['#FFD700', '#10B981', '#64748B', '#EF4444'],
@@ -568,37 +680,20 @@ html_content += f"""
             }}
         }});
 
-        // Source Bar Chart
-        new Chart(document.getElementById('sourceBarChart'), {{
-            type: 'bar',
-            data: {{
-                labels: ['LinkedIn Job Alerts', 'Indeed Alerts'],
-                datasets: [{{
-                    label: 'Job Count',
-                    data: [{len(past_week_evals)}, 0],
-                    backgroundColor: ['#00E5FF', '#3B82F6'],
-                    borderRadius: 6
-                }}]
-            }},
-            options: {{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {{ legend: {{ display: false }} }},
-                scales: {{
-                    y: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ color: '#2E3545' }} }},
-                    x: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ display: false }} }}
-                }}
-            }}
-        }});
+        // Tech Stack Chart (Tab 1)
+        new Chart(document.getElementById('techStackChart'), techStackChartConfig());
+
+        // Tech Stack Chart (Tab 2, same data)
+        new Chart(document.getElementById('techStackChart2'), techStackChartConfig());
 
         // Dimensions Chart
         new Chart(document.getElementById('dimensionsChart'), {{
             type: 'bar',
             data: {{
-                labels: ['Technical Skill', 'Seniority Level', 'Company Fit', 'Growth Potential', 'Red Flags (Lower=Better)'],
+                labels: ['Technical Skill', 'Experience Level', 'Company Fit', 'Growth Potential', 'Red Flags (Lower=Better)'],
                 datasets: [{{
                     label: 'Average Score (%)',
-                    data: [76, 88, 82, 85, 15],
+                    data: [{avg_skill}, {avg_experience}, {avg_company}, {avg_growth}, {avg_red_flags}],
                     backgroundColor: ['#00E5FF', '#10B981', '#FFD700', '#8B5CF6', '#EF4444'],
                     borderRadius: 6
                 }}]
@@ -614,39 +709,20 @@ html_content += f"""
                 }}
             }}
         }});
-
-        // Tech Stack Chart
-        new Chart(document.getElementById('techStackChart'), {{
-            type: 'bar',
-            data: {{
-                labels: ['Microsoft Fabric', 'Snowflake', 'Power BI', 'Azure Data Factory', 'Python', 'DAX / Tabular', 'Data Mesh'],
-                datasets: [{{
-                    label: 'Match Count',
-                    data: [14, 28, 35, 22, 38, 18, 12],
-                    backgroundColor: '#FFD700',
-                    borderRadius: 6
-                }}]
-            }},
-            options: {{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {{ legend: {{ display: false }} }},
-                scales: {{
-                    y: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ color: '#2E3545' }} }},
-                    x: {{ ticks: {{ color: '#94A3B8' }}, grid: {{ display: false }} }}
-                }}
-            }}
-        }});
     </script>
 </body>
 </html>
 """
 
-os.makedirs('_brief', exist_ok=True)
-with open('_brief/mockup.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
+    os.makedirs("_brief", exist_ok=True)
+    with open("_brief/mockup.html", "w", encoding="utf-8") as f:
+        f.write(html_content)
 
-import sys
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
-print("[OK] Generated interactive HTML mockup at _brief/mockup.html")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    print(f"[OK] Generated dashboard at _brief/mockup.html "
+          f"({len(evals)} evals, {len(high_fits)} high-fit, {total_submitted} applications)")
+
+
+if __name__ == "__main__":
+    main()

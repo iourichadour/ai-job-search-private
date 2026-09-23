@@ -213,16 +213,15 @@ Wait for the user's choice on each conflict. If no conflicts, state "No conflict
 
 Apply the confirmed changes with the Edit tool. Make targeted edits only. Do not rewrite entire files. State which changes were applied per file. If a file has no confirmed changes, state "No changes made to [filename]."
 
-Documents cover skills, experience, education, references, and behavioral signal. They do not cover everything `/apply` and `/scrape` need. After the writes, ask follow-up questions for gaps:
+Documents cover skills, experience, education, references, and behavioral signal. They do not cover everything `/apply` needs. After the writes, ask follow-up questions for gaps:
 
 - Career goals and target role types
 - What excites the user in their next role
 - Deal-breakers and must-haves
 - Salary expectations / baseline (optional)
 - Commute or location constraints (if not visible from CV)
-- Job search configuration (use the questions from Path C Section 9 below)
 
-Then proceed to Step 3 to populate the non-skill files (`CLAUDE.md`, `cv/main_example.tex`, `.claude/skills/job-scraper/search-queries.md`). Step 3 will detect that the seven skill files are already populated and skip those substeps.
+Then proceed to Step 3 to populate `CLAUDE.md`. Step 3 will detect that the seven skill files are already populated and skip those substeps.
 
 ---
 
@@ -305,23 +304,6 @@ For each reference:
 - Name, title, company, email, phone
 - Relationship to the user
 
-### Section 9: Job Search Configuration
-This section generates the search queries that power `/scrape`. Use the information from Sections 1, 4, and 7 to build targeted queries.
-
-Ask about:
-- **Role titles to search for:** "What job titles should I search for? For example: Data Scientist, ML Engineer, Geophysicist." Collect 3-8 specific titles.
-- **Key skills as search terms:** "Which of your skills are most likely to appear in job postings?" Pick 3-5 that are distinctive and searchable.
-- **Target companies (optional):** "Are there specific companies you'd like to monitor for openings?"
-- **Geographic scope:** "Which cities or regions should I search in? How far are you willing to commute?" Use this to define the location filter tiers (ideal, acceptable, borderline, too far).
-- **Job portals:** "The framework includes tools for Danish job portals (Jobindex, Jobbank, Jobdanmark, Jobnet). Are these the right ones for you, or do you use other sites?" Note: if the user is outside Denmark, acknowledge that the built-in CLI tools are Denmark-specific and suggest they can add their own portal integrations or rely on LinkedIn/Google site-searches.
-
-**Important:** Also suggest role types the user may not have considered, based on their skill profile. For example:
-- If they have strong Python + domain expertise: "Have you considered roles like 'Technical Consultant' or 'Solutions Engineer' in your domain?"
-- If they have ML + a specific industry: "Companies in adjacent industries also hire for these skills. Should I include searches for [adjacent sector]?"
-- If they have project management experience alongside technical skills: "Would you also want to search for 'Technical Project Manager' or 'Team Lead' roles?"
-
-This proactive suggestion step helps users discover career paths they might not have considered.
-
 ---
 
 ## Step 3: Generate Profile Files
@@ -351,21 +333,6 @@ Add role-specific profile statement templates based on their background.
 ### 6. Update `07-interview-prep.md` *(Path B and C; skip if Path A populated it)*
 Create STAR examples from their actual experience (at least 3-4 examples). Path A leaves STAR stubs under "## STAR Candidates (Complete Manually)" rather than full examples; if any stubs are present, mention them in Step 4 so the user knows to flesh them out.
 
-### 7. Update `cv/main_example.tex`
-Replace placeholder personal data with their actual name, contact info, and add their education and most recent experience entries.
-
-### 8. Generate `.claude/skills/job-scraper/search-queries.md`
-Replace all placeholder tokens in the search queries file with the user's actual information from Section 9 (or the equivalent follow-up questions in Path A's Step A7):
-- Replace `[YOUR_PRIMARY_ROLE_TYPE]`, `[YOUR_PRIMARY_JOB_TITLE]`, etc. with actual role titles
-- Replace `[YOUR_KEY_SKILL]`, `[YOUR_DOMAIN_KEYWORD_1]`, etc. with actual skills and domain terms
-- Replace `[YOUR_CITY]`, `[YOUR_COUNTRY]`, `[YOUR_REGION]` with actual location
-- Fill in the location filter tiers (ideal, acceptable, borderline, too far) based on commute constraints
-- Organize queries into priority categories matching the user's career direction:
-  - Priority 1: Their strongest/most desired role direction
-  - Priority 2: Their domain expertise
-  - Priority 3: Adjacent roles they could pivot into
-  - Priority 4: Broader roles (wider net)
-
 ---
 
 ## Step 4: Confirm & Next Steps
@@ -380,13 +347,10 @@ Present a summary:
 > - `.claude/skills/job-application-assistant/04-job-evaluation.md` - Personalized evaluation framework
 > - `.claude/skills/job-application-assistant/05-cv-templates.md` - CV templates with your profile statements
 > - `.claude/skills/job-application-assistant/07-interview-prep.md` - STAR examples from your experience
-> - `cv/main_example.tex` - Your LaTeX CV template
-> - `.claude/skills/job-scraper/search-queries.md` - Job search queries for `/scrape`
 >
 > **Try it out:**
-> - Run `/scrape` to search for matching jobs right now
+> - Run `/fetch-inbox` to poll Gmail for job alerts and see fit assessments
 > - Run `/apply` with a job posting URL to see the full application workflow
-> - Run `/setup --section search` later to update your search queries as your priorities evolve
 
 If Path A left any STAR stubs in `07-interview-prep.md`, also note:
 
@@ -400,7 +364,6 @@ If Path A left any STAR stubs in `07-interview-prep.md`, also note:
 - Path A is read-before-write and idempotent. Re-running it as documents are added does not duplicate or overwrite existing content; conflicts are surfaced for explicit resolution.
 - Path A labels inferred behavioral or style additions so the user can review them critically before relying on them.
 - Each section in Path C is a natural conversation, not a form. The user can skip optional sections.
-- Synthesize answers into structured formats (the user does not need to know markdown or LaTeX).
-- Can be re-run with `--section <name>` to update specific sections (e.g., `/setup --section search` to reconfigure job search queries without re-doing the full profile).
-- Section 9 (search) in Path C, and the equivalent follow-up questions in Path A, proactively suggest role types the user may not have considered.
-- At the end, suggest running `/scrape` and `/apply` with a test job posting.
+- Synthesize answers into structured formats (the user does not need to know markdown).
+- Can be re-run with `--section <name>` to update a specific section without re-doing the full profile.
+- At the end, suggest running `/apply` with a test job posting.
