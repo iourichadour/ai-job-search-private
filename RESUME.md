@@ -2,14 +2,22 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-22 (`headhunter-agent` shipped, live-verified, and archived)
+**Last updated**: 2026-09-23 (`headhunter-agent` shipped, live-verified, archived, PR #3 merged to `dev`, `SCRUM-16` closed as Done)
 
-## Completed & Archived: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
+## Next up: `centralize-config-and-private-store` OpenSpec change
+
+User confirmed 2026-09-23 this is the next work item (see its section below for full scope — it's fully planned and unblocked, 0/42 tasks). **Not yet started**: no Jira ticket created yet (searched, none exists — next available key is `SCRUM-18`), no branch cut yet. Session ended before either happened — pick up by creating the Jira Story under the `SCRUM-10` epic, cutting `feature/SCRUM-18-centralize-config-and-private-store` (or whatever number Jira assigns) from `dev`, then running `/opsx:apply centralize-config-and-private-store`.
+
+## Completed & Merged: `headhunter-agent` OpenSpec change (2026-09-22/23)
+
+Archived as: `openspec/changes/archive/2026-09-22-headhunter-agent/`. Branch `feature/SCRUM-16-headhunter-agent` → PR #3 → merged to `dev` 2026-09-23. Jira `SCRUM-16` commented with full summary and transitioned To Do → Done. See prior session detail below (kept for history) — nothing further to do here.
+
+## Completed & Merged: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
 
 Archived as: `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/`
 Main specs updated: `openspec/specs/job-application/spec.md` (new capability), `openspec/specs/job-evaluation/spec.md` (modified: dropped the scan-inbox mention)
-Branch: `feature/SCRUM-17-cleanup-stale-artifacts` — 3 commits (`bda145c` cleanup, `3f0aa66` task bookkeeping, `ae39305` archive move), pushed to origin. **Not yet merged to `dev`** — open a PR when ready.
-Status: **all 42 tasks complete, archived**.
+Branch: `feature/SCRUM-17-cleanup-stale-artifacts` — merged to `dev` via PR #2. Jira `SCRUM-17` is Done.
+Status: **all 42 tasks complete, archived, merged**.
 
 **What shipped**:
 - Repo-wide audit (Section 1) surfaced everything below; checkpoint review with the user resolved every open decision (consolidate to one Gmail entry point, delete `job-scraper` skill entirely, LaTeX confirmed for deletion).
@@ -24,12 +32,10 @@ Status: **all 42 tasks complete, archived**.
 
 **Known gap, not fixed (pre-existing, out of scope)**: `apply.md` Step 6 says "run the verification checklist from `CLAUDE.md`" but `CLAUDE.md` has no such checklist and never did. Worth a follow-up if you want that step to actually do something.
 
-**Next step**: open a PR from `feature/SCRUM-17-cleanup-stale-artifacts` into `dev` when ready, or continue directly with `centralize-config-and-private-store` (now unblocked, see below).
-
-## Ready to implement (unblocked): `centralize-config-and-private-store` OpenSpec change (2026-09-22)
+## `centralize-config-and-private-store` OpenSpec change — full scope (planned 2026-09-22, not yet started)
 
 Location: `openspec/changes/centralize-config-and-private-store/`
-Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — that dependency is now resolved** (cleanup shipped and archived 2026-09-22). One small stale reference already fixed during cleanup: `tasks.md` 6.5's "if kept per sibling change's decision" conditional on `/scan-inbox` was resolved (deleted, not kept) and the task text updated accordingly — worth a quick read of that task before implementing 6.x.
+Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: true` — pure infra/organization change, no capability behavior delta of its own). Passes `openspec validate --changes centralize-config-and-private-store --strict`. No longer blocked on anything — both `cleanup-legacy-docs-and-apply-pipeline` and `headhunter-agent` have shipped and merged. One small stale reference already fixed during cleanup: `tasks.md` 6.5's "if kept per sibling change's decision" conditional on `/scan-inbox` was resolved (deleted, not kept) and the task text updated accordingly — worth a quick read of that task before implementing 6.x.
 
 **Why this exists**: follow-up to a "should we adopt a `private/` folder for all private artifacts?" exploratory question — user confirmed yes, and asked to make it larger: every kept Python tool should read paths/settings from one central config instead of hardcoding relative-string literals per script (11 files inventoried in `design.md` - Context).
 
@@ -40,9 +46,7 @@ Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: 
 - Future `/apply` output redirects from `applications/YYYY-MM_Company/` to `private/applications/YYYY-MM_Company/` — requires editing the sibling change's still-open `job-application` delta spec (or `openspec/specs/job-application/spec.md` directly if that change archives first).
 - **`tools/build_job_scout.py` fully owned by this change** (2026-09-22 scoping clarification, mid-session correction from an earlier draft that had it split across both changes): its keep/delete decision, its hardcoded-email fix, and its config/path wiring all happen here, not in `cleanup-legacy-docs-and-apply-pipeline`. That sibling change makes zero edits to it.
 
-**Next step**: implement `cleanup-legacy-docs-and-apply-pipeline` first (see above — still awaiting the Section 1.3 README checkpoint). Once that's committed, implement this change per its `tasks.md` (11 sections: prerequisite check, config module, then move-and-rewire in groups — OAuth, candidate data, evaluation data/tracker, `documents/`, future `/apply` output — then `.gitignore` simplification, full verification, single commit).
-
-**Next step (for the checkpoint-gated change above)**: user reviews the rewritten `README.md` (specifically the "Repo cleanup: pending review" section) and confirms what to delete. Once confirmed, continue that change's `tasks.md` from Section 2 onward.
+**Next step**: see "Next up" at the top of this file — create the Jira ticket, cut the branch, then implement per `tasks.md` (11 sections: prerequisite check, config module, then move-and-rewire in groups — OAuth, candidate data, evaluation data/tracker, `documents/`, future `/apply` output — then `.gitignore` simplification, full verification, single commit).
 
 ## Completed: SCRUM-11 — Verify timestamp-based Gmail query fix (2026-09-20 12:41:05 UTC)
 
