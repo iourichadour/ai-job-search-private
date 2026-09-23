@@ -8,7 +8,7 @@ The existing job-evaluation pipeline (`job-evaluation` capability) answers "is t
 - **New**: `deal-architect` subagent — for opportunities at `OFFER`/`FINAL_ROUND` status in `job_search_tracker.csv`, runs a three-lens adversarial interview simulation (hiring manager / peer engineer / bar raiser) and produces compensation negotiation talking points.
 - **New**: an evidence-verification gate — every factual claim in text either subagent drafts (positioning rationale, resume bullet, interview answer) must trace to something literally present in `data/profile.md`; unmapped claims are blocked, not warned, consistent with this repo's existing `CLAUDE.md` rule against hallucinating skills.
 - **Explicitly excluded**: CrewAI or any other multi-agent framework dependency; any LinkedIn/job-board scraping (the crawler/market-intel roles from the reviewed prior art are not being ported — ingestion stays Gmail-alert-only); the Copilot Studio / "Hermes" / "OpenClaw" capability claims from the earlier reviewed proposal; any auto-send/auto-apply behavior (human-in-the-loop only).
-- **Known gap, not resolved by this change**: target compensation band is not yet defined anywhere in `data/profile.md` or `job_search_tracker.csv`. The negotiation-prep requirement cannot be considered usable until the user supplies one; `tasks.md` tracks this as an explicit open input, not a default value to invent.
+- **Resolved input**: target compensation band is defined in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp), confirmed current by the user on 2026-09-22. The negotiation-prep requirement's precondition is satisfied — `tasks.md` task 1.1 now verifies the existing value rather than sourcing a new one.
 
 ## Capabilities
 

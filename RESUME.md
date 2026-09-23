@@ -105,7 +105,7 @@ Status: **planning complete, ready to implement now** (0/22 tasks). Proposal, de
 - `interview-negotiation-prep`: Three-lens adversarial interview simulation (hiring manager / peer / bar raiser) + negotiation talking points
 - `evidence-verification`: Block any drafted claim not traced to `data/profile.md`
 
-**Known open input**: target compensation band not yet defined — negotiation prep cannot be considered usable until user supplies one.
+**Resolved (2026-09-22)**: target compensation band is defined in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp), confirmed current by the user — no longer an open input. `proposal.md`, `tasks.md` (1.1, 3.5), and `design.md` (Non-Goals, Risks, Open Questions) updated to reflect this via `/opsx:update`.
 
 **Possible overlap to check before implementing**: `data/positioning_rubric.md` (see "Untracked" section below) may be intended as this change's positioning-scoring rubric — resolve that scope question first.
 
@@ -170,9 +170,9 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 
 **Known gap, still not resolved (unchanged from before this apply session)**: `tasks.md` doesn't cover `.agents/skills/fetch-inbox/SKILL.md` or `.agents/skills/scan-inbox/SKILL.md` (the third, "Antigravity" mirror). Those already document Agent Mode as the default, so they likely only need a provenance tag, not a rewrite — this was deliberately left out of this change's scope and never revisited. Decide via `/opsx:update` on a future change, or explicitly declare out of scope.
 
-## Planned follow-up 1: `fix-failed-evals` skill
+## Deferred: `fix-failed-evals` skill
 
-**Status**: Not yet scoped as OpenSpec change — durable facts captured in MEMORY.md, ready to build as a standalone skill after `interactive-agent-job-evaluation` ships.
+**Status**: Deliberately deferred (2026-09-22) — `data/job_evaluations.failed.json` doesn't currently exist (no accumulated failures). User decided to wait until failures actually land there again before building the retry tool, rather than build against a guessed schema now.
 
 **Purpose**: Manage accumulated failed evaluations in `data/job_evaluations.failed.json`:
 - List failed jobs (by session or all accumulated)
@@ -188,20 +188,23 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 
 **Scope boundary**: This change handles partial save + failure tracking; the retry skill handles post-hoc recovery. Don't fold retry logic into the current change.
 
-## Planned follow-up 2: Profile caching optimization
+## Ready to implement (unblocked): `profile-caching-optimization` OpenSpec change (2026-09-22)
 
-**Status**: Quick optimization script (not a formal OpenSpec change), to be built after `interactive-agent-job-evaluation` ships.
+Location: `openspec/changes/profile-caching-optimization/`
+Status: **planning complete, ready to implement now** (0/16 tasks across 6 sections). Proposal, one modified + one new requirement in a `job-evaluation` delta spec, design, and tasks are all done. Passes `openspec validate --changes profile-caching-optimization --strict`. Standalone/independent — no dependency on `centralize-config-and-private-store`, `headhunter-agent`, or `eval-dashboard`.
 
-**Goal**: Save ~100 tokens per evaluation run by replacing full `data/profile.md` (118 lines) with a structured JSON cache.
+**Why this exists**: `data/profile.md` (139 lines, ~10KB, ~2,000-2,500 tokens) is read in full by 4 separate evaluator entry points, most wastefully by the Gemini API fallback which embeds it in *every per-job* prompt (not once per batch). At current volume (850+ evaluations run) this is a real recurring cost.
 
-**Approach**:
-- Create `tools/extract_profile.py` — rule-based parser that reads profile.md and extracts key structured facts (skills, target companies, role level, avoid-patterns, etc.) into a 2-3 line JSON cache
-- Cache stored as `data/profile.cache.json` (check into git, regenerate only when profile.md changes)
-- Update agent instructions (`.claude/agents/job-evaluator.md`, Gemini CLI workflow) to reference cache instead of full profile
-- Agent receives ~30 tokens instead of ~200 tokens per run
-- Savings: ~170 tokens per run, zero upfront cost (parsing is rule-based, not LLM)
+**Scope**:
+- New `tools/extract_profile.py` — rule-based (non-LLM) extractor generating `data/profile.cache.json` (checked into git).
+- Freshness guarantee via a SHA-256 content hash stored in the cache's `_meta` (not mtime — git doesn't preserve mtimes across clones), checked via `extract_profile.py --check`.
+- Auto-regeneration on staleness for the Gemini API path (it's code, so it self-heals); interactive-agent paths (`.claude/agents/job-evaluator.md`, `.agents/agents/job-evaluator.agent.md`, `.gemini/GEMINI.md`) are instructed to run the check-then-regenerate themselves via their shell tool.
+- **Key design constraint**: the cache is NOT a fully re-structured metadata blob — `company_fit`/`growth_potential` score against `profile.md`'s narrative sections (Behavioral Profile, Key AI-Driven Projects, etc.), so those stay near-verbatim in the cache. Only the multi-decade job-history section gets meaningfully condensed (current role kept in full, pre-2020 roles collapsed to one line each).
+- Extractor fails loudly (non-zero exit) on unrecognized `profile.md` section structure, so future profile.md restructuring can't silently degrade the cache.
 
-**Why after this change**: Profile caching is a standalone optimization that doesn't block current work and can ship independently.
+**Side finding surfaced while researching this change**: `data/profile.md` already has a `Target Compensation Band: $200K-$300K (total comp)` line (under "Target Roles & Industries") — this may resolve the `headhunter-agent` change's noted blocker ("target compensation band not yet defined — negotiation prep cannot be considered usable"). Worth checking whether that's actually current/accurate before treating it as resolved.
+
+**Next step**: implement per `tasks.md` (extractor → generate+commit initial cache → wire Gemini API fallback → wire 3 interactive-agent instruction files → grep cross-check for stragglers → live verification batches on both paths).
 
 ## Untracked: `data/positioning_rubric.md`
 

@@ -1,6 +1,6 @@
 ## 1. Context and rubric files
 
-- [ ] 1.1 Add a target compensation band field to `data/profile.md` (Constraints section), sourced from the user — leave a clearly-marked placeholder and surface it as a blocking TODO if the user has not yet supplied a value; verify by confirming the field exists and is either a real value or an explicit "not yet set" marker `evidence-verifier` and `deal-architect` can detect
+- [ ] 1.1 Verify the target compensation band already present in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp, confirmed current by the user 2026-09-22) is in a location and format `evidence-verifier` and `deal-architect` can reliably detect; no new field needs to be added — if the format needs adjusting for detection, adjust it in place rather than duplicating a second field
 - [ ] 1.2 Write `data/positioning_rubric.md` using JobFinderOS's weights-summing-to-100%-with-named-anchors structure (title level, dual-threat fit, domain fit, comp signal, technology fit) and verify weights sum to exactly 100
 
 ## 2. `career-advisor` subagent
@@ -16,7 +16,7 @@
 - [ ] 3.2 Ensure every simulated question includes a named follow-up that exposes a gap in the candidate's draft answer; verify by confirming each question's output includes a "where this answer is exposed" line naming a specific unanswered follow-up
 - [ ] 3.3 Ensure minimum topic coverage (90-day roadmap, budget/resource ownership, operational scaling) across the generated questions; verify by checking a sample run covers all three topics
 - [ ] 3.4 Implement the OFFER/FINAL_ROUND status gate on negotiation prep, reading status from `job_search_tracker.csv`; verify by confirming no compensation range is produced for an opportunity at `APPLIED` or `INTERVIEWING` status
-- [ ] 3.5 Implement the target-compensation-band precondition: if `data/profile.md` has no compensation band set, `deal-architect` reports that a band must be supplied and does not produce a range; verify by running negotiation prep with the placeholder from task 1.1 still unset and confirming it blocks rather than inventing a number
+- [ ] 3.5 Implement the target-compensation-band precondition: if `data/profile.md` has no compensation band set, `deal-architect` reports that a band must be supplied and does not produce a range; verify against a scratch copy of `data/profile.md` with the compensation band line removed (the live file now has a real value per task 1.1, so the negative case must be tested against a copy, not the live file) and confirm it blocks rather than inventing a number
 - [ ] 3.6 Wire `deal-architect` to invoke `evidence-verifier` (task 4.1) on drafted interview answers and negotiation talking points before presenting them; verify same as 2.3
 - [ ] 3.7 Mirror `deal-architect` under `.gemini/` and `.agents/`; verify as in 2.4
 
