@@ -75,6 +75,15 @@ Keep changes to `fetch-inbox` behavior mirrored across all three unless a change
 - Low job volume (not processing thousands of applications) — no need for batch/unattended evaluation infrastructure.
 - Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md`** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
 
+## Profile-caching token math: batch-invocation vs per-job re-embedding
+
+**Decision (2026-09-22)**: `profile-caching-optimization` (fully planned in `openspec/changes/profile-caching-optimization/`) is **deferred**, not abandoned. Reason: its token-savings case is much weaker on the user's actual primary path than the proposal initially assumed.
+
+- **Interactive-agent evaluation** (the user's primary path, per "User context" above): each subagent invocation reads `data/profile.md` **once per batch**, not once per job — e.g. SCRUM-12's 423-job run only cost 22 full-profile reads (one per parallel batch), not 423. Caching the profile here saves tokens per *batch invocation*, a comparatively small number.
+- **Gemini API fallback**: `evaluate_job_api()` re-embeds the full profile into **every per-job prompt**, inside the per-job loop — so a 423-job run costs 423 full-profile embeddings. This is where caching actually pays off.
+
+Since the user evaluates via the interactive-agent path, not the API fallback, the realistic savings right now are much smaller than "full profile size × job count" suggests. Revisit only if Gemini-API-fallback usage increases, or interactive-agent batch counts grow enough for the smaller per-batch saving to matter. Don't re-propose this from scratch — the planning artifacts already exist and validate cleanly; just resume `tasks.md` if/when the calculus changes.
+
 ## PII / personal-data hygiene — never hardcode into source
 
 The maintainer's real email address (`iouri.chadour@gmail.com`) was found hardcoded directly into the Gmail query string in `tools/fetch_inbox.py` and `tools/build_job_scout.py` (2026-09-22 audit) — not just in expected places like resume/profile files (`data/profile.md`, `cv/*.md` legitimately need contact info), but baked into actual query logic in tracked `.py` source. This is wrong independent of whether the repo is ever made public: config values don't belong in source, and it breaks portability for anyone else forking the repo.

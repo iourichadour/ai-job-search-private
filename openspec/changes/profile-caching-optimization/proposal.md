@@ -1,3 +1,11 @@
+## Status: Deferred (2026-09-22)
+
+**Planning is complete and stays valid, but implementation is deliberately on hold.** The two evaluator paths this change targets have very different token-savings profiles:
+- **Gemini API fallback** (`evaluate_job_api()`): re-embeds the full profile **once per job**, inside the per-job loop — a 423-job run costs 423 full-profile embeddings. This is where caching pays off.
+- **Interactive-agent paths** (Claude Code, Gemini CLI, Antigravity): each subagent invocation reads the full profile **once per batch**, not once per job — the same 423-job run (22 parallel batches, per SCRUM-12) only costs 22 full-profile reads.
+
+The user's primary evaluation path is interactive-agent, not the Gemini API fallback (see repo `MEMORY.md` - "User context" and "Profile-caching token math"). That makes the realistic savings right now much smaller than "profile size × job count" suggested when this was first proposed. **Do not re-derive this from scratch** — resume directly from `tasks.md` if Gemini-API-fallback usage grows, or if interactive-agent batch counts grow enough for the smaller per-batch saving to matter.
+
 ## Why
 
 `data/profile.md` (139 lines, ~10KB, ~2,000-2,500 tokens) is currently read in full by every evaluator, once per job in the Gemini API fallback path (`evaluate_job_api()` embeds the entire profile text in each per-job prompt) and once per subagent/session invocation in the interactive-agent paths (Claude Code, Gemini CLI, Antigravity). At current evaluation volume (850+ evaluations run to date, e.g. 423 jobs scored across 22 parallel batches in the SCRUM-12 pass), this redundant full-profile inclusion is a real, recurring token cost with no caching in place today. A smaller, purpose-built extraction of the profile's fit-relevant facts, generated once and reused until the source profile changes, would cut this cost without requiring any change to the scoring rubric or record schema.

@@ -188,12 +188,14 @@ Status: **applied, 8/8 tasks complete** (2026-09-17). All tasks across sections 
 
 **Scope boundary**: This change handles partial save + failure tracking; the retry skill handles post-hoc recovery. Don't fold retry logic into the current change.
 
-## Ready to implement (unblocked): `profile-caching-optimization` OpenSpec change (2026-09-22)
+## Deferred: `profile-caching-optimization` OpenSpec change (planned 2026-09-22, deferred 2026-09-22)
 
 Location: `openspec/changes/profile-caching-optimization/`
-Status: **planning complete, ready to implement now** (0/16 tasks across 6 sections). Proposal, one modified + one new requirement in a `job-evaluation` delta spec, design, and tasks are all done. Passes `openspec validate --changes profile-caching-optimization --strict`. Standalone/independent — no dependency on `centralize-config-and-private-store`, `headhunter-agent`, or `eval-dashboard`.
+Status: **planning complete (0/16 tasks across 6 sections), implementation deliberately deferred.** Proposal, one modified + one new requirement in a `job-evaluation` delta spec, design, and tasks are all done and pass `openspec validate --changes profile-caching-optimization --strict`. Standalone/independent — no dependency on `centralize-config-and-private-store`, `headhunter-agent`, or `eval-dashboard` — so it can be picked up any time without re-sequencing other work.
 
-**Why this exists**: `data/profile.md` (139 lines, ~10KB, ~2,000-2,500 tokens) is read in full by 4 separate evaluator entry points, most wastefully by the Gemini API fallback which embeds it in *every per-job* prompt (not once per batch). At current volume (850+ evaluations run) this is a real recurring cost.
+**Why deferred**: the token-savings case is much stronger for the Gemini API fallback path (full profile re-embedded per job, ~423x multiplier in a large run) than for the interactive-agent path (profile read once per batch invocation, not per job — e.g. only 22 reads across SCRUM-12's 423-job/22-batch run). The user's primary evaluation path is the interactive agent, not the API fallback, so the realistic payoff right now is smaller than the proposal originally framed it. Revisit if Gemini-API-fallback usage picks up, or if interactive-agent batch counts grow enough to make the smaller per-batch saving worthwhile.
+
+**Why this exists** (original motivation, still accurate for the API path): `data/profile.md` (139 lines, ~10KB, ~2,000-2,500 tokens) is read in full by 4 separate evaluator entry points, most wastefully by the Gemini API fallback which embeds it in *every per-job* prompt (not once per batch).
 
 **Scope**:
 - New `tools/extract_profile.py` — rule-based (non-LLM) extractor generating `data/profile.cache.json` (checked into git).
@@ -204,7 +206,7 @@ Status: **planning complete, ready to implement now** (0/16 tasks across 6 secti
 
 **Side finding surfaced while researching this change**: `data/profile.md` already has a `Target Compensation Band: $200K-$300K (total comp)` line (under "Target Roles & Industries") — this may resolve the `headhunter-agent` change's noted blocker ("target compensation band not yet defined — negotiation prep cannot be considered usable"). Worth checking whether that's actually current/accurate before treating it as resolved.
 
-**Next step**: implement per `tasks.md` (extractor → generate+commit initial cache → wire Gemini API fallback → wire 3 interactive-agent instruction files → grep cross-check for stragglers → live verification batches on both paths).
+**Next step**: none for now — deferred. If picked back up, implement per `tasks.md` (extractor → generate+commit initial cache → wire Gemini API fallback → wire 3 interactive-agent instruction files → grep cross-check for stragglers → live verification batches on both paths).
 
 ## Untracked: `data/positioning_rubric.md`
 
