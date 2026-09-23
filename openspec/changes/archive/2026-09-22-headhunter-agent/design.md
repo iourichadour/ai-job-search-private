@@ -45,6 +45,11 @@ Following both the existing `job-evaluator.md` pattern and the reviewed projects
 - **[Risk]** `evidence-verifier` checking against `data/profile.md`'s prose (rather than a structured evidence-with-IDs bank like career-agent's `evidence.yaml`) may under- or over-match claims if the profile's wording is loose. → **Mitigation**: start with prose matching; if false blocks or false passes turn out to be frequent in practice, a follow-up change can introduce a structured evidence log — not started speculatively here.
 - **[Risk, now resolved]** Negotiation prep would have been fully blocked until a target compensation band was supplied. → **Resolution**: `data/profile.md` already has one (`$200K-$300K`, confirmed current 2026-09-22). The underlying precondition-check behavior (block rather than invent a number if the band is ever absent) remains a hard requirement per `specs/interview-negotiation-prep/spec.md`, and task 3.5 still verifies it — against a scratch copy with the band removed, since the live file now has a real value.
 
+### Gemini CLI: dropped, Claude Code + Antigravity only
+Gemini CLI has no subagent invocation mechanism (confirmed: no `.gemini/agents/` directory, unlike `.claude/` and `.agents/`). `job-evaluator` safely mirrored into `.gemini/GEMINI.md` as inline scoring because it is a single self-contained scoring pass with no independent-checker dependency. `career-advisor` and `deal-architect` are different: both depend on invoking `evidence-verifier` as a **structurally independent** subagent — the core safety property this design is built around (see "Three subagents, not two"). An inline self-check on Gemini CLI would defeat that property (the exact self-grading failure mode the design rejects above), so mirroring is not attempted there.
+
+This is moot regardless: the user confirmed on 2026-09-22 that Gemini CLI is deprecated and no longer available. `opportunity-positioning`, `interview-negotiation-prep`, and `evidence-verification` are Claude Code + Antigravity only — no `.gemini/` artifacts are created for any of the three new subagents.
+
 ## Open Questions
 
-None — the target compensation band already lives in `data/profile.md` ("Target Roles & Industries" section), which resolves the placement question this section previously left open.
+None — the target compensation band already lives in `data/profile.md` ("Target Roles & Industries" section), which resolves the placement question this section previously left open. The Gemini CLI mirroring question is resolved above.
