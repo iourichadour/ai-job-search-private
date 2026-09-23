@@ -22,11 +22,11 @@ flowchart LR
         F --> G["Draft CV + cover letter\n(markdown, tailored)"]
         G --> H["Reviewer agent\nresearches company,\ncritiques drafts"]
         H --> I["Revise based\non feedback"]
-        I --> J["Present final output\napplications/YYYY-MM_Company/"]
+        I --> J["Present final output\nprivate/applications/YYYY-MM_Company/"]
     end
 ```
 
-`/fetch-inbox` polls Gmail for LinkedIn/Indeed alert emails, fetches the full job description for each posting URL, and queues everything in `data/inbox_queue.json`. Fit evaluation happens twice: a quick pass during `/fetch-inbox` so you can see what's worth looking at, and a full pass at the top of `/apply` before any drafting starts. The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
+`/fetch-inbox` polls Gmail for LinkedIn/Indeed alert emails, fetches the full job description for each posting URL, and queues everything in `private/inbox_queue.json`. Fit evaluation happens twice: a quick pass during `/fetch-inbox` so you can see what's worth looking at, and a full pass at the top of `/apply` before any drafting starts. The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
 
 ## Prerequisites
 
@@ -36,16 +36,9 @@ flowchart LR
 
 ### If you plan to publish or open-source your fork
 
-This repo as committed is the maintainer's own working profile, not a scrubbed template — publishing it as-is publishes that data. Before making a fork public, scrub or exclude:
+Every artifact the framework itself writes with real personal or job-search data lives under the gitignored `private/` folder — `private/profile.md`, `private/cv/`, `private/job_search_tracker.csv`, `private/documents/`, `private/credentials.json`, `private/token.json`, `private/config.json`, and more. Publishing a fork requires, at minimum: **never commit `private/`.**
 
-- `CLAUDE.md` — full candidate profile
-- `data/profile.md` — candidate profile source of truth
-- `.claude/skills/job-application-assistant/01-candidate-profile.md` — structured profile data
-- `cv/*.md` — per-application tailored resumes
-- `applications/` — generated CV/cover-letter output per application
-- `job_search_tracker.csv` — application tracking spreadsheet
-- `documents/` — source materials (CV, LinkedIn export, diplomas, references)
-- `config.local.json`, `credentials.json`, `data/token.json` — already gitignored, but carry real credentials/PII, so call them out explicitly too
+**Known gap, not yet closed:** `.claude/skills/job-application-assistant/01-candidate-profile.md` and `02-behavioral-profile.md` are tracked files that `/setup` populates with your real name, contact details, and work history in place — they are not covered by the `private/` convention above. Scrub or replace them by hand before publishing a fork until a future change moves their content under `private/` too.
 
 ## Quick start
 
@@ -64,7 +57,7 @@ claude
 /setup
 ```
 
-`/setup` offers three paths: read your `documents/` folder if you have one populated (CV PDF, LinkedIn export, diplomas, reference letters, past applications), import a single CV pasted in chat, or walk through an interview. It auto-detects what you have and asks. Documents-folder mode is idempotent and safe to re-run as you add more material; see `documents/README.md` for the layout.
+`/setup` offers three paths: read your `private/documents/` folder if you have one populated (CV PDF, LinkedIn export, diplomas, reference letters, past applications), import a single CV pasted in chat, or walk through an interview. It auto-detects what you have and asks. Documents-folder mode is idempotent and safe to re-run as you add more material; see `documents/README.md` for the layout.
 
 ### 3. Monitor job alerts
 
@@ -86,7 +79,7 @@ If the URL can't be fetched, you can paste the job description directly instead:
 /apply <paste the full job description here>
 ```
 
-This runs the full workflow: evaluate fit, draft a markdown CV + cover letter, review with a second agent, revise, and present the final output in `applications/YYYY-MM_Company/`.
+This runs the full workflow: evaluate fit, draft a markdown CV + cover letter, review with a second agent, revise, and present the final output in `private/applications/YYYY-MM_Company/`.
 
 ## Other commands
 
@@ -103,17 +96,18 @@ This runs the full workflow: evaluate fit, draft a markdown CV + cover letter, r
 python tools/generate_mockup.py
 ```
 
-Generates `_brief/mockup.html` — a single-file dashboard computed live from `data/job_evaluations.json` and `job_search_tracker.csv`. Three tabs: Executive Landing (KPIs, top high-fit roles, fit-category donut, tech-stack alignment), 5-Dimension Fit Analytics (per-dimension averages, skill-gap explorer), and Application Funnel (your actual tracked applications, in-progress count, response rate). Open the generated file directly in a browser, or serve it locally (`python -m http.server` from `_brief/`) if your browser blocks `file://` script execution. Re-run the script any time to refresh — it doesn't watch the underlying files.
+Generates `_brief/mockup.html` — a single-file dashboard computed live from `private/job_evaluations.json` and `private/job_search_tracker.csv`. Three tabs: Executive Landing (KPIs, top high-fit roles, fit-category donut, tech-stack alignment), 5-Dimension Fit Analytics (per-dimension averages, skill-gap explorer), and Application Funnel (your actual tracked applications, in-progress count, response rate). Open the generated file directly in a browser, or serve it locally (`python -m http.server` from `_brief/`) if your browser blocks `file://` script execution. Re-run the script any time to refresh — it doesn't watch the underlying files.
 
 This is an interim tool; a fuller live-reloading, two-page dashboard with applied-jobs-to-evaluation matching is planned in `openspec/changes/eval-dashboard/` (not yet implemented).
 
 ## File structure
 
-> **Cleanup in progress.** The tree below is the target structure for the current workflow. A few things still on disk today aren't shown here because they're pending removal or a decision — see [Repo cleanup: pending review](#repo-cleanup-pending-review) below. This section reflects where things are headed, not every file that exists right now.
+> This tree reflects the current workflow structure. See [Repo cleanup (2026-09-22)](#repo-cleanup-2026-09-22) below for what changed to get here.
 
 ```
 ai-job-search-private/
 ├── CLAUDE.md                          # Main candidate profile + workflow rules
+├── config.example.json                # Template for private/config.json (tracked)
 ├── .claude/
 │   ├── commands/
 │   │   ├── apply.md                   # /apply workflow (drafter-reviewer, markdown output)
@@ -134,16 +128,12 @@ ai-job-search-private/
 │   │   ├── fetch-inbox/               # /fetch-inbox implementation detail
 │   │   └── upskill/                   # /upskill skill gap analysis and learning plan
 │   └── settings.local.json            # Claude Code permissions
-├── cv/                                 # Tailored markdown resumes, one per target/company
-├── documents/                          # Career source materials for /setup Path A and /expand
+├── documents/                          # Tracked scaffolding only — real files go in private/documents/
 │   ├── README.md                      # Folder layout instructions
-│   ├── cv/                            # Master CV (PDF or markdown)
-│   ├── linkedin/                      # LinkedIn profile export (PDF)
-│   ├── diplomas/                      # Degree certificates and transcripts
-│   ├── references/                    # Reference letters
-│   └── applications/                  # Past application records (<company>_<role>/)
-├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
+│   ├── cv/, linkedin/, diplomas/, references/, applications/  # Empty placeholders (.gitkeep)
+├── salary_lookup.py                   # Salary benchmarking tool (BYO data, reads private/salary_data.json)
 ├── tools/
+│   ├── config.py                      # Central path/settings resolver every script imports
 │   ├── fetch_inbox.py                 # Gmail polling + job description fetch (used by /fetch-inbox)
 │   ├── evaluate_jobs_gemini.py        # Fit evaluation batching/merge/persistence
 │   ├── generate_mockup.py             # Builds _brief/mockup.html dashboard (see Dashboard section)
@@ -153,13 +143,20 @@ ai-job-search-private/
 │   ├── mockup.html                    # Generated dashboard (run tools/generate_mockup.py to refresh)
 │   └── report-spec.md                 # Dashboard design brief
 ├── data/
+│   └── positioning_rubric.md          # headhunter-agent scoring rubric (tracked, non-personal)
+├── private/                            # Gitignored — every real personal/job-search artifact lives here
+│   ├── config.json                    # Your job_search_email and other local settings
+│   ├── credentials.json, token.json   # Gmail OAuth
+│   ├── profile.md                     # Candidate profile (source of truth)
+│   ├── cv/                            # Tailored markdown resumes, one per target/company
+│   ├── documents/                     # Your actual CV/LinkedIn/diploma/reference/application source files
 │   ├── inbox_queue.json               # Job alerts fetched from Gmail
 │   ├── job_evaluations.json           # Persisted fit-evaluation records
-│   └── profile.md                     # Candidate profile (source of truth)
-├── applications/                       # /apply output, one folder per application: YYYY-MM_Company/
+│   ├── job_search_tracker.csv         # Application tracking spreadsheet
+│   ├── applications/                  # /apply output, one folder per application: YYYY-MM_Company/
+│   └── salary_data.json               # Optional salary benchmark data (BYO)
 ├── upskill/                            # /upskill report output (markdown reports per run)
 ├── openspec/                           # OpenSpec change proposals and capability specs
-├── job_search_tracker.csv              # Application tracking spreadsheet
 └── SETUP.md                            # Detailed setup guide
 ```
 
@@ -172,7 +169,7 @@ The `/apply` command runs a **drafter-reviewer workflow** that produces markdown
 3. **Draft** a tailored markdown CV and cover letter
 4. **Spawn a reviewer agent** that researches the company and critiques the drafts
 5. **Revise** based on the reviewer's feedback
-6. **Present** the final output in `applications/YYYY-MM_Company/` with a verification checklist
+6. **Present** the final output in `private/applications/YYYY-MM_Company/` with a verification checklist
 
 All claims in the CV and cover letter are verified against your actual profile. The system never fabricates skills or experience.
 
@@ -225,7 +222,7 @@ The single biggest factor in output quality is how much detail you put into your
 
 - **Role descriptions:** Don't just list job titles. Describe what you actually did in each position: specific projects, tools used, responsibilities, and measurable achievements. The more material you provide, the more precisely the system can reframe your experience for different roles.
 - **Skills in context:** Instead of listing "Python" or "project management," describe how and where you applied them. "Built ML pipelines for customer churn prediction in Python using scikit-learn" gives the system far more to work with than "Python, machine learning."
-- **All onboarding paths work:** Whether you point `/setup` at your `documents/` folder, paste a single CV, or walk through the interview, the principle is the same: richer input produces sharper output.
+- **All onboarding paths work:** Whether you point `/setup` at your `private/documents/` folder, paste a single CV, or walk through the interview, the principle is the same: richer input produces sharper output.
 
 ### Career path discovery
 
@@ -238,7 +235,7 @@ To get the most from this, invest time during `/setup` in describing not just yo
 
 ## Repo cleanup (2026-09-22)
 
-A repo-wide audit found leftover artifacts from this project's original Danish job-portal fork that weren't part of the workflow described above. Full detail and rationale: `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md`.
+A repo-wide audit found leftover artifacts from this project's original Danish job-portal fork that weren't part of the workflow described above. Full detail and rationale: `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pipeline/design.md`.
 
 **Deleted (confirmed dead, no live references):**
 - `job_scraper/` — empty shell left over from the pre-Gmail-alert scraper era
@@ -251,11 +248,11 @@ A repo-wide audit found leftover artifacts from this project's original Danish j
 
 **Kept, not deleted:** `_brief/mockup.html`, `_brief/report-spec.md`, and `tools/generate_mockup.py` were initially flagged as dead too, but they're a real, working dashboard — see [Dashboard: review tracking](#dashboard-review-tracking) below.
 
-**Security fix:** the personal Gmail address hardcoded in `tools/fetch_inbox.py`'s search query is now read from a gitignored `config.local.json` (see `config.local.example.json` for the expected shape) instead of being baked into tracked source.
+**Security fix:** the personal Gmail address hardcoded in `tools/fetch_inbox.py`'s search query is now read from `tools/config.py` (backed by a gitignored `private/config.json` — see `config.example.json` for the expected shape) instead of being baked into tracked source.
 
-**Deferred to a follow-up change, not decided here:** `tools/build_job_scout.py` ("job scout setup") and `data/master_resume.md` (its only consumer) are intentionally left untouched by this cleanup — kept intact, not deleted, not modified. Their keep/delete decision, hardcoded-email fix, and path/config handling all move to the staged `openspec/changes/centralize-config-and-private-store/` change instead.
+**Resolved by the follow-up `centralize-config-and-private-store` change:** `tools/build_job_scout.py` ("job scout setup") was found to be an orphaned, stale bootstrap script disconnected from the real `/setup` onboarding path — it was deleted, along with its only consumer `data/master_resume.md`. That same change also introduced `tools/config.py` and moved every personal/job-search artifact under `private/` (see the File Structure section above).
 
-The LaTeX CV/cover-letter pipeline (`cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`) has been deleted, and `/apply` now drafts and outputs markdown directly to `applications/YYYY-MM_Company/`.
+The LaTeX CV/cover-letter pipeline (`cv/main_example.tex`, `cover_letters/cover.cls`, `cover_letters/OpenFonts/`) has been deleted, and `/apply` now drafts and outputs markdown directly to `private/applications/YYYY-MM_Company/`.
 
 ## Acknowledgements
 

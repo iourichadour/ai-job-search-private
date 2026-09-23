@@ -29,6 +29,8 @@ from datetime import datetime, timedelta
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
+import config
+
 # Globals for lazy SDK loading
 genai_client = None
 genai_types = None
@@ -64,8 +66,8 @@ def get_gemini_client():
 
 
 def load_profile():
-    """Load candidate profile from data/profile.md"""
-    profile_path = 'data/profile.md'
+    """Load candidate profile from private/profile.md"""
+    profile_path = config.PROFILE_PATH
     if not os.path.exists(profile_path):
         print(f"[!] {profile_path} not found")
         sys.exit(1)
@@ -382,9 +384,9 @@ def check_evaluation_consistency(record):
     return warnings
 
 
-def save_evaluations_to_files(evaluations_list, inbox_file='data/inbox_queue.json', evaluations_file='data/job_evaluations.json', failed_file='data/job_evaluations.failed.json'):
+def save_evaluations_to_files(evaluations_list, inbox_file=None, evaluations_file=None, failed_file=None):
     """
-    Merge evaluation results into data/inbox_queue.json and data/job_evaluations.json.
+    Merge evaluation results into private/inbox_queue.json and private/job_evaluations.json.
     Updates job status to 'evaluated' and attaches the evaluation dict to each job item.
 
     Each record is validated first (see validate_evaluation_record()). Valid records are
@@ -393,6 +395,9 @@ def save_evaluations_to_files(evaluations_list, inbox_file='data/inbox_queue.jso
     if at least one record was persisted (or the batch was empty), False only if the batch
     was non-empty and every record failed validation.
     """
+    inbox_file = inbox_file or config.INBOX_QUEUE_PATH
+    evaluations_file = evaluations_file or config.JOB_EVALUATIONS_PATH
+    failed_file = failed_file or config.JOB_EVALUATIONS_FAILED_PATH
     if not os.path.exists(inbox_file):
         print(f"[!] {inbox_file} not found")
         return False
@@ -477,10 +482,12 @@ def save_evaluations_to_files(evaluations_list, inbox_file='data/inbox_queue.jso
     return len(valid_records) > 0 or len(evaluations_list) == 0
 
 
-def track_submission(url_or_title, company=None, role=None, status='applied', notes='', tracker_csv='job_search_tracker.csv', inbox_file='data/inbox_queue.json'):
+def track_submission(url_or_title, company=None, role=None, status='applied', notes='', tracker_csv=None, inbox_file=None):
     """
-    Mark job as applied/submitted in data/inbox_queue.json and log row to job_search_tracker.csv.
+    Mark job as applied/submitted in private/inbox_queue.json and log row to private/job_search_tracker.csv.
     """
+    tracker_csv = tracker_csv or config.JOB_SEARCH_TRACKER_PATH
+    inbox_file = inbox_file or config.INBOX_QUEUE_PATH
     # 1. Update queue file
     updated = False
     target_job = None
@@ -602,8 +609,8 @@ def main():
                 print(f"[!] Failed to parse evaluations input: {e}")
         return
 
-    inbox_file = 'data/inbox_queue.json'
-    evaluations_file = 'data/job_evaluations.json'
+    inbox_file = config.INBOX_QUEUE_PATH
+    evaluations_file = config.JOB_EVALUATIONS_PATH
 
     if not os.path.exists(inbox_file):
         print(f"[!] {inbox_file} not found")
@@ -631,7 +638,7 @@ def main():
         if not candidate_jobs:
             return
         
-        batch_dir = 'data/eval_batches'
+        batch_dir = config.EVAL_BATCHES_DIR
         os.makedirs(batch_dir, exist_ok=True)
         
         for f in os.listdir(batch_dir):
@@ -657,7 +664,7 @@ def main():
                 json.dump(export_payload, f, indent=2, ensure_ascii=False)
             
             print(f"[✓] Wrote {len(batch)} jobs to {batch_file}")
-            print("    Run: invoke_subagent job-evaluator 'Please evaluate the jobs in data/eval_batches/batch_{:02d}.json and write the results to data/eval_batches/batch_{:02d}.evaluated.json'".format(i, i))
+            print("    Run: invoke_subagent job-evaluator 'Please evaluate the jobs in private/eval_batches/batch_{:02d}.json and write the results to private/eval_batches/batch_{:02d}.evaluated.json'".format(i, i))
             print()
             
         return

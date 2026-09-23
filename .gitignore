@@ -18,18 +18,10 @@ venv/
 *.fls
 *.fdb_latexmk
 
-# Credentials and API keys (CRITICAL - never commit)
-credentials.json
+# Credentials, API keys, and all personal/job-search data (CRITICAL - never commit)
 private/
-data/token.json
-data/inbox_queue.json
-data/scratch_*.json
-data/.tmp*
-data/fetch_state.json
-data/eval_batches/
 
 # Personal data (never commit these)
-salary_data.json
 *_BehavioralReport.pdf
 linkedin_Profile.pdf
 
@@ -61,17 +53,6 @@ Thumbs.db
 
 # Skills lock (auto-generated)
 skills-lock.json
-
-# documents/ subfolder contents are personal — only README and folder structure are tracked
-documents/cv/**
-documents/linkedin/**
-documents/diplomas/**
-documents/references/**
-documents/applications/**
-!documents/**/.gitkeep
-
-# Personal job search tracking
-job_search_tracker.csv
 
 # Upskill reports (personal output)
 upskill/*.md

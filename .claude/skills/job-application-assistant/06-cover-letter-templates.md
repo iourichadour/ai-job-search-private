@@ -2,7 +2,7 @@
 
 ## Output Format
 
-Cover letters are plain markdown, one file per application: `applications/YYYY-MM_<Company>/cover_letter.md`. Use standard markdown structure (headings/paragraphs as needed) — no LaTeX markup, no compile step.
+Cover letters are plain markdown, one file per application: `private/applications/YYYY-MM_<Company>/cover_letter.md`. Use standard markdown structure (headings/paragraphs as needed) — no LaTeX markup, no compile step.
 
 ## Tailoring Guidelines
 

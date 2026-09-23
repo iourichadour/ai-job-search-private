@@ -6,7 +6,7 @@ Looks up company salary data from a user-provided dataset.
 Supports any salary data source — union statistics, Glassdoor exports,
 manually collected benchmarks, etc.
 
-This tool requires a data file (salary_data.json) that you create
+This tool requires a data file (private/salary_data.json) that you create
 from your own salary data. See tools/README_SALARY_TOOL.md for
 instructions on the expected format and how to convert from Excel.
 
@@ -24,7 +24,9 @@ import argparse
 import unicodedata
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent / "salary_data.json"
+from tools import config
+
+DATA_FILE = config.SALARY_DATA_PATH
 
 # Common Danish <-> anglicized spelling variants
 SPELLING_VARIANTS = {
@@ -45,7 +47,7 @@ STRIP_PATTERNS = [
 
 def load_data():
     if not DATA_FILE.exists():
-        print("Error: salary_data.json not found.", file=sys.stderr)
+        print("Error: private/salary_data.json not found.", file=sys.stderr)
         print("", file=sys.stderr)
         print("This tool requires a salary data file.", file=sys.stderr)
         print("See tools/README_SALARY_TOOL.md for setup instructions.", file=sys.stderr)

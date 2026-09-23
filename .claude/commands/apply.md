@@ -59,16 +59,16 @@ Read only the reference files you do not yet have:
 - `.claude/skills/job-application-assistant/05-cv-templates.md`
 - `.claude/skills/job-application-assistant/06-cover-letter-templates.md`
 
-Determine the output folder from the company name extracted in Step 0 and the current year-month: `applications/YYYY-MM_<Company>/` (spaces in the company name become hyphens, e.g. `applications/2026-09_Acme-Corp/`). Create the folder if it does not already exist.
+Determine the output folder from the company name extracted in Step 0 and the current year-month: `private/applications/YYYY-MM_<Company>/` (spaces in the company name become hyphens, e.g. `private/applications/2026-09_Acme-Corp/`). Create the folder if it does not already exist.
 
-### CV (`applications/YYYY-MM_<Company>/cv.md`)
+### CV (`private/applications/YYYY-MM_<Company>/cv.md`)
 - Always in **English**
 - Follow the structure and tailoring guidance from `05-cv-templates.md`
 - Tailor the profile statement and experience bullets to the specific role
 - Reframe skills and achievements to match job requirements
 - Target the length budget in `05-cv-templates.md` (~2-page equivalent)
 
-### Cover Letter (`applications/YYYY-MM_<Company>/cover_letter.md`)
+### Cover Letter (`private/applications/YYYY-MM_<Company>/cover_letter.md`)
 - **Match the language of the job posting** (Danish posting -> Danish cover letter, English posting -> English cover letter)
 - Follow the structure from `06-cover-letter-templates.md`
 - Tailor the opening paragraph to the specific role and company
@@ -176,13 +176,13 @@ After all edits are applied, the two files on disk are the final drafts.
 
 **Never skip this step.** Re-read both markdown files from disk — this catches leftover placeholder text and length/structure drift that a single drafting pass often leaves in, even when the draft looked fine in working memory.
 
-**CV (`applications/YYYY-MM_<Company>/cv.md`):**
+**CV (`private/applications/YYYY-MM_<Company>/cv.md`):**
 - [ ] Length is reasonable for the format (roughly the budget in `05-cv-templates.md` — ~700-900 words of substantive content)
 - [ ] No leftover placeholder text (e.g. `[COMPANY]`, `[ROLE]`, bracketed template tokens)
 - [ ] Markdown is well-formed: headings, bullet lists, and bold text render cleanly
 - [ ] Section order matches the recommended order in `05-cv-templates.md` for the role type
 
-**Cover letter (`applications/YYYY-MM_<Company>/cover_letter.md`):**
+**Cover letter (`private/applications/YYYY-MM_<Company>/cover_letter.md`):**
 - [ ] Within the word budget from `06-cover-letter-templates.md` (250-300 words of body text)
 - [ ] No leftover placeholder text
 - [ ] Markdown is well-formed
@@ -210,7 +210,7 @@ Summarize 3-5 key decisions made to tailor the application:
 
 ### Files Created
 List the files written:
-- `applications/YYYY-MM_<Company>/cv.md`
-- `applications/YYYY-MM_<Company>/cover_letter.md`
+- `private/applications/YYYY-MM_<Company>/cv.md`
+- `private/applications/YYYY-MM_<Company>/cover_letter.md`
 
 Tell the user: "Both files are ready for your review."

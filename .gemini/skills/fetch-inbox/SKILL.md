@@ -14,11 +14,11 @@ disable-model-invocation: false
    ```bash
    python tools/evaluate_jobs_gemini.py --days 14 --filter-only
    ```
-3. Score each job against `data/profile.md` using the fixed 5-dimension rubric:
+3. Score each job against `private/profile.md` using the fixed 5-dimension rubric:
    - **In Antigravity (`agy`)**: Delegate scoring to the `job-evaluator` subagent via `invoke_subagent` (Model: `pro`). Tag records `"model": "antigravity-agent-session"`.
-   - **In Standalone Gemini CLI**: Score jobs inline against `data/profile.md` using the configured model from `.gemini/settings.json` (`gemini-2.5-pro`). Tag records `"model": "gemini-agent-session"`.
-4. Write the evaluations as a JSON array to a scratch file (e.g. `data/.tmp_agent_evals.json`), then merge it back:
+   - **In Standalone Gemini CLI**: Score jobs inline against `private/profile.md` using the configured model from `.gemini/settings.json` (`gemini-2.5-pro`). Tag records `"model": "gemini-agent-session"`.
+4. Write the evaluations as a JSON array to a scratch file (e.g. `private/.tmp_agent_evals.json`), then merge it back:
    ```bash
-   python tools/evaluate_jobs_gemini.py --save-evaluations data/.tmp_agent_evals.json
+   python tools/evaluate_jobs_gemini.py --save-evaluations private/.tmp_agent_evals.json
    ```
-5. Present markdown summary table from `data/job_evaluations.json`
+5. Present markdown summary table from `private/job_evaluations.json`

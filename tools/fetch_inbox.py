@@ -16,6 +16,7 @@ from datetime import datetime
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
+import config
 
 try:
     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
@@ -26,20 +27,6 @@ except ImportError:
     sys.exit(1)
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-
-
-def load_local_config():
-    config_path = 'config.local.json'
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f"Missing {config_path}. Copy config.local.example.json to {config_path} "
-            "and set your own values (see SETUP.md)."
-        )
-    with open(config_path, 'r', encoding='utf-8') as f:
-        config = json.load(f)
-    if 'job_search_email' not in config:
-        raise KeyError(f"{config_path} is missing required key 'job_search_email'.")
-    return config
 
 # ============================================
 # CONFIGURATION - Browser Fetch Settings
@@ -53,12 +40,11 @@ PAGE_LOAD_TIMEOUT = 30000
 EXTRA_PAGE_WAIT = 2000
 # ============================================
 
-FETCH_STATE_PATH = 'data/fetch_state.json'
 OVERLAP_BUFFER_SECONDS = 86400  # re-query the last day each run as a safety margin; dedup handles overlap
 
 def load_fetch_state():
-    if os.path.exists(FETCH_STATE_PATH):
-        with open(FETCH_STATE_PATH, 'r', encoding='utf-8') as f:
+    if os.path.exists(config.FETCH_STATE_PATH):
+        with open(config.FETCH_STATE_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {}
 
@@ -80,8 +66,8 @@ def find_last_run_epoch():
     return None
 
 def save_fetch_state(last_fetch_epoch: int):
-    os.makedirs('data', exist_ok=True)
-    with open(FETCH_STATE_PATH, 'w', encoding='utf-8') as f:
+    config.PRIVATE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(config.FETCH_STATE_PATH, 'w', encoding='utf-8') as f:
         json.dump({'last_fetch_at': last_fetch_epoch,
                     'last_fetch_at_iso': datetime.fromtimestamp(last_fetch_epoch).isoformat()}, f, indent=2)
 
@@ -321,13 +307,11 @@ def main():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     logger = setup_logging(timestamp)
 
-    config = load_local_config()
-
     # ── Phase 1: Gmail auth ──
     logger.info('Authenticating with Gmail API...')
     creds = None
-    if os.path.exists('data/token.json'):
-        creds = Credentials.from_authorized_user_file('data/token.json', SCOPES)
+    if os.path.exists(config.TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(str(config.TOKEN_PATH), SCOPES)
     if creds and creds.expired and creds.refresh_token:
         try:
             creds.refresh(Request())
@@ -335,9 +319,10 @@ def main():
             logger.info(f'Token refresh failed ({e}), clearing old token and re-authenticating...')
             creds = None
     if not creds or not creds.valid:
-        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file(str(config.CREDENTIALS_PATH), SCOPES)
         creds = flow.run_local_server(port=0)
-    with open('data/token.json', 'w') as f:
+    config.PRIVATE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(config.TOKEN_PATH, 'w') as f:
         f.write(creds.to_json())
     service = build('gmail', 'v1', credentials=creds)
 
@@ -357,7 +342,7 @@ def main():
             logger.warning("No fetch_state.json or logs found; using last 7 days as fallback")
             after_epoch = run_start_epoch - (7 * 86400)
 
-    gmail_query = f"from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR {config['job_search_email']}) after:{after_epoch}"
+    gmail_query = f"from:(jobalerts-noreply@linkedin.com OR alert@indeed.com OR {config.job_search_email}) after:{after_epoch}"
     logger.info(f'Gmail query: {gmail_query}')
     results = service.users().messages().list(userId='me', q=gmail_query).execute()
     messages = results.get('messages', [])
@@ -406,8 +391,8 @@ def main():
                     logger.info(f'  [URL] indeed: {normalized_url[:80]}')
 
     # ── Phase 1: Write scratch file ──
-    os.makedirs('data', exist_ok=True)
-    scratch_path = f'data/scratch_{timestamp}.json'
+    config.PRIVATE_DIR.mkdir(parents=True, exist_ok=True)
+    scratch_path = config.PRIVATE_DIR / f'scratch_{timestamp}.json'
     with open(scratch_path, 'w', encoding='utf-8') as f:
         json.dump(raw_jobs, f, indent=2)
     logger.info(f'Scratch file written: {scratch_path} ({len(raw_jobs)} raw URLs)')
@@ -423,7 +408,7 @@ def main():
 
     # ── Phase 1: Filter against existing queue ──
     existing_queue = []
-    queue_path = 'data/inbox_queue.json'
+    queue_path = config.INBOX_QUEUE_PATH
     if os.path.exists(queue_path):
         with open(queue_path, 'r', encoding='utf-8') as f:
             existing_queue = json.load(f)

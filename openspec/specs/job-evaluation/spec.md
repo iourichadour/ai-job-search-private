@@ -1,7 +1,7 @@
 # job-evaluation Specification
 
 ## Purpose
-Defines how pending jobs in `data/inbox_queue.json` get scored for fit against the candidate profile and persisted as structured evaluation records, across all supported evaluators (interactive agent sessions and the Gemini API fallback).
+Defines how pending jobs in `private/inbox_queue.json` get scored for fit against the candidate profile and persisted as structured evaluation records, across all supported evaluators (interactive agent sessions and the Gemini API fallback).
 
 ## Requirements
 
@@ -10,7 +10,7 @@ The system SHALL support evaluating pending jobs from within an interactive codi
 
 #### Scenario: Evaluating pending jobs in an interactive session
 - **WHEN** a user runs the `/fetch-inbox` workflow inside an interactive Claude Code or Gemini CLI session
-- **THEN** the workflow exports unevaluated jobs from `data/inbox_queue.json`, the interactive agent scores each job itself against `data/profile.md`, and the resulting evaluations are persisted back into `data/inbox_queue.json` and `data/job_evaluations.json` without any call to the Gemini API
+- **THEN** the workflow exports unevaluated jobs from `private/inbox_queue.json`, the interactive agent scores each job itself against `private/profile.md`, and the resulting evaluations are persisted back into `private/inbox_queue.json` and `private/job_evaluations.json` without any call to the Gemini API
 
 ### Requirement: Evaluation scoring rubric and record schema
 The system SHALL score each job across five dimensions — `skill_match`, `experience_level_match`, `company_fit`, `growth_potential`, `red_flags` (each 0-100) — and compute `overall_fit` as a weighted composite (skills 30%, experience 25%, company 20%, growth 15%, red_flags −10%), assigning `fit_category` from `overall_fit` using thresholds: `high` (80+), `medium` (60-79), `low` (40-59), `skip` (<40). Every evaluation record SHALL include `title`, `company`, the five dimension scores, `overall_fit`, `fit_category`, `key_strengths`, `skill_gaps`, `red_flags_list`, `recommendation`, `reason_summary`, `url`, `evaluated_at`, and `model`, regardless of which evaluator produced it.
@@ -46,14 +46,14 @@ The system SHALL retain the existing Gemini API evaluation mode (requiring `GEMI
 - **THEN** jobs are evaluated via the Gemini API exactly as before, with evaluation records tagged with the Gemini model name
 
 ### Requirement: Evaluation results are persisted only via merge
-The system SHALL persist evaluation results into `data/inbox_queue.json` and `data/job_evaluations.json` only through the existing merge mechanism, which upserts by `url` (falling back to `title`+`company`) and marks matched jobs as `status: "evaluated"`. Evaluation results SHALL NOT be written by directly overwriting either file.
+The system SHALL persist evaluation results into `private/inbox_queue.json` and `private/job_evaluations.json` only through the existing merge mechanism, which upserts by `url` (falling back to `title`+`company`) and marks matched jobs as `status: "evaluated"`. Evaluation results SHALL NOT be written by directly overwriting either file.
 
 #### Scenario: Merging new evaluations preserves existing records
 - **WHEN** a new batch of evaluation records is saved
-- **THEN** jobs already present in `data/job_evaluations.json` are updated in place if re-evaluated, new jobs are appended, and no duplicate entries are created for the same `url`
+- **THEN** jobs already present in `private/job_evaluations.json` are updated in place if re-evaluated, new jobs are appended, and no duplicate entries are created for the same `url`
 
 ### Requirement: Evaluation records are validated before persistence
-The system SHALL validate every evaluation record against a schema before persisting it to `data/inbox_queue.json` or `data/job_evaluations.json`. Validation is performed per record, not per batch: records that pass validation SHALL be persisted immediately via the merge mechanism, even when other records in the same batch fail. Records that fail validation SHALL NOT be persisted to `data/inbox_queue.json` or `data/job_evaluations.json`; instead they SHALL be appended, together with clear error messages identifying which field(s) failed and why, to `data/job_evaluations.failed.json` for later review or retry.
+The system SHALL validate every evaluation record against a schema before persisting it to `private/inbox_queue.json` or `private/job_evaluations.json`. Validation is performed per record, not per batch: records that pass validation SHALL be persisted immediately via the merge mechanism, even when other records in the same batch fail. Records that fail validation SHALL NOT be persisted to `private/inbox_queue.json` or `private/job_evaluations.json`; instead they SHALL be appended, together with clear error messages identifying which field(s) failed and why, to `private/job_evaluations.failed.json` for later review or retry.
 
 #### Evaluation Record JSON Schema
 
@@ -83,15 +83,15 @@ Each evaluation record MUST have ALL of the following fields with the specified 
 
 #### Scenario: Missing required fields are rejected
 - **WHEN** an evaluator produces a record missing any required field
-- **THEN** that record is rejected and appended to `data/job_evaluations.failed.json` with an error message naming the missing field(s), while other valid records in the same batch are still persisted to `data/inbox_queue.json` and `data/job_evaluations.json`
+- **THEN** that record is rejected and appended to `private/job_evaluations.failed.json` with an error message naming the missing field(s), while other valid records in the same batch are still persisted to `private/inbox_queue.json` and `private/job_evaluations.json`
 
 #### Scenario: Type mismatches are rejected
 - **WHEN** an evaluator produces a record where `overall_fit` is a string (e.g. `"85"`) instead of an integer
-- **THEN** that record is rejected and appended to `data/job_evaluations.failed.json` with an error message describing the type mismatch, while other valid records in the same batch are still persisted
+- **THEN** that record is rejected and appended to `private/job_evaluations.failed.json` with an error message describing the type mismatch, while other valid records in the same batch are still persisted
 
 #### Scenario: Out-of-range values are rejected
 - **WHEN** an evaluator produces `skill_match: 150` or `overall_fit: 120`
-- **THEN** that record is rejected and appended to `data/job_evaluations.failed.json` with an error message indicating the value is outside the valid 0-100 range, while other valid records in the same batch are still persisted
+- **THEN** that record is rejected and appended to `private/job_evaluations.failed.json` with an error message indicating the value is outside the valid 0-100 range, while other valid records in the same batch are still persisted
 
 #### Scenario: Negative overall_fit from red flag deduction is auto-clamped
 - **WHEN** an evaluator computes `overall_fit` below 0 due to red flag penalties (e.g. `overall_fit: -10`) on an irrelevant posting
@@ -99,11 +99,11 @@ Each evaluation record MUST have ALL of the following fields with the specified 
 
 #### Scenario: Invalid fit_category is rejected
 - **WHEN** an evaluator produces `fit_category: "excellent"` (not one of the four allowed values)
-- **THEN** that record is rejected and appended to `data/job_evaluations.failed.json` with an error message listing the allowed values, while other valid records in the same batch are still persisted
+- **THEN** that record is rejected and appended to `private/job_evaluations.failed.json` with an error message listing the allowed values, while other valid records in the same batch are still persisted
 
 #### Scenario: Valid records persist despite other records failing in the same batch
 - **WHEN** a batch of evaluation records contains a mix of valid and invalid records
-- **THEN** all valid records are persisted to `data/inbox_queue.json` (status: `evaluated`) and `data/job_evaluations.json`, all invalid records are appended to `data/job_evaluations.failed.json`, and a summary reporting counts of persisted and failed records is printed to stderr
+- **THEN** all valid records are persisted to `private/inbox_queue.json` (status: `evaluated`) and `private/job_evaluations.json`, all invalid records are appended to `private/job_evaluations.failed.json`, and a summary reporting counts of persisted and failed records is printed to stderr
 
 ### Requirement: Additional validation checks (recommended beyond schema validation)
 
@@ -118,28 +118,28 @@ These checks are defensive and help catch evaluator hallucinations or instructio
 
 #### Scenario: Consistency warnings are logged without blocking persistence
 - **WHEN** an evaluation record passes schema validation but has a consistency mismatch (e.g. `overall_fit` deviates from weighted dimensions, `fit_category` threshold mismatch, or future `evaluated_at`)
-- **THEN** a warning message is logged to stderr, the record is NOT added to `data/job_evaluations.failed.json`, and it is successfully persisted to `data/inbox_queue.json` and `data/job_evaluations.json`
+- **THEN** a warning message is logged to stderr, the record is NOT added to `private/job_evaluations.failed.json`, and it is successfully persisted to `private/inbox_queue.json` and `private/job_evaluations.json`
 
 ### Requirement: Automated batch preparation orchestration
-The system SHALL support partitioning pending unevaluated jobs from `data/inbox_queue.json` into configured batch files on disk via a CLI command, enabling efficient subagent evaluation without ad-hoc chunking scripts.
+The system SHALL support partitioning pending unevaluated jobs from `private/inbox_queue.json` into configured batch files on disk via a CLI command, enabling efficient subagent evaluation without ad-hoc chunking scripts.
 
 #### Scenario: Preparing batches with custom batch size
 - **WHEN** a user runs `python tools/evaluate_jobs_gemini.py --prepare-batches --days 30 --batch-size 60`
-- **THEN** the system filters pending jobs from the past 30 days, splits them into slices of up to 60 jobs each, writes them to `data/eval_batches/batch_XX.json`, and outputs the batch manifest with file paths
+- **THEN** the system filters pending jobs from the past 30 days, splits them into slices of up to 60 jobs each, writes them to `private/eval_batches/batch_XX.json`, and outputs the batch manifest with file paths
 
 ### Requirement: Multi-file and glob evaluation persistence
 The system SHALL support passing file globs or directories to `--save-evaluations` so that multiple completed subagent evaluation files can be merged and validated in a single execution.
 
 #### Scenario: Saving evaluations from glob pattern
-- **WHEN** a user or agent runs `python tools/evaluate_jobs_gemini.py --save-evaluations "data/eval_batches/*.evaluated.json"`
-- **THEN** the system loads and merges evaluation records across all matching files, performing unified validation and deduplication into `data/job_evaluations.json` and `data/inbox_queue.json`
+- **WHEN** a user or agent runs `python tools/evaluate_jobs_gemini.py --save-evaluations "private/eval_batches/*.evaluated.json"`
+- **THEN** the system loads and merges evaluation records across all matching files, performing unified validation and deduplication into `private/job_evaluations.json` and `private/inbox_queue.json`
 
 ### Requirement: Backlog continuation without silent date cutoff
 The system SHALL export all pending unevaluated jobs across all dates when `--filter-only` or `--prepare-batches` is invoked without explicit `--days`, `--start-date`, or `--end-date` flags, rather than silently injecting a 14-day cutoff. Explicit date filtering SHALL apply only when date parameters are explicitly provided by the user or agent.
 
 #### Scenario: Exporting unevaluated backlog defaults to all dates
 - **WHEN** a user or agent runs `python tools/evaluate_jobs_gemini.py --filter-only` without specifying `--days` or `--start-date`
-- **THEN** the system exports all jobs in `data/inbox_queue.json` whose evaluation is not yet complete (`status: "pending_evaluation"` or missing evaluation), regardless of how many days ago they were fetched
+- **THEN** the system exports all jobs in `private/inbox_queue.json` whose evaluation is not yet complete (`status: "pending_evaluation"` or missing evaluation), regardless of how many days ago they were fetched
 
 #### Scenario: Explicit date filtering respects user parameter
 - **WHEN** a user or agent specifies `--days 30` or `--days 14`
@@ -150,4 +150,4 @@ Interactive agent workflows in Claude Code and Antigravity (`agy`) SHALL delegat
 
 #### Scenario: Antigravity workflow delegates to pinned pro subagent
 - **WHEN** `/fetch-inbox` or `scan-inbox` is executed in Antigravity (`agy`)
-- **THEN** the orchestrating agent invokes the `job-evaluator` subagent with `Model: pro` to score the batch against `data/profile.md`
+- **THEN** the orchestrating agent invokes the `job-evaluator` subagent with `Model: pro` to score the batch against `private/profile.md`

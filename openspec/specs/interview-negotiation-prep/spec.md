@@ -27,7 +27,7 @@ The system SHALL generate at least three adversarial questions drawn from the ta
 - **THEN** the generated questions include at least one question each covering roadmap ownership, budget/resource ownership, and operational scaling
 
 ### Requirement: Negotiation prep is gated on pipeline stage
-The system SHALL only produce a compensation range and negotiation talking points when the opportunity's status in `job_search_tracker.csv` is `OFFER` or `FINAL_ROUND`. For opportunities at any earlier stage, the system SHALL NOT produce a compensation range.
+The system SHALL only produce a compensation range and negotiation talking points when the opportunity's status in `private/job_search_tracker.csv` is `OFFER` or `FINAL_ROUND`. For opportunities at any earlier stage, the system SHALL NOT produce a compensation range.
 
 #### Scenario: Negotiation prep runs at OFFER stage
 - **WHEN** a tracked opportunity's status is updated to `OFFER`

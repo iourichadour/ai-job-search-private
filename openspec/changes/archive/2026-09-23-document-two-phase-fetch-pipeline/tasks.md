@@ -1,0 +1,3 @@
+## 1. Verify and Document
+
+- [x] 1.1 Verify `tools/fetch_inbox.py`'s current implementation satisfies both new scenarios (already-queued URLs skip the browser-fetch phase; every run writes a scratch file and a per-run log) by re-reading the live source — no code change expected, this is a documentation-only change. **Verified live** during `centralize-config-and-private-store`'s task 6.6 run (2026-09-23): the run wrote `private/scratch_20260923_001813.json` and `logs/fetch_inbox_20260923_001813.log`, found 35 candidate URLs all already present in `private/inbox_queue.json`, and logged "Already in queue: 35 URLs skipped" / "New jobs to fetch: 0" without launching any browser session.

@@ -4,7 +4,7 @@
 
 ## Output Format
 
-CVs are plain markdown, one file per application: `applications/YYYY-MM_<Company>/cv.md`. Use standard markdown headings and bullet lists — no LaTeX markup, no compile step.
+CVs are plain markdown, one file per application: `private/applications/YYYY-MM_<Company>/cv.md`. Use standard markdown headings and bullet lists — no LaTeX markup, no compile step.
 
 ## Section-by-Section Tailoring
 

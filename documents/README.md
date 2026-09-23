@@ -1,29 +1,33 @@
 # Documents Folder
 
-This folder holds your actual career documents. The `/setup` command reads everything here and uses it to populate the candidate skill files under `.claude/skills/job-application-assistant/`. It is safe to re-run `/setup` as you add new documents — it merges intelligently and will never overwrite existing content without asking you first.
+Your actual career documents live in `private/documents/` (gitignored — never committed), not in this tracked `documents/` folder. This folder just holds these setup instructions and the empty placeholder subfolders (`cv/`, `linkedin/`, `diplomas/`, `references/`, `applications/`) so a fresh clone shows the expected layout. Put your files in the matching `private/documents/<subfolder>/` path instead.
+
+The `/setup` command reads everything under `private/documents/` and uses it to populate the candidate skill files under `.claude/skills/job-application-assistant/`. It is safe to re-run `/setup` as you add new documents — it merges intelligently and will never overwrite existing content without asking you first.
 
 ---
 
 ## Folder Structure
 
 ```
-documents/
+private/documents/               # Your actual files go here (gitignored)
 ├── cv/                          # Your CV files (PDF or LaTeX)
 ├── linkedin/                    # LinkedIn profile export (PDF)
 ├── diplomas/                    # Degree certificates and transcripts
 ├── references/                  # Reference letters
-├── applications/                # Past job applications
-│   └── <company>_<role>/
-│       ├── job_posting.md       # The original job posting (paste as text)
-│       ├── cover_letter.tex     # The cover letter you submitted
-│       ├── cv_draft.tex         # The CV variant you submitted
-│       └── outcome.md           # Result + notes (fill in after hearing back)
+└── applications/                # Past job applications
+    └── <company>_<role>/
+        ├── job_posting.md       # The original job posting (paste as text)
+        ├── cover_letter.tex     # The cover letter you submitted
+        ├── cv_draft.tex         # The CV variant you submitted
+        └── outcome.md           # Result + notes (fill in after hearing back)
+
+documents/                       # Tracked scaffolding only
 └── README.md                    # This file
 ```
 
 ---
 
-## cv/
+## private/documents/cv/
 
 Your master CV — the most complete, unedited version of your professional record.
 
@@ -42,7 +46,7 @@ Your master CV — the most complete, unedited version of your professional reco
 
 ---
 
-## linkedin/
+## private/documents/linkedin/
 
 Your LinkedIn profile exported as a PDF.
 
@@ -64,7 +68,7 @@ Your LinkedIn profile exported as a PDF.
 
 ---
 
-## diplomas/
+## private/documents/diplomas/
 
 Degree certificates, transcripts, and any official qualifications.
 
@@ -80,7 +84,7 @@ Degree certificates, transcripts, and any official qualifications.
 
 ---
 
-## references/
+## private/documents/references/
 
 Reference letters from former managers, supervisors, or collaborators.
 
@@ -95,7 +99,7 @@ Reference letters from former managers, supervisors, or collaborators.
 
 ---
 
-## applications/
+## private/documents/applications/
 
 A record of past job applications. Each subfolder is one application.
 
@@ -103,7 +107,7 @@ A record of past job applications. Each subfolder is one application.
 
 Examples:
 ```
-applications/
+private/documents/applications/
 ├── acme_ml_engineer/
 ├── bigcorp_software_engineer/
 └── consultco_ai_consultant/

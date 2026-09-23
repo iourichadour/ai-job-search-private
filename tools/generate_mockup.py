@@ -1,13 +1,15 @@
 """Generate the executive job-search dashboard as a single static HTML file.
 
-Reads data/job_evaluations.json and job_search_tracker.csv, computes every
-KPI/chart value from real data (no placeholders), and writes _brief/mockup.html.
+Reads private/job_evaluations.json and private/job_search_tracker.csv, computes
+every KPI/chart value from real data (no placeholders), and writes _brief/mockup.html.
 """
 import json
 import csv
 import os
 import re
 import sys
+
+import config
 
 TECH_KEYWORDS = [
     "Microsoft Fabric", "OneLake", "Snowflake", "Power BI", "Azure Data Factory",
@@ -17,12 +19,14 @@ TECH_KEYWORDS = [
 TERMINAL_STATUSES = {"rejected", "withdrawn", "closed", "declined"}
 
 
-def load_evaluations(path="data/job_evaluations.json"):
+def load_evaluations(path=None):
+    path = path or config.JOB_EVALUATIONS_PATH
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
-def load_tracker(path="job_search_tracker.csv"):
+def load_tracker(path=None):
+    path = path or config.JOB_SEARCH_TRACKER_PATH
     rows = []
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
@@ -549,7 +553,7 @@ def main():
             <div class="kpi-card green">
                 <div class="kpi-title">Total Applications Submitted</div>
                 <div class="kpi-value">{total_submitted}</div>
-                <div class="kpi-subtext">Logged in job_search_tracker.csv</div>
+                <div class="kpi-subtext">Logged in private/job_search_tracker.csv</div>
             </div>
             <div class="kpi-card gold">
                 <div class="kpi-title">Active In-Progress</div>
@@ -600,7 +604,7 @@ def main():
                         </tr>
 """
     else:
-        html_content += '<tr><td colspan="7" class="empty-state">No applications logged yet in job_search_tracker.csv.</td></tr>'
+        html_content += '<tr><td colspan="7" class="empty-state">No applications logged yet in private/job_search_tracker.csv.</td></tr>'
 
     tech_labels = json.dumps(list(tech_counts.keys()))
     tech_values = json.dumps(list(tech_counts.values()))
