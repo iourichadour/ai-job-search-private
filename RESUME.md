@@ -2,7 +2,7 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-22 (`cleanup-legacy-docs-and-apply-pipeline` shipped, verified, and archived)
+**Last updated**: 2026-09-22 (`headhunter-agent` shipped, live-verified, and archived)
 
 ## Completed & Archived: `cleanup-legacy-docs-and-apply-pipeline` OpenSpec change (2026-09-22)
 
@@ -95,23 +95,28 @@ Status: **planning complete, ready to implement now** (0/42 tasks; `skip_specs: 
 
 **Next steps**: Select 3–5 from top 11 for targeted applications; prepare customized application packages.
 
-## Ready to implement (unblocked): `headhunter-agent` OpenSpec change (2026-09-21)
+## Completed & Archived: `headhunter-agent` OpenSpec change (2026-09-22)
 
-Location: `openspec/changes/headhunter-agent/`
-Status: **planning complete, ready to implement now** (0/22 tasks). Proposal, design, 3 specs, and task list are done and validated. **Previously blocked on `cleanup-legacy-docs-and-apply-pipeline` — now unblocked**: `openspec/specs/job-application/spec.md` exists (fit gate, markdown output, `applications/YYYY-MM_Company/` location, reviewer loop, no-fabrication rule) for resume-bullet-diff requests to target.
+Archived as: `openspec/changes/archive/2026-09-22-headhunter-agent/`
+Main specs added: `openspec/specs/opportunity-positioning/spec.md`, `openspec/specs/interview-negotiation-prep/spec.md`, `openspec/specs/evidence-verification/spec.md` (all new capabilities, 13 requirements total). `openspec validate --all --strict` passes clean (9/9).
+Branch: `feature/SCRUM-16-headhunter-agent`, cut from `dev` after `feature/SCRUM-17-cleanup-stale-artifacts` (PR #2) merged. **Still not committed** — all work below (including the archive move itself) is uncommitted in the working tree; commit and open a PR when ready.
+Status: **21/22 tasks complete** (task 6.2, the archive command itself, is self-referential and archives at 21/22 by design — this is expected, not a gap).
 
-**Scope**: Three new capabilities for HIGH_FIT/FIT roles and OFFER/FINAL_ROUND opportunities:
-- `opportunity-positioning`: Score against positioning-specific rubric (title/level fit, dual-threat, domain, comp signal, tech stack), draft positioning rationale + resume bullet diffs
-- `interview-negotiation-prep`: Three-lens adversarial interview simulation (hiring manager / peer / bar raiser) + negotiation talking points
-- `evidence-verification`: Block any drafted claim not traced to `data/profile.md`
+**Shipped**: 6 new subagent files, all live-verified against real repo data this session (not synthetic test fixtures):
+- `.claude/agents/career-advisor.md` (`model: haiku`), `.claude/agents/deal-architect.md` (`model: sonnet`), `.claude/agents/evidence-verifier.md` (`model: sonnet`)
+- `.agents/agents/career-advisor.agent.md` (`model: flash`), `.agents/agents/deal-architect.agent.md` (`model: pro`), `.agents/agents/evidence-verifier.agent.md` (`model: pro`) — Antigravity mirrors, confirmed byte-identical to their `.claude/` counterparts apart from the intended `invoke_subagent`/model-tier substitutions.
 
-**Resolved (2026-09-22)**: target compensation band is defined in `data/profile.md` ("Target Roles & Industries" section: `$200K-$300K` total comp), confirmed current by the user — no longer an open input. `proposal.md`, `tasks.md` (1.1, 3.5), and `design.md` (Non-Goals, Risks, Open Questions) updated to reflect this via `/opsx:update`.
+**Both prior-session blockers resolved**:
+1. **Session-restart requirement**: resolved automatically — this session started fresh (via `/clear`), and the agent roster already listed all three new subagents as available. No restart needed once a genuinely new session starts.
+2. **Gemini CLI mirroring question**: resolved by direct user decision (2026-09-22) — **Gemini CLI is deprecated and no longer available**, full stop, not just unable to replicate the structurally-independent evidence-verifier pattern. `tasks.md` 2.4/3.7/4.3 and `design.md` updated to drop Gemini mirroring entirely; `MEMORY.md`'s "Three parallel agent ecosystems" section rewritten to "Two parallel agent ecosystems" accordingly. **`.gemini/` files still exist in the repo but are now dead** — flagged as known debt in `MEMORY.md`, not cleaned up here (out of scope for this change).
 
-**Resolved (2026-09-22)**: `data/positioning_rubric.md` (previously untracked, scope unclear) IS this change's `opportunity-positioning` rubric — verified field-for-field against `specs/opportunity-positioning/spec.md` (5 dimensions weighted 20/25/20/15/20 summing to 100, named High/Medium/Low anchors, output schema matches exactly: `positioning_score`, `positioning_rationale`, `resume_bullet_diffs`, `verdict`). Now tracked in git; `tasks.md` task 1.2 reworded from "write" to "verify" since the file already satisfies it — no new file needs to be written.
+**Live verification highlights** (all via real Agent-tool subagent invocations, not mocked):
+- `career-advisor` scored 3 real HIGH_FIT jobs (Clearwater Analytics, Apollo Global Management, Snowflake) from `data/job_evaluations.json` — all passed evidence verification, verdicts added genuine judgment beyond the score/rationale.
+- `deal-architect` ran a full three-lens interview simulation against the real tracked Trace3 opportunity (`job_search_tracker.csv`, status `applied`) — evidence-verifier caught and forced a revision of one real unmapped claim mid-run before presenting; negotiation-prep gate correctly returned `gated_not_ready` (status isn't OFFER/FINAL_ROUND).
+- Negative-case test: with status simulated as OFFER but a scratch `profile.md` copy with the compensation band stripped, `deal-architect` correctly returned `blocked_no_comp_band` and fabricated no numbers.
+- `evidence-verifier` tested directly: PASS on a profile-grounded draft, BLOCKED on the same draft plus a fabricated "50 engineers across three continents" claim, and confirmed the block survives an explicit re-assertion instruction (per spec's anti-argue-your-way-out requirement).
 
-**No open questions remain** — all three previously-open items (comp band, rubric scope, and the branch this gets implemented on) are resolved as of 2026-09-22.
-
-**Next step**: Implement this change per its `tasks.md`, starting on a fresh `feature/SCRUM-16-headhunter-agent` branch cut from `dev` after `feature/SCRUM-17-cleanup-stale-artifacts` merges (see cleanup section below).
+**Next step**: commit this branch's work (6 new agent files + archived OpenSpec change + `MEMORY.md`/`RESUME.md` updates) and open a PR from `feature/SCRUM-16-headhunter-agent` into `dev` when ready.
 
 ---
 

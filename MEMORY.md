@@ -51,14 +51,15 @@ Two historical records in `data/job_evaluations.json` (Celonis 4413352108, FTI C
 
 Adding or editing a file under `.claude/agents/*.md` does not make it invocable via the `Agent` tool in the *current* Claude Code session — the agent roster is loaded once at session start. Calling it mid-session fails with `Agent type '<name>' not found`, even though the file is valid and present on disk. A session restart (or starting a fresh session) is required before a newly created subagent (e.g. `job-evaluator`) can actually be invoked. Keep this in mind for any future work that adds new `.claude/agents/` files — plan for a restart before relying on the new agent in the same sitting.
 
-## Three parallel agent ecosystems
+## Two parallel agent ecosystems (Gemini CLI dropped 2026-09-22)
 
-This repo mirrors its commands/skills for three interactive agents:
+**Gemini CLI is deprecated and no longer available** (confirmed by the user 2026-09-22, during `headhunter-agent` implementation). This repo now mirrors its commands/skills for two interactive agents, not three:
 - `.claude/` — Claude Code. Evaluations tagged `model: "claude-agent-session"`.
-- `.gemini/` — Google's Gemini CLI (global model set once in `.gemini/settings.json`, currently `gemini-2.5-flash`; no per-task model override mechanism exists here). Evaluations tagged `model: "gemini-agent-session"`.
-- `.agents/` — a third agent runtime (likely "Antigravity" — matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Its `fetch-inbox` skill already documented Agent Mode as the recommended default ahead of the other two. Evaluations tagged `model: "antigravity-agent-session"`.
+- `.agents/` — Antigravity (matches the historical `"model": "Antigravity-Agent-Session"` tag seen in `data/job_evaluations.json`). Supports subagent invocation via `invoke_subagent`, structurally equivalent to Claude Code's `Agent` tool — confirmed capable of the same structurally-independent multi-subagent patterns (see "Evidence-verification gate" below). Evaluations tagged `model: "antigravity-agent-session"`.
 
-Keep changes to `fetch-inbox` behavior mirrored across all three unless a change is deliberately scoped to just one. `/scan-inbox` (a near-duplicate `fetch-inbox` fork) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point — see `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
+`.gemini/` files (`.gemini/commands/`, `.gemini/skills/`, `.gemini/GEMINI.md`, `.gemini/settings.json`) still exist in the repo as of 2026-09-22 but are now dead — not cleaned up as part of `headhunter-agent` (out of scope for that change; a future cleanup change should remove them). Do not add new `.gemini/` mirrors going forward. `data/job_evaluations.json` records already tagged `model: "gemini-agent-session"` remain valid historical records — don't touch them retroactively.
+
+Keep changes to `fetch-inbox` behavior mirrored across `.claude/` and `.agents/` unless a change is deliberately scoped to just one. `/scan-inbox` (a near-duplicate `fetch-inbox` fork) was deleted 2026-09-22 as part of consolidating to a single Gmail entry point — see `openspec/changes/cleanup-legacy-docs-and-apply-pipeline/design.md` Decision 6. When adding new evaluator provenance tags (e.g., for a new agent runtime), add them to the schema validation function's enum check.
 
 ## Gmail query is timestamp-based, not `is:unread`-based
 
@@ -100,9 +101,19 @@ Fixed via `openspec/changes/archive/2026-09-22-cleanup-legacy-docs-and-apply-pip
 - Danish job-portal scraper skills that once lived under `.agents/skills/{jobbank,jobdanmark,jobindex,jobnet}-search/` are gone (confirmed absent as of 2026-09-22) — sourcing is Gmail-alert-based only.
 - `.claude/skills/job-scraper/` (once adapted to read from `data/inbox_queue.json` instead of scraping portals) was deleted as part of consolidating to a single Gmail entry point (`/fetch-inbox` only) — its own fetch+quick-assess pass duplicated `/fetch-inbox` + `job-evaluator`'s work with a weaker heuristic. See the archived change's `design.md` Decision 6.
 
+## Positioning rubric and evidence-verification gate (`headhunter-agent`, 2026-09-22)
+
+Three new subagents, mirrored under both `.claude/agents/` and `.agents/agents/` (Gemini CLI dropped — see above): `career-advisor`, `deal-architect`, `evidence-verifier`. All read-only against `data/profile.md`/`data/job_evaluations.json`/`job_search_tracker.csv` — none of the three writes to any file; every output is a headless report presented directly in-response for human review.
+
+- **Second, separate rubric**: `data/positioning_rubric.md` scores HIGH_FIT/FIT jobs on a *different* question than the existing fit-evaluation rubric — "how do I position/negotiate this" vs. "should I apply." Five dimensions (title level 20%, dual-threat 25%, domain 20%, comp signal 15%, technology 20%), independent `positioning_score`, never overwrites the job's original `overall_fit`/`fit_category`.
+- **Evidence-verification is a structurally independent third subagent, not a self-check.** `career-advisor` and `deal-architect` both invoke `evidence-verifier` (fresh context, no visibility into the drafting conversation) on every draft before presenting it; a BLOCKED verdict withholds presentation until revised and re-verified. This is deliberate — an inline self-review was rejected as the same self-grading failure mode that makes a model's own re-drafts look better without actually improving (see `openspec/changes/archive/.../headhunter-agent/design.md` "Three subagents, not two" once archived). Re-asserting a blocked claim as true, without adding supporting text to `data/profile.md` itself, does not clear the block — confirmed live.
+- **Negotiation prep (`deal-architect`) is double-gated**: only runs when `job_search_tracker.csv` status is `OFFER`/`FINAL_ROUND` **and** `data/profile.md` has a `Target Compensation Band` set (currently `$200K-$300K`, under "Target Roles & Industries"). Either condition failing alone blocks negotiation output — confirmed live against a scratch profile copy with the band stripped.
+- Model tiers follow the existing cost-consciousness precedent: `career-advisor` haiku/flash (high-volume, lower-stakes), `deal-architect` and `evidence-verifier` sonnet/pro (higher-stakes, a false PASS has real consequences).
+
 ## Known repo debt (still open)
 
 - `documents/` still has the original fork's onboarding layout (`cv/`, `diplomas/`, `linkedin/`, `references/`, `applications/`) alongside the user's own `documents/plans/` notes folder.
 - License is MIT, copyright Mads Lorentzen (original fork author) — any cleanup must preserve the copyright/permission notice per `LICENSE`.
 - `tools/build_job_scout.py` still has the same hardcoded-email bug `fetch_inbox.py` had — deliberately deferred to the still-open `centralize-config-and-private-store` change, not a miss.
 - `apply.md` Step 6 references "the verification checklist from `CLAUDE.md`", but `CLAUDE.md` has no such checklist and never did — pre-existing, unresolved.
+- `.gemini/` (`.gemini/commands/`, `.gemini/skills/`, `.gemini/GEMINI.md`, `.gemini/settings.json`) is dead weight since Gemini CLI was confirmed deprecated 2026-09-22 (see "Two parallel agent ecosystems" above) — not cleaned up as part of `headhunter-agent`, out of scope for that change. A future cleanup change should remove it.
