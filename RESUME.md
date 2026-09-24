@@ -2,7 +2,22 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-23 (Talent Source Inc Director Data Engineering application complete, CV & cover letter in `private/applications/2026-09_Talent-Source-Inc/`)
+**Last updated**: 2026-09-24 (LinkedIn profile audit + `profile.md`/CV factual corrections — see section immediately below; Talent Source Inc application still pending submission, unchanged from 2026-09-23)
+
+## Completed this session: LinkedIn profile audit + profile.md/CV factual corrections (2026-09-24)
+
+User shared a PDF export of their live LinkedIn profile for review. Comparing it against `private/profile.md` and the Talent Source Inc application surfaced several factual errors — fixed in `profile.md` (source of truth) and propagated to every CV variant:
+
+- **AI tooling misattribution corrected**: `profile.md` had wrongly credited **Claude Code** for the Bayview AI-agent Power BI/Fabric development workflow (the 50-70% delivery-time-reduction project). User clarified the actual work tools are **GitHub Copilot and Codex** — Claude Code/Gemini CLI are used only for the user's separate *personal* Multi-Agent Career Intelligence System project, never at Bayview. Fixed in 4 places in `profile.md`; Talent Source CV/cover letter already had this right and needed no change. Full detail in `MEMORY.md`.
+- **Data-engineering tooling corrected**: `profile.md` and the Talent Source CV listed **Informatica** (Bayview) and **Alteryx/Snaplogic** (master skills list) — none accurate for current work. Corrected to **Fabric pipelines / Spark notebooks** everywhere. Informatica was only ever used at Guardian Life (2005-2014, pre-dates BI/analytics focus) and per user direction is being deliberately de-emphasized as legacy, not re-added to Guardian's bullets.
+- **AXA Financial (2001-2005, Lead Developer) removed entirely** — from `profile.md` and all 7 CV variants (`private/cv/*.md`, `private/documents/cv/current_cv.md`). User's explicit call: irrelevant generic dev work, unnecessarily extends the visible career timeline. Guardian Life (2005-) is now the earliest listed role — still 21 years of visible track record.
+- **Drafted a full LinkedIn rewrite** (headline, About/Summary, all experience bullets, skills, certifications) reflecting the corrections above — given to the user in-chat, **not yet pasted into the live LinkedIn profile** (manual step, outside this repo). Recommended title framing "AVP — Head of Data & Analytics" (not yet applied) and using LinkedIn's private "Open to Work → recruiters only" setting instead of public "actively exploring" language, since the user is currently employed at Bayview.
+
+**Not yet resolved — blocks finalizing the LinkedIn rewrite**:
+- **Guardian Life date conflict**: `profile.md` shows two roles (Technical Manager 04/2011–12/2014, Senior Developer 04/2005–10/2011). The user's live LinkedIn PDF instead shows a single Technical Manager Nov 2007–Dec 2014 entry plus a separate "Lead Developer" 2005–May 2007 Guardian entry. These don't reconcile — get the real dates from the user before publishing either version, or the new LinkedIn will contradict `profile.md`/the CVs.
+- **Live LinkedIn email**: shows `iouri.chadour.jobs@gmail.com`; canonical everywhere else is `iouri.chadour@gmail.com`. User needs to fix this directly on LinkedIn (not a repo file).
+
+**Next step**: get Guardian Life's true dates from the user, reconcile `profile.md` if they differ from what's there now, then the user manually pastes the already-drafted LinkedIn copy into their live profile. No further repo edits needed for this thread unless the Guardian dates change `profile.md`.
 
 ## Next up: Submit Talent Source Inc application via recruiter + prepare other top 11 high-fit roles for targeting
 

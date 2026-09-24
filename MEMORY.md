@@ -74,7 +74,7 @@ Keep changes to `fetch-inbox` behavior mirrored across `.claude/` and `.agents/`
 - On a Claude Pro plan — no marginal cost for evaluating jobs live in a Claude Code session.
 - Had reliability problems running Gemini 2.5 (API mode) — this is a real motivation for preferring interactive-agent evaluation, not just cost.
 - Low job volume (not processing thousands of applications) — no need for batch/unattended evaluation infrastructure.
-- Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md`** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
+- Uses OpenSpec (`openspec/`, `/opsx:*` commands) for planning nontrivial changes — proposal.md / specs delta / design.md / tasks.md workflow. **Always include Mermaid diagrams in `design.md` - humans understand pictures better** (e.g. system architecture flowcharts and sequence/state diagrams to clearly illustrate workflows and component interactions).
 
 ## Profile-caching token math: batch-invocation vs per-job re-embedding
 
@@ -122,6 +122,22 @@ Every artifact carrying real personal or job-search data now lives under the git
 - `salary_lookup.py`/`tools/convert_salary_excel.py` were listed in the proposal as in-scope but never actually assigned a task — closed the gap, both now use `config.SALARY_DATA_PATH`.
 
 **New known gap surfaced, not fixed here**: `.claude/skills/job-application-assistant/01-candidate-profile.md` and `02-behavioral-profile.md` are tracked files that `/setup` populates in place with the candidate's real name, phone number, email, and work history — outside the `private/` convention entirely. User's explicit call (2026-09-23): defer to a future change rather than expand this one further. Whoever picks this up needs to touch every command that reads/writes these paths (`/setup`, `/expand`, `/apply`, `/reset`).
+
+## AI-tooling attribution: work vs. personal project (corrected 2026-09-24)
+
+**The Bayview AI-agent Power BI/Fabric development workflow (the 50-70% delivery-time-reduction achievement) uses GitHub Copilot and Codex — not Claude Code.** `profile.md` had this wrong for a period (attributed it to Claude Code) before the user caught and corrected it 2026-09-24. Claude Code and Gemini CLI are exclusively the tooling behind the user's *separate, personal* Multi-Agent Career Intelligence System project (see `profile.md`'s "Key AI-Driven Projects" section) — they have never been used at Bayview. Never conflate the two when drafting or auditing a CV, cover letter, or LinkedIn copy; the Talent Source Inc CV/cover letter already had this correct and needed no fix.
+
+## Legacy-stack de-emphasis for positioning (2026-09-24)
+
+User's explicit, standing direction: actively trim legacy/lower-demand tools from current positioning even where historically accurate, to keep CVs/LinkedIn "catering to what's in demand." Applied 2026-09-24:
+- **Informatica** and **Alteryx/Snaplogic** removed from `profile.md`'s master skills list and Bayview/Lazard stack lines — replaced with **Fabric pipelines / Spark notebooks**, the tools actually used there. Informatica was genuinely used, but only at Guardian Life (2005-2014); per user decision it's not being added back into Guardian's bullets either.
+- **AXA Financial (2001-2005, Lead Developer) removed entirely** from `profile.md` and all CV variants (`private/cv/*.md`, `private/documents/cv/current_cv.md`) — zero data/BI relevance, and trimming it avoids unnecessarily extending the visible career timeline (age-signal reduction). Guardian Life (2005-) is now the earliest role shown anywhere, still giving a 21-year visible track record — sufficient for VP/Director/CDO-level positioning.
+
+Apply this direction to any future CV/LinkedIn drafting: don't resurface Informatica, Alteryx, Snaplogic, or AXA Financial as current-facing content without the user asking first.
+
+## Open: Guardian Life employment-date conflict (surfaced 2026-09-24, unresolved)
+
+`profile.md` lists two Guardian Life roles — Technical Manager 04/2011–12/2014 and Senior Developer 04/2005–10/2011. The user's *current live LinkedIn* (reviewed via a PDF export, 2026-09-24) instead shows a single Technical Manager entry dated Nov 2007–Dec 2014, plus a separate "Lead Developer" Guardian entry dated 2005–May 2007. These two sources don't reconcile and neither has been confirmed as correct. Get the true dates from the user before treating either version as authoritative — this blocks finalizing the drafted LinkedIn rewrite (see `RESUME.md`) without risking a contradiction between LinkedIn and `profile.md`/the CVs.
 
 ## Known repo debt (still open)
 
