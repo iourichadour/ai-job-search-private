@@ -2,11 +2,22 @@
 
 Snapshot of in-progress work, for picking this back up in a new session (any agent). See `MEMORY.md` for durable project facts/conventions this doesn't repeat.
 
-**Last updated**: 2026-09-23 (`centralize-config-and-private-store` implemented, live-verified, archived, committed on `feature/SCRUM-18-centralize-config-and-private-store` — **not yet pushed or PR'd**, `SCRUM-18` at In Review)
+**Last updated**: 2026-09-23 (Talent Source Inc Director Data Engineering application complete, CV & cover letter in `private/applications/2026-09_Talent-Source-Inc/`)
 
-## Next up: push `feature/SCRUM-18-centralize-config-and-private-store` and open a PR
+## Next up: Submit Talent Source Inc application via recruiter + prepare other top 11 high-fit roles for targeting
 
-All work is committed locally (3 commits: `981af0b` implementation, `cd00fed` tasks.md completion, `ceb5bce` archive move) but was never pushed — this session's git safety policy is to never push without explicit user request, and none came before the session ended. **Next action**: `git push -u origin feature/SCRUM-18-centralize-config-and-private-store`, open a PR into `dev`, merge, then transition Jira `SCRUM-18` (currently "In Review") to Done with a note that it merged. See the "Completed" section below for full detail on what shipped and two things deliberately left open.
+**Current state**: 
+- PR #4 opened for `feature/SCRUM-18-centralize-config-and-private-store` (centralize-config-and-private-store) into `dev` — awaiting merge/review
+- **Talent Source Inc Director Data Engineering application: COMPLETE** (92/100 fit)
+  - Full `/apply` workflow executed (Steps 1-6)
+  - CV tailored to emphasize Snowflake architecture, dbt implementation readiness, data governance, AI-ready platforms (custom Fabric data agents, Copilot Studio agents)
+  - Cover letter positioned around data supply chain ownership and team leadership
+  - Files ready: `private/applications/2026-09_Talent-Source-Inc/{cv.md, cover_letter.md}`
+- Candidate profile enhanced with custom Fabric data agents + Copilot Studio agent deployments (now reflected in all future applications)
+
+**Blockers**: None — ready to submit or move to next opportunity from top 11 high-fit list (Enzo Tech Group, Novartis, HealthEdge, Cetera, Achieve Life Sciences, JPMorganChase, Huron, Citi, ION, Apollo Global Management).
+
+**Prior session note resolved**: MetLife Principal Data & Analytics Lead (94% fit, top-scored) was closed by employer after positioning score completed. Moved to Talent Source Inc (93% fit, #2 scorer) — stronger match given full context (Snowflake, dbt, data governance, AI-ready platforms).
 
 ## Deferred: PII in tracked job-application-assistant skill files (surfaced 2026-09-23, not scoped as a change yet)
 

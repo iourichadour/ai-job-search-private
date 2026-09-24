@@ -20,6 +20,8 @@
 ### AVP, Data Analytics & AI - Bayview Asset Management (09/2024 - Present)
 Fort Lauderdale, FL
 - Head of Data & Analytics Strategy: Leading enterprise-wide data and analytics vision with measurable business outcomes
+- AI-Ready Data Architecture: Architected governed semantic layer rollout enabling self-service analytics and AI-augmented applications (Copilot, Cowork, custom MCPs)
+- Custom Fabric Data Agents: Designed and deployed custom Fabric data agents on top of lakehouse and semantic model architecture; built Copilot Studio agents extending enterprise analytics to conversational interfaces
 - BI Framework Implementation: Designed comprehensive BI framework with standardized processes, templates, and self-service model
 - Data Governance: Established guidelines for data labeling, encryption, secure PowerBI tenant configuration
 - Investor Database: Architected integrated solution ingesting third-party fund activity data for Senior Management analysis
