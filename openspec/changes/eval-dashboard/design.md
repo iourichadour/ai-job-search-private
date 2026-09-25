@@ -127,6 +127,45 @@ Glassdoor was considered (a real alert URL keys its job on `jl=`/`jobListingId=`
 
 **Decision**: Click → floating popup with full evaluation data. Close popup to return to timeline.
 
+### Decision 10: `job_evaluations.json` is the lineage ledger; other artifacts stay as-is
+
+**Rationale**: Today, tracing a job's history means joining four independently-keyed artifacts: `inbox_queue.json` (fetch/evaluation), `job_evaluations.json` (flattened evaluation export), `job_search_tracker.csv` (manually maintained application status), and a `private/applications/YYYY-MM_Company/` folder found only by guessing the company name and month. Rather than inventing a fifth store, `job_evaluations.json` — already the one record-per-job store every evaluator writes to — gains optional fields that later stages fill in as a job progresses:
+
+```
+application_status    (mirrors job_search_tracker.csv's status column; set by /apply)
+application_folder    (relative path, e.g. private/applications/2026-08_Trace3; set by /apply)
+strategy_path          (relative path to strategy.json; set by /apply or generate-application-strategy)
+positioning_score      (career-advisor's score; set by whichever orchestrator invokes it)
+interview_prep_last_run_at  (timestamp; recorded by the invoking session after deal-architect runs)
+```
+
+None of these are required fields — the existing evaluator schema and validation (job-evaluation capability) are untouched. A record with none of them is just an unapplied evaluation, exactly as today.
+
+```mermaid
+flowchart LR
+    IQ["inbox_queue.json<br/>(fetched + evaluation)"] -->|url match| JE[("job_evaluations.json<br/>= lineage ledger")]
+    JE -->|composite key| CSV["job_search_tracker.csv<br/>(manual status, dates)"]
+
+    subgraph Writers[Orchestrators upsert into JE, keyed by vendor+id]
+        FI["/fetch-inbox -> job-evaluator"] -->|initial record| JE
+        AP["/apply -> career-advisor + evidence-verifier"] -->|application_status,<br/>application_folder,<br/>strategy_path,<br/>positioning_score| JE
+        GS["generate-application-strategy<br/>(standalone backfill)"] -->|strategy_path,<br/>positioning_score| JE
+        DA["deal-architect<br/>(ad hoc, no wrapper)"] -.->|names the field for<br/>the session to record| JE
+    end
+
+    JE --> DASH["eval-dashboard<br/>Applied Jobs page"]
+    DASH -->|application_folder present| FOLDER["open private/applications/<br/>YYYY-MM_Company/ (file:// link)"]
+```
+
+**Why the composite key, not raw URL, for these writes**: the same drift problem Decision 8 solved for CSV-to-evaluation matching applies here too — `/apply`'s Step 0 may extract a URL with different tracking parameters than the one `job-evaluator` originally stored for that job. Reusing the vendor+canonical-id extractor (already implemented server-side in `tools/fetch_inbox.py` and client-side in this dashboard per Decision 8) for the write-side lookup avoids creating duplicate ledger entries for the same job.
+
+**Why `deal-architect` doesn't write directly**: every agent in this repo (`career-advisor`, `deal-architect`, `evidence-verifier`, `job-evaluator`) is explicitly documented as not modifying files itself — it scores, drafts, verifies, and presents. `/fetch-inbox` and `/apply` are fixed commands that already own the file-writing step, so hooking the ledger upsert into them is a small addition. `deal-architect` has no equivalent wrapper command (it's invoked ad hoc, conversationally) — building one is out of scope here, so instead its output includes an explicit instruction for the invoking session to record `interview_prep_last_run_at`. This is weaker (not enforced by code) but doesn't require inventing new tooling or reversing the "agents don't touch files" convention. Revisit if a dedicated interview-prep command is ever built.
+
+**Alternatives considered**:
+- Give `deal-architect` direct write access: rejected — breaks the one consistent invariant every agent in this repo currently follows, for the sake of a single low-value timestamp field.
+- A brand-new command wrapping `deal-architect` solely to enable the write-back: rejected as disproportionate scope for this change; the dashboard can display "last known stage" without it.
+- Make `job_search_tracker.csv`'s status the only source of truth and drop `application_status` from the ledger: rejected — the whole point is to stop requiring a join for the dashboard's common case; a denormalized mirror is cheap and the CSV remains authoritative for anything the ledger doesn't capture (interview notes, specific dates, etc.).
+
 ## Risks / Trade-offs
 
 **[Risk: CORS when loading from file://]** → Mitigation: Document the HTTP server requirement for local use; provide file upload fallback for both JSON and CSV. Users can run a simple Python `http.server` or use Live Server extension in VS Code.
@@ -146,6 +185,12 @@ Glassdoor was considered (a real alert URL keys its job on `jl=`/`jobListingId=`
 **[Trade-off: Single HTML file grows large with inline CSS and JS]** → Accepted for portability. If file becomes >150KB, refactor into separate files with build tooling.
 
 **[Trade-off: No real-time sync with CSV]** → Accepted for MVP. User must manually re-upload CSV when new applications are added. Could add auto-refresh on-demand button.
+
+**[Risk: Ledger fields drift out of sync with `job_search_tracker.csv`]** → `application_status` is a denormalized mirror written by `/apply`, but the CSV's `status` column can still be hand-edited afterward (e.g. moving a job to `interviewing` or `rejected`) without updating the ledger. Mitigation: the dashboard treats the CSV as authoritative for status when both are present and they disagree (matching today's behavior, which already reads status from the CSV), and only falls back to the ledger's `application_status` when no CSV row matches. Revisit if this proves confusing in practice.
+
+**[Risk: `interview_prep_last_run_at` is easy to forget since no code enforces it]** → Because `deal-architect` has no wrapper command, the field only gets written if the invoking session follows through on the instruction in its output. Mitigation: treat this field as best-effort/advisory in the dashboard (e.g. "last known prep: never recorded" rather than a hard guarantee), not a claim that prep never happened.
+
+**[Trade-off: `private/applications/` folder link uses a local `file://`/relative path]** → Only meaningful when the dashboard is opened on the same machine as the applications folder (true for this single-user, local-only tool). Accepted — this project has no multi-device or hosted-dashboard requirement.
 
 ## Open Questions
 

@@ -120,8 +120,27 @@
 - [ ] 19.5 Test CSV with various formats (different delimiters, quoted fields, missing columns) and verify parser handles edge cases
 - [ ] 19.6 Since `job_evaluations.json` currently contains zero Indeed records, hand-build a synthetic fixture (a few evaluation records with `linkedin.com` URLs and a few with `indeed.com` `jk=` URLs, plus matching applied-job CSV rows) to exercise the Indeed key extractor end-to-end; verify LinkedIn and Indeed composite-key matching both work correctly against it
 
-## 20. Documentation and Finalization
+## 20. Lineage Ledger - Schema and Shared Upsert Mechanism
 
-- [ ] 20.1 Add inline comments to JavaScript explaining key functions (data loading, matching, filtering, rendering, popups, export); verify code is readable
-- [ ] 20.2 Create a README or usage guide (either in comments or separate doc) explaining how to use both pages, data file format, prerequisites (e.g., HTTP server), and how to update CSV with applied jobs; verify instructions are clear
-- [ ] 20.3 Verify `dashboard.html` is placed in the correct project location (root or `dashboards/` folder TBD); verify file is discoverable and linkable from project documentation
+- [ ] 20.1 Extend the evaluation record schema (docs + any validator in `tools/evaluate_jobs_gemini.py`) to accept the optional lineage fields (`application_status`, `application_folder`, `strategy_path`, `positioning_score`, `interview_prep_last_run_at`) without requiring them; verify existing records without these fields still pass validation and existing tests are unaffected.
+- [ ] 20.2 Implement a shared upsert function/CLI (extending `tools/evaluate_jobs_gemini.py`'s existing merge-by-url logic, or a small new module) that: (a) locates the target record by vendor+canonical-id composite key (reusing `extract_linkedin_job_id`/`normalize_linkedin_url` from `tools/fetch_inbox.py`, falling back to raw `url` when the vendor is unrecognized), (b) merges only the given lineage fields into that record without touching others, and (c) is a no-op-safe failure (logs and returns rather than raising) when no matching record is found. Verify with unit tests covering: matching by composite key across differently-tracked URLs, merging without clobbering existing fields, and the no-match case.
+- [ ] 20.3 Verify two independent upserts to the same job's different lineage fields (e.g. `strategy_path` then later `application_status`) both persist without either erasing the other's fields.
+
+## 21. Lineage Ledger - Wiring Orchestrators
+
+- [ ] 21.1 Update `.claude/commands/apply.md` Step 6 (or wherever files are finalized) to call the shared upsert with `application_status: "applied"`, `application_folder`, and `strategy_path` (if generated/reused) after writing application files. Verify by running `/apply` on a test job and confirming the ledger record gains these fields.
+- [ ] 21.2 Update `.agents/skills/generate-application-strategy/SKILL.md` and `.claude/skills/generate-application-strategy.md` to call the shared upsert with `strategy_path` and `positioning_score` after writing `strategy.json`/`strategy.md`. Verify by running the skill standalone on a test job and confirming the ledger record gains these fields.
+- [ ] 21.3 Update `.claude/agents/deal-architect.md` (and its Antigravity equivalent) to include, in its presented output, an explicit instruction naming the `interview_prep_last_run_at` ledger update for the invoking session to perform. Verify by reading the updated agent file and confirming the instruction is present in its Output section.
+- [ ] 21.4 Confirm `/apply`'s behavior when no matching evaluation record exists for the job being applied to (manually-sourced posting): verify it completes and presents the application files normally without creating a partial/invalid `job_evaluations.json` record.
+
+## 22. Dashboard - Lineage Display and Application Folder Link
+
+- [ ] 22.1 On the Applied Jobs page, read the matched evaluation record's lineage fields and render the job's current stage (evaluated / positioned / applied / interviewing / final round / offer / rejected / withdrawn), preferring the CSV's `Status` column over the ledger's `application_status` when both are present and disagree. Verify against a fixture with both matching and conflicting CSV/ledger statuses.
+- [ ] 22.2 When `application_folder` is present on a matched record, render a clickable link to that path (`file://` or relative, consistent with how the dashboard already links evaluation URLs). Verify the link renders only when the field is present, and is absent otherwise.
+- [ ] 22.3 Display `strategy_path` (as a "strategy log available" indicator, linking to the file when present) and `positioning_score` alongside the existing fit-evaluation data in the evaluation detail popup. Verify against fixtures with and without these fields set.
+
+## 23. Documentation and Finalization
+
+- [ ] 23.1 Add inline comments to JavaScript explaining key functions (data loading, matching, filtering, rendering, popups, export); verify code is readable
+- [ ] 23.2 Create a README or usage guide (either in comments or separate doc) explaining how to use both pages, data file format, prerequisites (e.g., HTTP server), and how to update CSV with applied jobs; verify instructions are clear
+- [ ] 23.3 Verify `dashboard.html` is placed in the correct project location (root or `dashboards/` folder TBD); verify file is discoverable and linkable from project documentation

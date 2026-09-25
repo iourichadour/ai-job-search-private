@@ -168,6 +168,32 @@ The system SHALL show a summary count of applied jobs and how many match active 
 - **THEN** system shows: "High Fit: N | Medium Fit: N | Low Fit: N" for applied jobs only
 - **AND** counts reflect current filtered results
 
+### Requirement: Display full lineage stage per job
+For each applied job, the system SHALL display its current lineage stage — evaluated, positioned (a `strategy_path` exists), applied, and its `application_status` (interviewing, final round, offer, rejected, withdrawn) when known — sourced from the matching `private/job_evaluations.json` record's lineage fields (`application_status`, `strategy_path`, `positioning_score`, `interview_prep_last_run_at`), matched by the same composite key used for evaluation matching. When the CSV's `Status` column and the ledger's `application_status` disagree, the system SHALL prefer the CSV value (the user-maintained source) and display the ledger's `application_status` only when no CSV row matches.
+
+#### Scenario: Full lineage is shown for a matched job
+- **WHEN** an applied job's composite key matches a `job_evaluations.json` record that has `application_status`, `strategy_path`, and `positioning_score` set
+- **THEN** the system displays the job's current stage, whether a strategy log exists, and the positioning score alongside the existing fit-evaluation data
+
+#### Scenario: CSV status takes precedence over the ledger's mirrored status
+- **WHEN** a job's `job_search_tracker.csv` row has `status: interviewing` but the matching ledger record's `application_status` is still `applied`
+- **THEN** the system displays `interviewing` (the CSV value) and does not treat the mismatch as an error
+
+#### Scenario: Lineage fields are absent
+- **WHEN** a matched evaluation record has none of the lineage fields set (a job that was evaluated but never progressed through `/apply` or the strategy skill)
+- **THEN** the system displays the job as "evaluated" only, without fabricating a later stage
+
+### Requirement: Open the application folder from the dashboard
+When a matched evaluation record's `application_folder` field is present, the system SHALL render a clickable link that opens that folder (a `file://` or server-relative path to `private/applications/YYYY-MM_Company/`) in a new tab or the OS file browser.
+
+#### Scenario: Folder link is shown when the application folder exists
+- **WHEN** an applied job's matching ledger record has `application_folder` set to `private/applications/2026-08_Trace3`
+- **THEN** the system displays a clickable "Open Application Folder" link pointing at that path
+
+#### Scenario: No folder link when the application was never drafted through `/apply`
+- **WHEN** an applied job's matching ledger record has no `application_folder` field
+- **THEN** the system does not display a folder link for that job
+
 ### Requirement: Responsive and accessible design
 The system SHALL display correctly on mobile, tablet, and desktop screens and follow WCAG accessibility guidelines.
 

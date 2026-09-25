@@ -1,0 +1,12 @@
+## 1. Update `/apply` Strategy Log Step
+
+- [ ] 1.1 In `.claude/commands/apply.md` Step 2, replace the ad hoc "Strategy Log" section with instructions to: (a) check whether `private/applications/YYYY-MM_Company/strategy.json` already exists, (b) if it exists, read and reuse it as the strategy log for this run, (c) if it does not exist, delegate to the `generate-application-strategy` skill's flow (invoke `career-advisor` with the job-evaluations-file override using the job description already extracted in Step 0, then `evidence-verifier`) and write the returned `strategy.json` and `strategy.md`. Verify by reading the edited section back and confirming both the reuse-check and delegation paths are present.
+- [ ] 1.2 Add an explicit-refresh path: if the user asks `/apply` to refresh/update the strategy log for a folder that already has one, regenerate via `career-advisor` + `evidence-verifier` and overwrite `strategy.json`/`strategy.md`. Verify by reading the edited section back and confirming the refresh trigger is documented.
+- [ ] 1.3 Update Step 6's "Files Created" list to include `strategy.json` alongside `strategy.md`. Verify by reading the updated list.
+- [ ] 1.4 When delegating strategy generation, pass the job posting URL extracted in Step 0 (when available) into the `career-advisor` prompt so it is included as `strategy.json`'s `url` field instead of defaulting to an empty string. Verify by reading the edited section back and confirming the URL is threaded from Step 0 through to the delegation prompt.
+
+## 2. End-to-End Verification
+
+- [ ] 2.1 Run `/apply` on a job posting URL for a company with no existing `private/applications/YYYY-MM_Company/` folder. Verify `cv.md`, `cover_letter.md`, `strategy.md`, and `strategy.json` are all written, that `strategy.json` contains the `career-advisor` output schema fields (`positioning_score`, `title_level_fit`, etc.) rather than an ad hoc structure, and that `strategy.json.url` matches the input URL (not empty).
+- [ ] 2.2 Run `/apply` again for the same company/folder (or manually pre-seed a `strategy.json` in a fresh test folder before running `/apply`). Verify the existing `strategy.json`/`strategy.md` are left unchanged (reused, not regenerated) and no `career-advisor`/`evidence-verifier` invocation occurs for the strategy step.
+- [ ] 2.3 Explicitly ask `/apply` to refresh the strategy log for a folder from 2.2. Verify `strategy.json`/`strategy.md` are regenerated (content changes or timestamps update) via a fresh `career-advisor` + `evidence-verifier` pass.
