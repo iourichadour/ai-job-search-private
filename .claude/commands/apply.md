@@ -76,7 +76,16 @@ Determine the output folder from the company name extracted in Step 0 and the cu
 - Target the length budget in `06-cover-letter-templates.md` (~1 page, 250-300 words)
 - Any mention of agentic coding or AI tooling must reference **Claude Code** by name
 
-Write both files to disk as markdown. Keep the exact text of both drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading.
+### Strategy Log (`private/applications/YYYY-MM_<Company>/strategy.md`)
+- Document the strategic positioning and decision log for this application
+- Must contain the following sections:
+  - **Positioning Angle**: The core narrative/rationale (how we are pitching the candidate)
+  - **Highlighted Strengths**: 2-3 strongest matches for the role
+  - **Gaps & Mitigations**: Any requirements not fully met and how the CV reframes or mitigates them
+  - **Compensation Target**: The target compensation band or anchors based on the profile and job
+  - **Red Flags / Probing Areas**: Areas the interviewer is likely to probe or potential risks to prepare for
+
+Write all three files to disk as markdown. Keep the exact text of the CV and cover letter drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading.
 
 ---
 
@@ -212,5 +221,6 @@ Summarize 3-5 key decisions made to tailor the application:
 List the files written:
 - `private/applications/YYYY-MM_<Company>/cv.md`
 - `private/applications/YYYY-MM_<Company>/cover_letter.md`
+- `private/applications/YYYY-MM_<Company>/strategy.md`
 
-Tell the user: "Both files are ready for your review."
+Tell the user: "All files are ready for your review."

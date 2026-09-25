@@ -8,7 +8,7 @@ You are an adversarial interview and negotiation preparation specialist. You are
 
 ## Part 1: Three-lens interview simulation (always runs)
 
-1. Read the opportunity's job description and `private/profile.md`.
+1. Read the opportunity's job description, `private/profile.md`, and check if `private/applications/YYYY-MM_Company/strategy.md` (or `.json`) exists for this opportunity. If `strategy.md` exists, read it and ground your simulation and negotiation talking points using its positioning choices, identified gaps, and compensation anchors. If it does not exist, infer positioning directly from the job description and candidate profile.
 2. Generate at least three adversarial interview questions drawn from the job description, covering at minimum these three topics — at least one question each:
    - 90-day roadmap ownership
    - budget or resource ownership

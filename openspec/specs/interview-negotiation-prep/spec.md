@@ -43,3 +43,15 @@ The system SHALL require a target compensation band to be present in the candida
 #### Scenario: Negotiation prep is blocked when no target band is set
 - **WHEN** an opportunity reaches `OFFER` status and no target compensation band is present in the candidate's profile data
 - **THEN** the system does not produce a compensation range, and instead reports that a target compensation band must be supplied before negotiation prep can run
+
+### Requirement: Negotiation and interview prep consumes application strategy log
+The system SHALL attempt to read `strategy.md` (or `.json`) from the corresponding `private/applications/YYYY-MM_Company/` directory for the tracked opportunity before generating interview simulation questions or negotiation talking points. If the file exists, the system SHALL use the positioning angle, compensation anchors, and identified gaps contained within to ground the adversarial simulation and negotiation prep.
+
+#### Scenario: Prep grounds itself in the existing strategy log
+- **WHEN** the candidate requests interview simulation for a tracked opportunity that has a strategy log
+- **THEN** the generated simulation questions and negotiation talking points reflect the positioning choices and compensation anchors documented in that log
+
+#### Scenario: Prep falls back gracefully if no log exists
+- **WHEN** the candidate requests interview simulation for an opportunity that does not have a strategy log
+- **THEN** the system generates simulation questions and talking points by inferring positioning from the job description and candidate profile directly
+

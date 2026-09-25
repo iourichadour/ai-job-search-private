@@ -24,11 +24,15 @@ The system SHALL draft the CV and cover letter as markdown files (`.md`), never 
 - **THEN** both files have a `.md` extension and contain no LaTeX markup or compilation instructions
 
 ### Requirement: Application files are written to a per-application folder
-The system SHALL write the final CV and cover letter for an application to `private/applications/YYYY-MM_Company/`, where `YYYY-MM` is the current year-month and `Company` is the target company name, consistent with `CLAUDE.md`'s directive for where application artifacts live.
+The system SHALL write the final CV, cover letter, and a strategy log (`strategy.md` or `.json`) for an application to `private/applications/YYYY-MM_Company/`, where `YYYY-MM` is the current year-month and `Company` is the target company name. The strategy log SHALL contain the positioning rationale, highlighted strengths, obfuscated gaps, compensation anchors, and interview probing areas (red flags).
 
 #### Scenario: Final output location
 - **WHEN** `/apply` completes drafting and revision for a job at "Acme Corp" in September 2026
-- **THEN** the final CV and cover letter markdown files are written under `private/applications/2026-09_Acme-Corp/`
+- **THEN** the final CV, cover letter, and strategy log markdown files are written under `private/applications/2026-09_Acme-Corp/`
+
+#### Scenario: Strategy log contains required sections
+- **WHEN** the strategy log is generated
+- **THEN** it explicitly states the positioning angle, strengths, gaps, compensation target, and interview red flags
 
 ### Requirement: Reviewer critique and revision loop
 The system SHALL spawn a second agent, with the job posting and both drafts passed inline, to research the target company and critique the drafts for missed keywords, company-specific angles, weak framing, and tone/style issues, and the drafter SHALL revise the drafts based on that critique before presenting final output.
